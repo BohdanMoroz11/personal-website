@@ -1,4 +1,7 @@
 ---
+import "@fontsource-variable/inter";
+import "@fontsource-variable/newsreader";
+import "@fontsource-variable/jetbrains-mono";
 import "../styles/global.css";
 import type { Dictionary, Lang } from "../i18n";
 
@@ -8,6 +11,27 @@ interface Props {
 }
 
 const { lang, meta } = Astro.props;
+
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
+const ogImageUrl = new URL("/og-image.png", Astro.site).href;
+
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Bohdan Moroz",
+  jobTitle: "Full-stack Software Engineer",
+  description: meta.description,
+  url: Astro.site?.href,
+  image: ogImageUrl,
+  email: "mailto:contact@bohdanmoroz.com",
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Sofia",
+    addressCountry: "BG",
+  },
+  knowsLanguage: ["en", "uk", "ru"],
+  sameAs: ["https://github.com/bohdanmoroz11", "https://www.linkedin.com/in/bohdan-moroz-dev/"],
+};
 ---
 
 <!doctype html>
@@ -16,8 +40,12 @@ const { lang, meta } = Astro.props;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={meta.description} />
+    <meta name="author" content="Bohdan Moroz" />
     <title>{meta.title}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <meta name="theme-color" content="#fbfaf6" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#1a1714" media="(prefers-color-scheme: dark)" />
 
     <script is:inline>
       (() => {
@@ -37,24 +65,21 @@ const { lang, meta } = Astro.props;
       })();
     </script>
 
-    <link rel="canonical" href="https://bohdanmoroz.com/" />
+    <link rel="canonical" href={canonicalUrl} />
 
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://bohdanmoroz.com/" />
+    <meta property="og:url" content={canonicalUrl} />
     <meta property="og:title" content={meta.title} />
     <meta property="og:description" content={meta.description} />
-    <meta property="og:image" content="https://bohdanmoroz.com/og-image.png" />
+    <meta property="og:image" content={ogImageUrl} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content="https://bohdanmoroz.com/og-image.png" />
+    <meta name="twitter:title" content={meta.title} />
+    <meta name="twitter:description" content={meta.description} />
+    <meta name="twitter:image" content={ogImageUrl} />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap"
-    />
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(personSchema)} />
   </head>
 
   <body class="min-h-screen bg-[var(--color-paper)] text-[var(--color-ink)]">

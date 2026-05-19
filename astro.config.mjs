@@ -1,5 +1,6 @@
 import { defineConfig } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
+import sitemap from "@astrojs/sitemap";
 
 export default defineConfig({
   site: "https://bohdanmoroz.com",
@@ -11,6 +12,7 @@ export default defineConfig({
       redirectToDefaultLocale: false,
     },
   },
+  integrations: [sitemap()],
   vite: {
     plugins: [tailwindcss()],
   },
