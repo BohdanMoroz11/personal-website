@@ -1,0 +1,49 @@
+# Bohdan Moroz
+
+> Software engineer working in applied AI. Four years building production web and mobile apps for US logistics, HR, and fintech teams. Based in Sofia, Bulgaria. Open to freelance work.
+
+Bohdan Moroz is a full-stack TypeScript engineer specializing in agentic AI workflows and end-to-end delivery. He works remotely with US small and mid-size businesses, primarily in logistics (TMS), HR onboarding, and fintech. He ships across the stack: React and Next.js on the web, React Native (Expo) on mobile, NestJS on the server, with CI/CD, Docker, and self-hosted infrastructure as defaults. Where AI workloads can't ship traffic to OpenAI or Anthropic, he runs self-hosted models via Ollama, vLLM, and LiteLLM.
+
+He is currently available for freelance engagements. The fastest way to reach him is email: contact@bohdanmoroz.com.
+
+## Profile
+
+- Name: Bohdan Moroz
+- Role: Software Engineer · Applied AI
+- Location: Sofia, Bulgaria (UTC+2)
+- Languages: English, Ukrainian, Russian
+- Experience: 4 years in production software
+- Status: Open to freelance work, remote or in person in Sofia
+- Email: contact@bohdanmoroz.com
+- Site: https://bohdanmoroz.com
+
+## Stack
+
+- Languages: TypeScript across the stack
+- Frontend: React, Next.js, Vue / Nuxt (legacy)
+- Mobile: React Native, Expo
+- Backend: NestJS, microservices
+- AI / LLMs: Claude and Codex coding agents; self-hosted inference via Ollama, vLLM, LiteLLM
+- Infrastructure: CI/CD, Docker, self-hosted on personal infra, AWS, Vercel, Hetzner
+
+## Selected work
+
+- [ClaraHR](https://clarahr.io): Onboarding system for US truck drivers — a chat bot collects info and registers them in the carrier's system. NestJS microservices, Next.js portal, Vite admin panel, full CI/CD. Lead developer. 8 carriers, 635 drivers onboarded. 2025 → present.
+- [CargoHub](https://map.cargoetl.com): Public freight marketplace where US shippers and brokers browse carriers' trucks, post loads, and book capacity. Live tracking and document flow built in; in-product AI assistant handles routine booking and dispatch. Sole developer. Next.js, TypeScript. 9 carriers, ~2,500 trucks. 2026 → present.
+- CargoFinance: Accounting and light-fintech tooling for a logistics back-office — invoicing, transfer tracking, payouts. Sole developer. Next.js, TypeScript. 2026 → present.
+- [CargoETL](https://cargoetl.com): Closed TMS platform for US logistics carriers and dispatchers. Built and maintained the Next.js dispatcher dashboard and the React Native (Expo) driver app — order flow, live tracking, document handling, dispatch comms. 2024 → present.
+- [Altek TMS](https://altek.digital): Earlier TMS for US logistics carriers and dispatchers — Vue / Nuxt dispatcher dashboard and React Native driver app. First multi-year production project; service has since wound down. 2022 → 2024.
+
+## How he works
+
+- End-to-end ownership: takes a feature from a half-formed Figma or paragraph of requirements through frontend, backend, infrastructure, and deploy without handoffs.
+- TypeScript across the stack with CI/CD and Docker by default; self-host when it makes sense, AWS / Vercel / Hetzner when it doesn't.
+- Agentic AI is part of the workflow — Claude and Codex agents handle the typing while he drives architecture, review, and integration. Meaningfully more shipped per week than a hands-on-keyboard pace.
+- Async-friendly, used to working with US clients from Sofia (UTC+2). Most of his career has been remote across time zones.
+
+## Contact
+
+- Email: contact@bohdanmoroz.com (replies within a day)
+- GitHub: https://github.com/bohdanmoroz11
+- LinkedIn: https://www.linkedin.com/in/bohdan-moroz-dev/
+- In person: Sofia, Bulgaria — at your office or at WorkBetter 1.0 coworking

@@ -14,23 +14,121 @@ const { lang, meta } = Astro.props;
 
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
 const ogImageUrl = new URL("/og-image.png", Astro.site).href;
+const siteUrl = Astro.site?.href ?? "https://bohdanmoroz.com/";
 
-const personSchema = {
+const personId = `${siteUrl}#person`;
+const websiteId = `${siteUrl}#website`;
+const profilePageId = `${canonicalUrl}#profile`;
+
+const structuredData = {
   "@context": "https://schema.org",
-  "@type": "Person",
-  name: "Bohdan Moroz",
-  jobTitle: "Software Engineer, Applied AI",
-  description: meta.description,
-  url: Astro.site?.href,
-  image: ogImageUrl,
-  email: "mailto:contact@bohdanmoroz.com",
-  address: {
-    "@type": "PostalAddress",
-    addressLocality: "Sofia",
-    addressCountry: "BG",
-  },
-  knowsLanguage: ["en", "uk", "ru"],
-  sameAs: ["https://github.com/bohdanmoroz11", "https://www.linkedin.com/in/bohdan-moroz-dev/"],
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": personId,
+      name: "Bohdan Moroz",
+      givenName: "Bohdan",
+      familyName: "Moroz",
+      alternateName: ["Bogdan Moroz"],
+      jobTitle: "Software Engineer, Applied AI",
+      description: meta.description,
+      url: siteUrl,
+      mainEntityOfPage: { "@id": profilePageId },
+      image: {
+        "@type": "ImageObject",
+        url: ogImageUrl,
+        width: 1200,
+        height: 630,
+      },
+      email: "mailto:contact@bohdanmoroz.com",
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "Sofia",
+        addressCountry: "BG",
+      },
+      workLocation: {
+        "@type": "Place",
+        name: "Sofia, Bulgaria",
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: "Sofia",
+          addressCountry: "BG",
+        },
+      },
+      nationality: { "@type": "Country", name: "Ukraine" },
+      knowsLanguage: [
+        { "@type": "Language", name: "English", alternateName: "en" },
+        { "@type": "Language", name: "Ukrainian", alternateName: "uk" },
+        { "@type": "Language", name: "Russian", alternateName: "ru" },
+      ],
+      knowsAbout: [
+        "TypeScript",
+        "React",
+        "Next.js",
+        "NestJS",
+        "React Native",
+        "Expo",
+        "Node.js",
+        "Applied AI",
+        "Agentic AI workflows",
+        "Large Language Models",
+        "Self-hosted LLM inference",
+        "Ollama",
+        "vLLM",
+        "LiteLLM",
+        "Docker",
+        "CI/CD",
+        "Transportation Management Systems",
+        "Freight logistics software",
+        "HR onboarding software",
+        "Fintech software",
+      ],
+      hasOccupation: {
+        "@type": "Occupation",
+        name: "Software Engineer",
+        occupationLocation: {
+          "@type": "City",
+          name: "Sofia",
+        },
+        skills:
+          "TypeScript, React, Next.js, NestJS, React Native, Expo, applied AI, agentic LLM workflows, self-hosted inference (Ollama, vLLM, LiteLLM), Docker, CI/CD",
+      },
+      seeks: {
+        "@type": "Demand",
+        name: "Freelance software engineering engagements",
+        description:
+          "Open to freelance full-stack TypeScript engagements with US SMBs in logistics, HR, and fintech. Remote, or in person in Sofia.",
+      },
+      sameAs: ["https://github.com/bohdanmoroz11", "https://www.linkedin.com/in/bohdan-moroz-dev/"],
+    },
+    {
+      "@type": "WebSite",
+      "@id": websiteId,
+      url: siteUrl,
+      name: "Bohdan Moroz",
+      description: meta.description,
+      inLanguage: lang,
+      publisher: { "@id": personId },
+      author: { "@id": personId },
+    },
+    {
+      "@type": "ProfilePage",
+      "@id": profilePageId,
+      url: canonicalUrl,
+      name: meta.title,
+      description: meta.description,
+      inLanguage: lang,
+      isPartOf: { "@id": websiteId },
+      about: { "@id": personId },
+      mainEntity: { "@id": personId },
+      primaryImageOfPage: {
+        "@type": "ImageObject",
+        url: ogImageUrl,
+        width: 1200,
+        height: 630,
+      },
+    },
+  ],
 };
 ---
 
@@ -41,8 +139,15 @@ const personSchema = {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={meta.description} />
     <meta name="author" content="Bohdan Moroz" />
+    <meta
+      name="robots"
+      content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"
+    />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="format-detection" content="telephone=no" />
     <title>{meta.title}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate" type="application/xml" title="Sitemap" href="/sitemap-index.xml" />
 
     <meta name="theme-color" content="#fbfaf6" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#1a1714" media="(prefers-color-scheme: dark)" />
@@ -67,19 +172,25 @@ const personSchema = {
 
     <link rel="canonical" href={canonicalUrl} />
 
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content="profile" />
+    <meta property="og:site_name" content="Bohdan Moroz" />
+    <meta property="og:locale" content={lang === "en" ? "en_US" : lang} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:title" content={meta.title} />
     <meta property="og:description" content={meta.description} />
     <meta property="og:image" content={ogImageUrl} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Bohdan Moroz — Software Engineer, Applied AI" />
+    <meta property="profile:first_name" content="Bohdan" />
+    <meta property="profile:last_name" content="Moroz" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={meta.title} />
     <meta name="twitter:description" content={meta.description} />
     <meta name="twitter:image" content={ogImageUrl} />
+    <meta name="twitter:image:alt" content="Bohdan Moroz — Software Engineer, Applied AI" />
 
-    <script type="application/ld+json" is:inline set:html={JSON.stringify(personSchema)} />
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(structuredData)} />
   </head>
 
   <body class="bg-paper text-ink min-h-screen">
