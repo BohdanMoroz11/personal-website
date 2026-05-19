@@ -186,6 +186,33 @@ a.subtle:hover {
   display: block;
 }
 
+.lang-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  line-height: 1;
+}
+
+.lang-link {
+  color: var(--color-muted);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  transition: color 0.15s;
+}
+
+.lang-link:hover {
+  color: var(--color-ink-soft);
+}
+
+.lang-link.is-current {
+  color: var(--color-ink);
+}
+
+.lang-sep {
+  color: var(--color-muted-line);
+}
+
 .theme-transition,
 .theme-transition *,
 .theme-transition *::before,

@@ -1,16 +1,19 @@
 import en from "./locales/en.json";
+import ru from "./locales/ru.json";
+import uk from "./locales/uk.json";
 
 export const languages = {
   en: "English",
+  ru: "Русский",
+  uk: "Українська",
 } as const;
 
 export const defaultLang = "en" satisfies keyof typeof languages;
 
 export type Lang = keyof typeof languages;
+export type Dictionary = typeof en;
 
-const dictionaries = { en } as const;
-
-export type Dictionary = (typeof dictionaries)[Lang];
+const dictionaries: Record<Lang, Dictionary> = { en, ru: ru as Dictionary, uk: uk as Dictionary };
 
 export function getLangFromUrl(url: URL): Lang {
   const [, maybeLang] = url.pathname.split("/");

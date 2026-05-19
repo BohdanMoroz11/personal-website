@@ -171,10 +171,59 @@ const structuredData = {
     </script>
 
     <link rel="canonical" href={canonicalUrl} />
+    <link rel="alternate" hreflang="en" href={new URL("/", Astro.site).href} />
+    <link rel="alternate" hreflang="ru" href={new URL("/ru/", Astro.site).href} />
+    <link rel="alternate" hreflang="uk" href={new URL("/uk/", Astro.site).href} />
+    <link rel="alternate" hreflang="x-default" href={new URL("/", Astro.site).href} />
+
+    <script is:inline define:vars={{ currentLang: lang }}>
+      (() => {
+        try {
+          const supported = ["en", "ru", "uk"];
+          const paths = { en: "/", ru: "/ru/", uk: "/uk/" };
+          const stored = localStorage.getItem("lang");
+
+          const pick = () => {
+            if (stored && supported.includes(stored)) return stored;
+            const navs =
+              navigator.languages && navigator.languages.length
+                ? navigator.languages
+                : [navigator.language || "en"];
+            for (const raw of navs) {
+              const tag = (raw || "").toLowerCase();
+              const base = tag.split("-")[0];
+              if (supported.includes(base)) return base;
+            }
+            return "en";
+          };
+
+          const target = pick();
+          if (target !== currentLang) {
+            const path = window.location.pathname;
+            const isLangRoot =
+              path === "/" ||
+              path === "/ru" ||
+              path === "/ru/" ||
+              path === "/uk" ||
+              path === "/uk/";
+            if (isLangRoot) {
+              window.location.replace(
+                paths[target] + window.location.search + window.location.hash,
+              );
+            }
+          }
+        } catch {
+          /* ignore */
+        }
+      })();
+    </script>
 
     <meta property="og:type" content="profile" />
     <meta property="og:site_name" content="Bohdan Moroz" />
-    <meta property="og:locale" content={lang === "en" ? "en_US" : lang} />
+    <meta
+      property="og:locale"
+      content={lang === "en" ? "en_US" : lang === "ru" ? "ru_RU" : lang === "uk" ? "uk_UA" : lang}
+    />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:title" content={meta.title} />
     <meta property="og:description" content={meta.description} />

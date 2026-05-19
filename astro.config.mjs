@@ -6,7 +6,7 @@ export default defineConfig({
   site: "https://bohdanmoroz.com",
   i18n: {
     defaultLocale: "en",
-    locales: ["en"],
+    locales: ["en", "ru", "uk"],
     routing: {
       prefixDefaultLocale: false,
       redirectToDefaultLocale: false,

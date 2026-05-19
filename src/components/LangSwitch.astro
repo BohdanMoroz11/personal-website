@@ -1,0 +1,58 @@
+---
+import { languages, type Lang } from "../i18n";
+
+interface Props {
+  current: Lang;
+}
+
+const { current } = Astro.props;
+
+const items: { code: Lang; href: string; label: string }[] = [
+  { code: "en", href: "/", label: "EN" },
+  { code: "ru", href: "/ru/", label: "RU" },
+  { code: "uk", href: "/uk/", label: "UK" },
+];
+
+const longLabel: Record<Lang, string> = {
+  en: languages.en,
+  ru: languages.ru,
+  uk: languages.uk,
+};
+---
+
+<nav class="lang-switch mono" aria-label="Language">
+  {
+    items.map(({ code, href, label }, i) => (
+      <>
+        {i > 0 && (
+          <span aria-hidden="true" class="lang-sep">
+            ·
+          </span>
+        )}
+        <a
+          href={href}
+          class:list={["lang-link", { "is-current": code === current }]}
+          hreflang={code}
+          lang={code}
+          aria-current={code === current ? "true" : undefined}
+          data-lang={code}
+          title={longLabel[code]}
+        >
+          {label}
+        </a>
+      </>
+    ))
+  }
+</nav>
+
+<script>
+  document.querySelectorAll<HTMLAnchorElement>(".lang-switch a[data-lang]").forEach((a) => {
+    a.addEventListener("click", () => {
+      try {
+        localStorage.setItem("lang", a.dataset.lang!);
+      } catch {
+        /* ignore */
+      }
+    });
+  });
+</script>

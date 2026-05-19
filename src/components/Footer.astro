@@ -1,12 +1,15 @@
 ---
-import type { Dictionary } from "../i18n";
+import type { Dictionary, Lang } from "../i18n";
+import { getLangFromUrl } from "../i18n";
 import ThemeToggle from "./ThemeToggle.astro";
+import LangSwitch from "./LangSwitch.astro";
 
 interface Props {
   footer: Dictionary["footer"];
 }
 
 const { footer } = Astro.props;
+const currentLang: Lang = getLangFromUrl(Astro.url);
 ---
 
 <footer
@@ -14,6 +17,7 @@ const { footer } = Astro.props;
 >
   <div class="flex items-center gap-4">
     <ThemeToggle />
+    <LangSwitch current={currentLang} />
   </div>
   <div class="flex items-center gap-5">
     <a href={footer.githubUrl} class="subtle" rel="me noopener noreferrer" target="_blank">
