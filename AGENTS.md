@@ -34,6 +34,14 @@ Editorial / paper-letter aesthetic: warm paper background, serif (Newsreader) he
 - `npm run dev` — Astro dev server
 - `npm run build` — static build to `dist/`
 - `npm run preview`
+- `npm run format` / `npm run format:check` — Prettier write / check
+- `npm run lint` / `npm run lint:fix` — ESLint
+
+## Tooling
+
+- **Prettier** — config in `.prettierrc.json`, uses `prettier-plugin-astro` and `prettier-plugin-tailwindcss` (auto-sorts Tailwind classes). Ignored paths in `.prettierignore`.
+- **ESLint** — flat config in `eslint.config.js` (`@eslint/js` + `typescript-eslint` + `eslint-plugin-astro`).
+- **Husky + lint-staged** — pre-commit hook at `.husky/pre-commit` runs `npx lint-staged`. Staged `*.{js,ts,astro}` are auto-fixed by ESLint then Prettier; `*.{json,md,css}` are Prettier-only. `lint-staged` config lives in `package.json`. Husky installs via the `prepare` script on `npm install`.
 
 ## Conventions
 
