@@ -21,8 +21,8 @@ const { howIWork } = Astro.props;
           i < howIWork.items.length - 1 ? "dot-divider" : ""
         }`}
       >
-        <div class="mono pt-0.5 text-[11px] text-[var(--color-muted)]">{h.n}</div>
-        <p class="text-[14px] leading-[1.55] text-[var(--color-ink-soft)]">{h.text}</p>
+        <div class="mono text-muted pt-0.5 text-[11px]">{h.n}</div>
+        <p class="text-ink-soft text-[14px] leading-[1.55]">{h.text}</p>
       </div>
     ))
   }

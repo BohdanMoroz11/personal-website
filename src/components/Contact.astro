@@ -15,15 +15,14 @@ const { contact, email } = Astro.props;
 </section>
 
 <div class="px-6 pb-9 sm:px-11">
-  <p class="mt-1 text-[14px] leading-[1.6] text-[var(--color-ink-soft)]">
+  <p class="text-ink-soft mt-1 text-[14px] leading-[1.6]">
     {contact.body}
   </p>
-  <a href={`mailto:${email}`} class="serif mt-5 inline-block text-[20px] text-[var(--color-ink)]">
+  <a href={`mailto:${email}`} class="serif text-ink mt-5 inline-block text-[20px]">
     <span class="highlight-underline">{email}</span>
     <span
       aria-hidden="true"
-      class="ml-0.5 inline-block align-[2px] font-sans text-[12px] leading-none text-[var(--color-muted)]"
-      >↗</span
+      class="text-muted ml-0.5 inline-block align-[2px] font-sans text-[12px] leading-none">↗</span
     >
   </a>
 </div>

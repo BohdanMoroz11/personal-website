@@ -35,13 +35,11 @@ const rows: Array<{
     rows.map((r) => (
       <div class="row">
         <div class="label">{r.label}</div>
-        <div class="flex items-center text-[15px] text-[var(--color-ink-soft)]">
-          {r.liveDot && (
-            <span class="mr-2 inline-block h-1.5 w-1.5 rounded-full bg-[var(--color-live)]" />
-          )}
+        <div class="text-ink-soft flex items-center text-[15px]">
+          {r.liveDot && <span class="bg-live mr-2 inline-block h-1.5 w-1.5 rounded-full" />}
           {r.value}
         </div>
-        <div class="row-right mono text-[11px] text-[var(--color-muted)]">
+        <div class="row-right mono text-muted text-[11px]">
           {r.aside && r.asideHref ? (
             <a href={r.asideHref} class="subtle">
               {r.aside}

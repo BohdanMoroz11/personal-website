@@ -18,10 +18,10 @@ const { work } = Astro.props;
     work.projects.map((p, i) => (
       <div
         class={`grid grid-cols-[90px_1fr] gap-4 py-6 ${
-          i < work.projects.length - 1 ? "border-b border-[var(--color-paper-line)]" : ""
+          i < work.projects.length - 1 ? "border-paper-line border-b" : ""
         }`}
       >
-        <div class="mono pt-1 text-[10px] tracking-[0.15em] text-[var(--color-muted)]">{p.num}</div>
+        <div class="mono text-muted pt-1 text-[10px] tracking-[0.15em]">{p.num}</div>
         <div>
           <div>
             {p.url ? (
@@ -29,18 +29,18 @@ const { work } = Astro.props;
                 href={p.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="serif text-[19px] text-[var(--color-ink)] transition-colors hover:text-[var(--color-ink-soft)]"
+                class="serif text-ink hover:text-ink-soft text-[19px] transition-colors"
               >
                 {p.title}
                 <span
                   aria-hidden="true"
-                  class="ml-0.5 inline-block align-[2px] font-sans text-[11px] leading-none text-[var(--color-muted)]"
+                  class="text-muted ml-0.5 inline-block align-[2px] font-sans text-[11px] leading-none"
                 >
                   ↗
                 </span>
                 <span class="sr-only">(opens in a new tab)</span>
                 {p.linkLabel && (
-                  <span class="mono inline-flex items-center gap-1 align-[1px] text-[10.5px] leading-none text-[var(--color-muted)]">
+                  <span class="mono text-muted inline-flex items-center gap-1 align-[1px] text-[10.5px] leading-none">
                     {p.linkLabel}
                   </span>
                 )}
@@ -50,14 +50,12 @@ const { work } = Astro.props;
             )}
             <span class="label ml-2">{p.tag}</span>
           </div>
-          <p class="mt-1.5 text-[13.5px] leading-[1.55] text-[var(--color-ink-body)]">{p.desc}</p>
-          {p.metric && (
-            <div class="mono mt-2 text-[11px] text-[var(--color-ink-soft)]">{p.metric}</div>
-          )}
-          <div class="mono mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[10.5px] text-[var(--color-muted)]">
+          <p class="text-ink-body mt-1.5 text-[13.5px] leading-[1.55]">{p.desc}</p>
+          {p.metric && <div class="mono text-ink-soft mt-2 text-[11px]">{p.metric}</div>}
+          <div class="mono text-muted mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[10.5px]">
             {p.meta.map((m, j) => (
               <span>
-                {j > 0 && <span class="mr-2 text-[var(--color-muted-line)]">·</span>}
+                {j > 0 && <span class="text-muted-line mr-2">·</span>}
                 {m}
               </span>
             ))}

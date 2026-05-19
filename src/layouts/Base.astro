@@ -82,11 +82,9 @@ const personSchema = {
     <script type="application/ld+json" is:inline set:html={JSON.stringify(personSchema)} />
   </head>
 
-  <body class="min-h-screen bg-[var(--color-paper)] text-[var(--color-ink)]">
+  <body class="bg-paper text-ink min-h-screen">
     <main class="mx-auto max-w-[760px] px-5 py-10 sm:py-16">
-      <article
-        class="overflow-hidden rounded-2xl border border-[var(--color-paper-edge)] bg-[var(--color-paper)]"
-      >
+      <article class="border-paper-edge bg-paper overflow-hidden rounded-2xl border">
         <slot />
       </article>
     </main>
