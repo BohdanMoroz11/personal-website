@@ -1,0 +1,24 @@
+---
+import type { Dictionary } from "../i18n";
+import ThemeToggle from "./ThemeToggle.astro";
+
+interface Props {
+  location: string;
+  footer: Dictionary["footer"];
+}
+
+const { location, footer } = Astro.props;
+---
+
+<footer
+  class="mono flex items-center justify-between bg-[var(--color-paper-deep)] px-6 py-6 text-[11px] text-[var(--color-muted)] sm:px-11"
+>
+  <div class="flex items-center gap-4">
+    <span>{location}</span>
+    <ThemeToggle />
+  </div>
+  <div class="flex items-center gap-5">
+    <a href={footer.githubUrl} class="subtle" rel="me" target="_blank">{footer.githubLabel}</a>
+    <a href={footer.linkedinUrl} class="subtle" rel="me" target="_blank">{footer.linkedinLabel}</a>
+  </div>
+</footer>

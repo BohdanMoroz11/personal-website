@@ -1,0 +1,29 @@
+---
+import type { Dictionary } from "../i18n";
+
+interface Props {
+  howIWork: Dictionary["howIWork"];
+}
+
+const { howIWork } = Astro.props;
+---
+
+<section class="section-divider px-6 pt-9 pb-2 sm:px-11">
+  <div class="label">{howIWork.section}</div>
+  <h2 class="serif mt-2 text-[22px]">{howIWork.heading}</h2>
+</section>
+
+<div class="px-6 pb-7 sm:px-11">
+  {
+    howIWork.items.map((h, i) => (
+      <div
+        class={`grid grid-cols-[24px_1fr] gap-3.5 py-3 ${
+          i < howIWork.items.length - 1 ? "dot-divider" : ""
+        }`}
+      >
+        <div class="mono pt-0.5 text-[11px] text-[var(--color-muted)]">{h.n}</div>
+        <p class="text-[14px] leading-[1.55] text-[var(--color-ink-soft)]">{h.text}</p>
+      </div>
+    ))
+  }
+</div>

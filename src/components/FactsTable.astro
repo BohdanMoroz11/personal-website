@@ -1,0 +1,56 @@
+---
+import type { Dictionary } from "../i18n";
+
+interface Props {
+  facts: Dictionary["facts"];
+  email: string;
+}
+
+const { facts, email } = Astro.props;
+
+const rows: Array<{
+  label: string;
+  value: string;
+  aside?: string;
+  liveDot?: boolean;
+  asideHref?: string;
+}> = [
+  { label: facts.focusLabel, value: facts.focusValue, aside: facts.focusAside },
+  { label: facts.domainsLabel, value: facts.domainsValue, aside: facts.domainsAside },
+  { label: facts.stackLabel, value: facts.stackValue, aside: facts.stackAside },
+  { label: facts.infraLabel, value: facts.infraValue },
+  { label: facts.workingLabel, value: facts.workingValue },
+  {
+    label: facts.statusLabel,
+    value: facts.statusValue,
+    aside: facts.statusAside,
+    asideHref: `mailto:${email}`,
+    liveDot: true,
+  },
+];
+---
+
+<div class="px-6 pb-2 sm:px-11">
+  {
+    rows.map((r, i) => (
+      <div class="row" style={i === rows.length - 1 ? "border-bottom: none;" : undefined}>
+        <div class="label">{r.label}</div>
+        <div class="flex items-center text-[15px] text-[var(--color-ink-soft)]">
+          {r.liveDot && (
+            <span class="mr-2 inline-block h-1.5 w-1.5 rounded-full bg-[var(--color-live)]" />
+          )}
+          {r.value}
+        </div>
+        <div class="row-right mono text-[11px] text-[var(--color-muted)]">
+          {r.aside && r.asideHref ? (
+            <a href={r.asideHref} class="subtle">
+              {r.aside}
+            </a>
+          ) : (
+            r.aside
+          )}
+        </div>
+      </div>
+    ))
+  }
+</div>

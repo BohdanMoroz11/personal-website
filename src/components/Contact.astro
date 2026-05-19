@@ -1,0 +1,28 @@
+---
+import type { Dictionary } from "../i18n";
+
+interface Props {
+  contact: Dictionary["contact"];
+  email: string;
+}
+
+const { contact, email } = Astro.props;
+---
+
+<section class="section-divider px-6 pt-9 pb-2 sm:px-11">
+  <div class="label">{contact.section}</div>
+  <h2 class="serif mt-2 text-[22px]">{contact.heading}</h2>
+</section>
+
+<div class="px-6 pb-9 sm:px-11">
+  <p class="mt-1 text-[14px] leading-[1.6] text-[var(--color-ink-soft)]">
+    {contact.body}
+  </p>
+  <a href={`mailto:${email}`} class="serif mt-5 inline-block text-[20px] text-[var(--color-ink)]">
+    <span class="highlight-underline">{email}</span>
+    <span
+      class="ml-0.5 inline-block align-[2px] font-sans text-[12px] leading-none text-[var(--color-muted)]"
+      >↗</span
+    >
+  </a>
+</div>

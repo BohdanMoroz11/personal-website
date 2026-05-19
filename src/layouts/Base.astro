@@ -1,0 +1,69 @@
+---
+import "../styles/global.css";
+import type { Dictionary, Lang } from "../i18n";
+
+interface Props {
+  lang: Lang;
+  meta: Dictionary["meta"];
+}
+
+const { lang, meta } = Astro.props;
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={meta.description} />
+    <title>{meta.title}</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <script is:inline>
+      (() => {
+        try {
+          const pref = localStorage.getItem("theme") || "system";
+          const resolved =
+            pref === "system"
+              ? window.matchMedia("(prefers-color-scheme: dark)").matches
+                ? "dark"
+                : "light"
+              : pref;
+          document.documentElement.dataset.theme = resolved;
+          document.documentElement.dataset.themePref = pref;
+        } catch {
+          /* ignore */
+        }
+      })();
+    </script>
+
+    <link rel="canonical" href="https://bohdanmoroz.com/" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://bohdanmoroz.com/" />
+    <meta property="og:title" content={meta.title} />
+    <meta property="og:description" content={meta.description} />
+    <meta property="og:image" content="https://bohdanmoroz.com/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://bohdanmoroz.com/og-image.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap"
+    />
+  </head>
+
+  <body class="min-h-screen bg-[var(--color-paper)] text-[var(--color-ink)]">
+    <main class="mx-auto max-w-[760px] px-5 py-10 sm:py-16">
+      <article
+        class="overflow-hidden rounded-2xl border border-[var(--color-paper-edge)] bg-[var(--color-paper)]"
+      >
+        <slot />
+      </article>
+    </main>
+  </body>
+</html>
