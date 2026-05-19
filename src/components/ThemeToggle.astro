@@ -10,18 +10,6 @@
   title="Theme"
 >
   <svg
-    data-icon="system"
-    viewBox="0 0 16 16"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="1.5"
-    aria-hidden="true"
-  >
-    <circle cx="8" cy="8" r="5"></circle>
-    <path d="M8 3 V13"></path>
-    <path d="M8 3 A5 5 0 0 1 8 13 Z" fill="currentColor" stroke="none"></path>
-  </svg>
-  <svg
     data-icon="light"
     viewBox="0 0 16 16"
     fill="none"
@@ -43,44 +31,49 @@
 </button>
 
 <script>
-  type ThemePref = "system" | "light" | "dark";
+  type ThemePref = "light" | "dark";
 
   const root = document.documentElement;
   const mql = window.matchMedia("(prefers-color-scheme: dark)");
   const btn = document.getElementById("theme-toggle");
-  const order: ThemePref[] = ["system", "light", "dark"];
-  const labels: Record<ThemePref, string> = {
-    system: "Theme: auto",
-    light: "Theme: light",
-    dark: "Theme: dark",
+
+  const systemTheme = (): ThemePref => (mql.matches ? "dark" : "light");
+
+  const storedPref = (): ThemePref | null => {
+    try {
+      const v = localStorage.getItem("theme");
+      return v === "light" || v === "dark" ? v : null;
+    } catch {
+      return null;
+    }
   };
 
-  const resolve = (pref: ThemePref) =>
-    pref === "system" ? (mql.matches ? "dark" : "light") : pref;
-
-  const apply = (pref: ThemePref) => {
+  const apply = (pref: ThemePref, transition = false) => {
+    if (transition) {
+      root.classList.add("theme-transition");
+      setTimeout(() => root.classList.remove("theme-transition"), 300);
+    }
     root.dataset.themePref = pref;
-    root.dataset.theme = resolve(pref);
-    btn?.setAttribute("aria-label", labels[pref]);
-    btn?.setAttribute("title", labels[pref]);
+    root.dataset.theme = pref;
+    btn?.setAttribute("aria-label", `Theme: ${pref}`);
+    btn?.setAttribute("title", `Theme: ${pref}`);
   };
 
-  const currentPref = (): ThemePref => (root.dataset.themePref as ThemePref) || "system";
+  const currentPref = (): ThemePref => (root.dataset.themePref as ThemePref) || systemTheme();
 
-  apply(currentPref());
+  apply(storedPref() ?? systemTheme());
 
   btn?.addEventListener("click", () => {
-    const next = order[(order.indexOf(currentPref()) + 1) % order.length];
+    const next: ThemePref = currentPref() === "light" ? "dark" : "light";
     try {
-      if (next === "system") localStorage.removeItem("theme");
-      else localStorage.setItem("theme", next);
+      localStorage.setItem("theme", next);
     } catch {
       /* ignore */
     }
-    apply(next);
+    apply(next, true);
   });
 
   mql.addEventListener("change", () => {
-    if (currentPref() === "system") apply("system");
+    if (!storedPref()) apply(systemTheme());
   });
 </script>

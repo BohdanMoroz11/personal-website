@@ -181,10 +181,19 @@ a.subtle:hover {
   display: none;
 }
 
-:root[data-theme-pref="system"] .theme-toggle [data-icon="system"],
 :root[data-theme-pref="light"] .theme-toggle [data-icon="light"],
 :root[data-theme-pref="dark"] .theme-toggle [data-icon="dark"] {
   display: block;
+}
+
+.theme-transition,
+.theme-transition *,
+.theme-transition *::before,
+.theme-transition *::after {
+  transition:
+    color 0.25s ease,
+    background-color 0.25s ease,
+    border-color 0.25s ease !important;
 }
 
 @media (max-width: 640px) {

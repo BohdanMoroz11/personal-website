@@ -3,18 +3,16 @@ import type { Dictionary } from "../i18n";
 import ThemeToggle from "./ThemeToggle.astro";
 
 interface Props {
-  location: string;
   footer: Dictionary["footer"];
 }
 
-const { location, footer } = Astro.props;
+const { footer } = Astro.props;
 ---
 
 <footer
   class="mono bg-paper-deep text-muted flex items-center justify-between px-6 py-6 text-[11px] sm:px-11"
 >
   <div class="flex items-center gap-4">
-    <span>{location}</span>
     <ThemeToggle />
   </div>
   <div class="flex items-center gap-5">
