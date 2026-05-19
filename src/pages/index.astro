@@ -1,0 +1,238 @@
+---
+import "../styles/global.css";
+
+const projects = [
+  {
+    num: "01",
+    title: "Clara HR",
+    tag: "Full-stack · Owned",
+    desc: "Onboarding system for US truck drivers — a bot collects info over chat and registers them in the carrier's system, replacing manual HR back-and-forth. Microservices on NestJS, Next.js portal, Vite admin panel, full CI/CD with unit and integration tests. I own the server side.",
+    meta: ["NestJS · Next.js · Microservices", "2025 → present"],
+  },
+  {
+    num: "02",
+    title: "CargoETL",
+    tag: "Frontend",
+    desc: "Closed TMS platform for US logistics carriers and dispatchers. Built and maintained the Next.js dispatcher dashboard and the React Native (Expo) driver app — order flow, live tracking, document handling, dispatch comms.",
+    meta: ["Next.js · React Native · Expo", "2024 → present"],
+  },
+  {
+    num: "03",
+    title: "TruckLink",
+    tag: "Mobile · Frontend",
+    desc: "Public, subscription-based TMS — a leaner, self-serve sibling to CargoETL aimed at smaller carriers. Primarily worked on the React Native (Expo) mobile app, plus parts of the Next.js web frontend.",
+    meta: ["React Native · Expo · Next.js", "2025 → present"],
+  },
+  {
+    num: "04",
+    title: "Cargo finance suite",
+    tag: "Frontend · NDA",
+    desc: "Accounting and light-fintech tooling for a logistics back-office — invoicing, transfer tracking, payouts. Focused on getting an unfamiliar domain (AP/AR, reconciliation) into something operators could actually use.",
+    meta: ["Next.js · TypeScript", "2026 → present"],
+  },
+];
+
+const howIWork = [
+  {
+    n: "a.",
+    text: "End-to-end ownership. Comfortable taking a feature from a half-formed Figma or a paragraph of requirements all the way through frontend, backend, infrastructure, and deploy — without needing handoffs along the way.",
+  },
+  {
+    n: "b.",
+    text: "TypeScript across the stack: React / Next.js on the web, React Native (Expo) on mobile, NestJS on the server. Self-host on my own infra when it makes sense; happy on AWS / Vercel / Hetzner when it doesn't.",
+  },
+  {
+    n: "c.",
+    text: "Agentic AI is built into how I work — Claude and Codex agents handle the typing while I drive the architecture, review, and integration. Usually means meaningfully more shipped per week than a hands-on-keyboard pace.",
+  },
+  {
+    n: "d.",
+    text: "Async-friendly and used to working with US clients from Sofia, Bulgaria (UTC+2). Most of my career has been remote across time zones.",
+  },
+];
+
+const description =
+  "Bohdan Moroz — full-stack TypeScript engineer. Four years building production web and mobile apps for US logistics, HR, and fintech teams. Open to freelance work.";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <title>Bohdan Moroz — full-stack engineer</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href="https://bohdanmoroz.com/" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://bohdanmoroz.com/" />
+    <meta property="og:title" content="Bohdan Moroz — full-stack engineer" />
+    <meta property="og:description" content={description} />
+    <meta name="twitter:card" content="summary" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap"
+    />
+  </head>
+
+  <body class="min-h-screen bg-[var(--color-paper)] text-[var(--color-ink)]">
+    <main class="mx-auto max-w-[760px] px-5 py-10 sm:py-16">
+      <article
+        class="overflow-hidden rounded-2xl border border-[var(--color-paper-edge)] bg-[var(--color-paper)]"
+      >
+        <!-- Hero -->
+        <header class="px-6 pt-10 pb-7 sm:px-11 sm:pt-12">
+          <div class="label">Sofia, Bulgaria · Available</div>
+          <h1 class="serif mt-3 text-4xl leading-[1.05] sm:text-[40px]">
+            Bohdan Moroz,<br />
+            <span class="highlight-underline">full-stack engineer</span>.
+          </h1>
+        </header>
+
+        <div class="px-6 pb-2 sm:px-11">
+          <div class="row">
+            <div class="label">Role</div>
+            <div class="text-[15px] text-[var(--color-ink-soft)]">
+              Full-stack engineer · TypeScript
+            </div>
+            <div class="row-right mono text-[11px] text-[var(--color-muted)]">
+              4 yrs
+            </div>
+          </div>
+          <div class="row">
+            <div class="label">Domains</div>
+            <div class="text-[15px] text-[var(--color-ink-soft)]">
+              Logistics (TMS) · HR onboarding · Fintech
+            </div>
+            <div class="row-right mono text-[11px] text-[var(--color-muted)]">
+              US clients
+            </div>
+          </div>
+          <div class="row">
+            <div class="label">Stack</div>
+            <div class="text-[15px] text-[var(--color-ink-soft)]">
+              React · Next.js · NestJS · React Native (Expo)
+            </div>
+            <div class="row-right mono text-[11px] text-[var(--color-muted)]">
+              TypeScript
+            </div>
+          </div>
+          <div class="row">
+            <div class="label">Plus</div>
+            <div class="text-[15px] text-[var(--color-ink-soft)]">
+              DevOps (CI/CD, Docker, self-hosted infra) · Agentic AI workflows
+            </div>
+            <div class="row-right"></div>
+          </div>
+          <div class="row" style="border-bottom: none;">
+            <div class="label">Status</div>
+            <div
+              class="flex items-center text-[15px] text-[var(--color-ink-soft)]"
+            >
+              <span
+                class="mr-2 inline-block h-1.5 w-1.5 rounded-full bg-[var(--color-live)]"
+              ></span>
+              Open to freelance work
+            </div>
+            <div class="row-right mono text-[11px] text-[var(--color-muted)]">
+              <a href="#work" class="subtle">↓ projects</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Selected work -->
+        <section id="work" class="section-divider px-6 pt-9 pb-2 sm:px-11">
+          <div class="label">§ 01 — Selected work</div>
+          <h2 class="serif mt-2 text-[22px]">
+            Things I've built, mostly for US SMBs.
+          </h2>
+        </section>
+
+        <div class="px-6 pb-2 sm:px-11">
+          {
+            projects.map((p, i) => (
+              <div
+                class={`grid grid-cols-[90px_1fr] gap-4 py-6 ${
+                  i < projects.length - 1
+                    ? "border-b border-[var(--color-paper-line)]"
+                    : ""
+                }`}
+              >
+                <div class="mono pt-1 text-[10px] tracking-[0.15em] text-[var(--color-muted)]">
+                  {p.num}
+                </div>
+                <div>
+                  <div>
+                    <span class="serif text-[19px]">{p.title}</span>
+                    <span class="label ml-2">{p.tag}</span>
+                  </div>
+                  <p class="mt-1.5 text-[13.5px] leading-[1.55] text-[var(--color-ink-body)]">
+                    {p.desc}
+                  </p>
+                  <div class="mono mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[10.5px] text-[var(--color-muted)]">
+                    {p.meta.map((m, j) => (
+                      <span>
+                        {j > 0 && (
+                          <span class="mr-2 text-[var(--color-muted-line)]">
+                            ·
+                          </span>
+                        )}
+                        {m}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+
+        <!-- How I work -->
+        <section class="section-divider px-6 pt-9 pb-2 sm:px-11">
+          <div class="label">§ 02 — How I work</div>
+          <h2 class="serif mt-2 text-[22px]">
+            What hiring me actually looks like.
+          </h2>
+        </section>
+
+        <div class="px-6 pb-7 sm:px-11">
+          {
+            howIWork.map((h, i) => (
+              <div
+                class={`grid grid-cols-[24px_1fr] gap-3.5 py-3 ${
+                  i < howIWork.length - 1 ? "dot-divider" : ""
+                }`}
+              >
+                <div class="mono pt-0.5 text-[11px] text-[var(--color-muted)]">
+                  {h.n}
+                </div>
+                <p class="text-[14px] leading-[1.55] text-[var(--color-ink-soft)]">
+                  {h.text}
+                </p>
+              </div>
+            ))
+          }
+        </div>
+
+        <!-- Footer -->
+        <footer
+          class="mono flex flex-col gap-3 bg-[var(--color-paper-deep)] px-6 py-7 text-[11px] text-[var(--color-muted)] sm:flex-row sm:items-center sm:justify-between sm:px-11"
+        >
+          <a href="mailto:contact@bohdanmoroz.com" class="subtle">
+            contact@bohdanmoroz.com
+          </a>
+          <div class="flex gap-5">
+            <a href="https://github.com/" class="subtle" rel="me">github</a>
+            <a href="https://www.linkedin.com/" class="subtle" rel="me"
+              >linkedin</a
+            >
+          </div>
+        </footer>
+      </article>
+    </main>
+  </body>
+</html>
