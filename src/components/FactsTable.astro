@@ -32,8 +32,8 @@ const rows: Array<{
 
 <div class="px-6 pb-2 sm:px-11">
   {
-    rows.map((r, i) => (
-      <div class="row" style={i === rows.length - 1 ? "border-bottom: none;" : undefined}>
+    rows.map((r) => (
+      <div class="row">
         <div class="label">{r.label}</div>
         <div class="flex items-center text-[15px] text-[var(--color-ink-soft)]">
           {r.liveDot && (

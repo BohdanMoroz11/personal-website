@@ -32,9 +32,13 @@ const { work } = Astro.props;
                 class="serif text-[19px] text-[var(--color-ink)] transition-colors hover:text-[var(--color-ink-soft)]"
               >
                 {p.title}
-                <span class="ml-0.5 inline-block align-[2px] font-sans text-[11px] leading-none text-[var(--color-muted)]">
+                <span
+                  aria-hidden="true"
+                  class="ml-0.5 inline-block align-[2px] font-sans text-[11px] leading-none text-[var(--color-muted)]"
+                >
                   ↗
                 </span>
+                <span class="sr-only">(opens in a new tab)</span>
                 {p.linkLabel && (
                   <span class="mono inline-flex items-center gap-1 align-[1px] text-[10.5px] leading-none text-[var(--color-muted)]">
                     {p.linkLabel}

@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "Bohdan Moroz — full-stack engineer",
-    "description": "Bohdan Moroz — full-stack TypeScript engineer. Four years building production web and mobile apps for US logistics, HR, and fintech teams. Open to freelance work."
+    "title": "Bohdan Moroz — Software Engineer · Applied AI",
+    "description": "Bohdan Moroz — software engineer working in applied AI. Four years building production web and mobile apps for US logistics, HR, and fintech teams. Open to freelance work."
   },
   "hero": {
     "location": "Sofia, Bulgaria · Available",
@@ -106,6 +106,12 @@
     "section": "§ 03 — Get in touch",
     "heading": "The fastest way to reach me is email.",
     "body": "I read everything that lands in my inbox and reply within a day. Tell me a bit about the project — stack, timeline, what you're trying to ship — and we'll go from there. If you're in Sofia, I'm happy to meet in person — at your office, or at my coworking (WorkBetter 1.0) if that's easier."
+  },
+  "notFound": {
+    "section": "§ 404 — Not found",
+    "heading": "This page doesn't exist.",
+    "body": "The URL you followed isn't here. The site is a single page — try the front door.",
+    "back": "Back to bohdanmoroz.com"
   },
   "footer": {
     "email": "contact@bohdanmoroz.com",

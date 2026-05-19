@@ -21,6 +21,7 @@ const { contact, email } = Astro.props;
   <a href={`mailto:${email}`} class="serif mt-5 inline-block text-[20px] text-[var(--color-ink)]">
     <span class="highlight-underline">{email}</span>
     <span
+      aria-hidden="true"
       class="ml-0.5 inline-block align-[2px] font-sans text-[12px] leading-none text-[var(--color-muted)]"
       >↗</span
     >
