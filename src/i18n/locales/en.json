@@ -36,10 +36,7 @@
         "title": "ClaraHR",
         "tag": "Full-stack · Lead dev",
         "desc": "Onboarding system for US truck drivers — a bot collects info over chat and registers them in the carrier's system, replacing manual HR back-and-forth. Microservices on NestJS, Next.js portal, Vite admin panel, full CI/CD with unit and integration tests. I own the server side.",
-        "meta": [
-          "NestJS · Next.js · Microservices",
-          "2025 → present"
-        ],
+        "meta": ["NestJS · Next.js · Microservices", "2025 → present"],
         "url": "https://clarahr.com",
         "linkLabel": ""
       },
@@ -48,10 +45,7 @@
         "title": "CargoHub",
         "tag": "Full-stack · Sole dev",
         "desc": "Public freight marketplace where US shippers and brokers browse partner carriers' trucks, post loads, and book capacity directly — with accounts, live tracking, and document flow built in. An in-product AI assistant handles routine booking and dispatch steps.",
-        "meta": [
-          "Next.js · TypeScript",
-          "2026 → present"
-        ],
+        "meta": ["Next.js · TypeScript", "2026 → present"],
         "url": "https://cargohub.com",
         "linkLabel": "live"
       },
@@ -60,10 +54,7 @@
         "title": "CargoFinance",
         "tag": "Full-stack · Sole dev",
         "desc": "Accounting and light-fintech tooling for a logistics back-office — invoicing, transfer tracking, payouts. Focused on getting an unfamiliar domain (AP/AR, reconciliation) into something operators could actually use.",
-        "meta": [
-          "Next.js · TypeScript",
-          "2026 → present"
-        ],
+        "meta": ["Next.js · TypeScript", "2026 → present"],
         "url": "",
         "linkLabel": ""
       },
@@ -72,10 +63,7 @@
         "title": "CargoETL",
         "tag": "Mobile · Frontend",
         "desc": "Closed TMS platform for US logistics carriers and dispatchers. Built and maintained the Next.js dispatcher dashboard and the React Native (Expo) driver app — order flow, live tracking, document handling, dispatch comms.",
-        "meta": [
-          "Next.js · React Native · Expo",
-          "2024 → present"
-        ],
+        "meta": ["Next.js · React Native · Expo", "2024 → present"],
         "url": "https://cargoetl.com",
         "linkLabel": ""
       },
@@ -84,10 +72,7 @@
         "title": "Altek TMS",
         "tag": "Mobile · Frontend",
         "desc": "Earlier TMS for US logistics carriers and dispatchers — Vue / Nuxt dispatcher dashboard plus a pure React Native driver app covering order flow, live tracking, and dispatch comms. My first multi-year production project; service has since wound down.",
-        "meta": [
-          "Vue · Nuxt · React Native",
-          "2022 → 2024"
-        ],
+        "meta": ["Vue · Nuxt · React Native", "2022 → 2024"],
         "url": "https://altek.example",
         "linkLabel": ""
       }

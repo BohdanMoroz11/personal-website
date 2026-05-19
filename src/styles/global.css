@@ -91,7 +91,9 @@ a.subtle {
   color: var(--color-ink-soft);
   text-decoration: none;
   border-bottom: 1px solid var(--color-muted-line);
-  transition: border-color 0.15s, color 0.15s;
+  transition:
+    border-color 0.15s,
+    color 0.15s;
 }
 
 a.subtle:hover {
@@ -104,7 +106,7 @@ a.subtle:hover {
     grid-template-columns: 70px 1fr;
   }
 
-  .row>.row-right {
+  .row > .row-right {
     display: none;
   }
 }

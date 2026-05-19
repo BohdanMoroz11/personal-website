@@ -44,9 +44,7 @@ const t = useTranslations(lang);
           <p
             class="serif mt-2 text-[22px] leading-[1.2] text-[var(--color-ink-soft)] sm:text-[24px]"
           >
-            {t.hero.roleGeneral} · <span class="highlight-underline"
-              >{t.hero.roleEmphasis}</span
-            >.
+            {t.hero.roleGeneral} · <span class="highlight-underline">{t.hero.roleEmphasis}</span>.
           </p>
         </header>
 
@@ -94,18 +92,13 @@ const t = useTranslations(lang);
           </div>
           <div class="row" style="border-bottom: none;">
             <div class="label">{t.facts.statusLabel}</div>
-            <div
-              class="flex items-center text-[15px] text-[var(--color-ink-soft)]"
-            >
-              <span
-                class="mr-2 inline-block h-1.5 w-1.5 rounded-full bg-[var(--color-live)]"
+            <div class="flex items-center text-[15px] text-[var(--color-ink-soft)]">
+              <span class="mr-2 inline-block h-1.5 w-1.5 rounded-full bg-[var(--color-live)]"
               ></span>
               {t.facts.statusValue}
             </div>
             <div class="row-right mono text-[11px] text-[var(--color-muted)]">
-              <a href={`mailto:${t.footer.email}`} class="subtle"
-                >{t.facts.statusAside}</a
-              >
+              <a href={`mailto:${t.footer.email}`} class="subtle">{t.facts.statusAside}</a>
             </div>
           </div>
         </div>
@@ -123,9 +116,7 @@ const t = useTranslations(lang);
             t.work.projects.map((p, i) => (
               <div
                 class={`grid grid-cols-[90px_1fr] gap-4 py-6 ${
-                  i < t.work.projects.length - 1
-                    ? "border-b border-[var(--color-paper-line)]"
-                    : ""
+                  i < t.work.projects.length - 1 ? "border-b border-[var(--color-paper-line)]" : ""
                 }`}
               >
                 <div class="mono pt-1 text-[10px] tracking-[0.15em] text-[var(--color-muted)]">
@@ -141,11 +132,11 @@ const t = useTranslations(lang);
                         class="serif text-[19px] text-[var(--color-ink)] transition-colors hover:text-[var(--color-ink-soft)]"
                       >
                         {p.title}
-                        <span class="font-sans ml-0.5 inline-block align-[2px] text-[11px] leading-none text-[var(--color-muted)]">
+                        <span class="ml-0.5 inline-block align-[2px] font-sans text-[11px] leading-none text-[var(--color-muted)]">
                           ↗
                         </span>
                         {p.linkLabel && (
-                          <span class="mono  inline-flex items-center gap-1 align-[1px] text-[10.5px] leading-none text-[var(--color-muted)]">
+                          <span class="mono inline-flex items-center gap-1 align-[1px] text-[10.5px] leading-none text-[var(--color-muted)]">
                             {p.linkLabel}
                           </span>
                         )}
@@ -161,11 +152,7 @@ const t = useTranslations(lang);
                   <div class="mono mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[10.5px] text-[var(--color-muted)]">
                     {p.meta.map((m, j) => (
                       <span>
-                        {j > 0 && (
-                          <span class="mr-2 text-[var(--color-muted-line)]">
-                            ·
-                          </span>
-                        )}
+                        {j > 0 && <span class="mr-2 text-[var(--color-muted-line)]">·</span>}
                         {m}
                       </span>
                     ))}
@@ -192,12 +179,8 @@ const t = useTranslations(lang);
                   i < t.howIWork.items.length - 1 ? "dot-divider" : ""
                 }`}
               >
-                <div class="mono pt-0.5 text-[11px] text-[var(--color-muted)]">
-                  {h.n}
-                </div>
-                <p class="text-[14px] leading-[1.55] text-[var(--color-ink-soft)]">
-                  {h.text}
-                </p>
+                <div class="mono pt-0.5 text-[11px] text-[var(--color-muted)]">{h.n}</div>
+                <p class="text-[14px] leading-[1.55] text-[var(--color-ink-soft)]">{h.text}</p>
               </div>
             ))
           }
@@ -211,12 +194,8 @@ const t = useTranslations(lang);
             {t.footer.email}
           </a>
           <div class="flex gap-5">
-            <a href="https://github.com/" class="subtle" rel="me"
-              >{t.footer.github}</a
-            >
-            <a href="https://www.linkedin.com/" class="subtle" rel="me"
-              >{t.footer.linkedin}</a
-            >
+            <a href="https://github.com/" class="subtle" rel="me">{t.footer.github}</a>
+            <a href="https://www.linkedin.com/" class="subtle" rel="me">{t.footer.linkedin}</a>
           </div>
         </footer>
       </article>
