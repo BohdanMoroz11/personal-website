@@ -19,10 +19,10 @@
     "stackLabel": "Stack",
     "stackValue": "React · Next.js · NestJS · React Native (Expo)",
     "stackAside": "TypeScript",
-    "opsLabel": "Ops",
-    "opsValue": "CI/CD · Docker · self-hosted infra",
-    "aiInfraLabel": "AI infra",
-    "aiInfraValue": "Ollama · vLLM · LiteLLM",
+    "infraLabel": "Infra",
+    "infraValue": "CI/CD · Docker · self-host · Ollama / vLLM / LiteLLM",
+    "workingLabel": "Working",
+    "workingValue": "Remote · In person if you're in Sofia",
     "statusLabel": "Status",
     "statusValue": "Open to freelance work",
     "statusAside": "& open to chat"
@@ -37,6 +37,7 @@
         "tag": "Full-stack · Lead dev",
         "desc": "Onboarding system for US truck drivers — a bot collects info over chat and registers them in the carrier's system, replacing manual HR back-and-forth. Microservices on NestJS, Next.js portal, Vite admin panel, full CI/CD with unit and integration tests. I own the server side.",
         "meta": ["NestJS · Next.js · Microservices", "2025 → present"],
+        "metric": "8 carriers · 635 drivers onboarded",
         "url": "https://clarahr.io",
         "linkLabel": ""
       },
@@ -46,6 +47,7 @@
         "tag": "Full-stack · Sole dev",
         "desc": "Public freight marketplace where US shippers and brokers browse partner carriers' trucks, post loads, and book capacity directly — with accounts, live tracking, and document flow built in. An in-product AI assistant handles routine booking and dispatch steps.",
         "meta": ["Next.js · TypeScript", "2026 → present"],
+        "metric": "9 carriers · ~2,500 trucks",
         "url": "https://map.cargoetl.com",
         "linkLabel": "live"
       },
@@ -88,21 +90,28 @@
       },
       {
         "n": "b.",
-        "text": "TypeScript across the stack: React / Next.js on the web, React Native (Expo) on mobile, NestJS on the server. Self-host on my own infra when it makes sense; happy on AWS / Vercel / Hetzner when it doesn't."
+        "text": "TypeScript across the stack: React / Next.js on the web, React Native (Expo) on mobile, NestJS on the server. CI/CD and Docker by default; self-host on my own infra when it makes sense, happy on AWS / Vercel / Hetzner when it doesn't."
       },
       {
         "n": "c.",
-        "text": "Agentic AI is built into how I work — Claude and Codex agents handle the typing while I drive the architecture, review, and integration. Usually means meaningfully more shipped per week than a hands-on-keyboard pace."
+        "text": "Agentic AI is built into how I work — Claude and Codex agents handle the typing while I drive the architecture, review, and integration. Comfortable running self-hosted models too — Ollama, vLLM, LiteLLM — for work that can't ship traffic to OpenAI or Anthropic. Usually means meaningfully more shipped per week than a hands-on-keyboard pace."
       },
       {
         "n": "d.",
-        "text": "Async-friendly and used to working with US clients from Sofia, Bulgaria (UTC+2). Most of my career has been remote across time zones."
+        "text": "Async-friendly and used to working with US clients from Sofia, Bulgaria (UTC+2). Work in English, Ukrainian, and Russian. Most of my career has been remote across time zones."
       }
     ]
   },
+  "contact": {
+    "section": "§ 03 — Get in touch",
+    "heading": "The fastest way to reach me is email.",
+    "body": "I read everything that lands in my inbox and reply within a day. Tell me a bit about the project — stack, timeline, what you're trying to ship — and we'll go from there. If you're in Sofia, I'm happy to meet in person — at your office, or at my coworking (WorkBetter 1.0) if that's easier."
+  },
   "footer": {
     "email": "contact@bohdanmoroz.com",
-    "github": "github",
-    "linkedin": "linkedin"
+    "githubLabel": "github",
+    "githubUrl": "https://github.com/bohdanmoroz11",
+    "linkedinLabel": "linkedin",
+    "linkedinUrl": "https://www.linkedin.com/in/bohdan-moroz-dev/"
   }
 }
