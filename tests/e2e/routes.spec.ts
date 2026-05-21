@@ -43,6 +43,36 @@ for (const { path, lang, heroName } of ROUTES) {
       expect(() => JSON.parse(raw ?? "")).not.toThrow();
     });
 
+    test("hero shows a visible mailto contact CTA", async ({ page }) => {
+      await page.goto(path);
+      const cta = page.locator("header").getByRole("link", { name: /contact@bohdanmoroz\.com/ });
+      await expect(cta).toBeVisible();
+      await expect(cta).toHaveAttribute("href", "mailto:contact@bohdanmoroz.com");
+    });
+
+    test("facts status row is a mailto CTA ending with an arrow", async ({ page }) => {
+      await page.goto(path);
+      const statusCta = page.getByRole("link", { name: /→\s*$/ });
+      await expect(statusCta.first()).toBeVisible();
+      await expect(statusCta.first()).toHaveAttribute("href", "mailto:contact@bohdanmoroz.com");
+    });
+
+    test("How I work renders before Selected Work in the DOM", async ({ page }) => {
+      await page.goto(path);
+      const howIWork = page.locator("#how-i-work");
+      const work = page.locator("#work");
+      await expect(howIWork).toBeVisible();
+      await expect(work).toBeVisible();
+      const order = await page.evaluate(() => {
+        const a = document.querySelector("#how-i-work")!;
+        const b = document.querySelector("#work")!;
+        return a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING
+          ? "how-before-work"
+          : "work-before-how";
+      });
+      expect(order).toBe("how-before-work");
+    });
+
     test("body contains no untranslated placeholders", async ({ page }) => {
       await page.goto(path);
       const body = (await page.locator("body").textContent()) ?? "";

@@ -232,3 +232,58 @@ a.subtle:hover {
     display: none;
   }
 }
+
+/* Work section: tech-stack collapse */
+.stack-meta {
+  display: none;
+}
+
+details[open] .stack-meta {
+  display: block;
+}
+
+.stack-summary {
+  list-style: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-muted);
+  user-select: none;
+  padding: 4px 0;
+}
+
+.stack-summary::-webkit-details-marker {
+  display: none;
+}
+
+.stack-summary:hover {
+  color: var(--color-ink-soft);
+}
+
+.stack-summary .chevron {
+  display: inline-block;
+  transition: transform 0.15s ease;
+}
+
+details[open] .stack-summary .chevron {
+  transform: rotate(180deg);
+}
+
+.stack-summary [data-when="closed"] {
+  display: inline;
+}
+
+.stack-summary [data-when="open"] {
+  display: none;
+}
+
+details[open] .stack-summary [data-when="closed"] {
+  display: none;
+}
+
+details[open] .stack-summary [data-when="open"] {
+  display: inline;
+}

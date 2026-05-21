@@ -8,57 +8,66 @@ interface Props {
 const { work } = Astro.props;
 ---
 
-<section id="work" class="section-divider px-6 pt-9 pb-2 sm:px-11">
-  <div class="label">{work.section}</div>
-  <h2 class="serif mt-2 text-[22px]">{work.heading}</h2>
-</section>
+<section id="work">
+  <div class="section-divider px-6 pt-9 pb-2 sm:px-11">
+    <div class="label">{work.section}</div>
+    <h2 class="serif mt-2 text-[22px]">{work.heading}</h2>
+  </div>
 
-<div class="px-6 pb-2 sm:px-11">
-  {
-    work.projects.map((p, i) => (
-      <div
-        class={`grid grid-cols-[90px_1fr] gap-4 py-6 ${
-          i < work.projects.length - 1 ? "border-paper-line border-b" : ""
-        }`}
-      >
-        <div class="mono text-muted pt-1 text-[10px] tracking-[0.15em]">{p.num}</div>
-        <div>
-          <div>
-            {p.url ? (
-              <a
-                href={p.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="serif text-ink hover:text-ink-soft text-[19px] transition-colors"
-              >
-                {p.title}
-                <span
-                  aria-hidden="true"
-                  class="text-muted ml-0.5 inline-block align-[2px] font-sans text-[11px] leading-none"
-                >
-                  ↗
-                </span>
-                <span class="sr-only">(opens in a new tab)</span>
-                {p.linkLabel && (
-                  <span class="mono text-muted inline-flex items-center gap-1 align-[1px] text-[10.5px] leading-none">
-                    {p.linkLabel}
-                  </span>
+  <div class="px-6 pb-2 sm:px-11">
+    <details>
+      <summary class="stack-summary">
+        <span data-when="closed">{work.stacksToggleClosed}</span>
+        <span data-when="open">{work.stacksToggleOpen}</span>
+        <span class="chevron" aria-hidden="true">▾</span>
+      </summary>
+      {
+        work.projects.map((p, i) => (
+          <div
+            class={`grid grid-cols-[90px_1fr] gap-4 py-5 ${
+              i < work.projects.length - 1 ? "border-paper-line border-b" : ""
+            }`}
+          >
+            <div class="mono text-muted pt-1 text-[10px] tracking-[0.15em]">{p.num}</div>
+            <div>
+              <div>
+                {p.url ? (
+                  <a
+                    href={p.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="serif text-ink hover:text-ink-soft text-[19px] transition-colors"
+                  >
+                    {p.title}
+                    <span
+                      aria-hidden="true"
+                      class="text-muted ml-0.5 inline-block align-[2px] font-sans text-[11px] leading-none"
+                    >
+                      ↗
+                    </span>
+                    <span class="sr-only">(opens in a new tab)</span>
+                    {p.linkLabel && (
+                      <span class="mono text-muted inline-flex items-center gap-1 align-[1px] text-[10.5px] leading-none">
+                        {p.linkLabel}
+                      </span>
+                    )}
+                  </a>
+                ) : (
+                  <span class="serif text-[19px]">{p.title}</span>
                 )}
-              </a>
-            ) : (
-              <span class="serif text-[19px]">{p.title}</span>
-            )}
-            <span class="label ml-2">{p.tag}</span>
+                <span class="label ml-2">{p.tag}</span>
+              </div>
+              <p class="text-ink-body mt-1.5 text-[13.5px] leading-[1.55]">{p.desc}</p>
+              {p.metric && <div class="mono text-ink-soft mt-2 text-[11px]">{p.metric}</div>}
+              <div class="stack-meta mono text-muted mt-2 space-y-0.5 text-[10.5px] leading-[1.55]">
+                {p.meta.map((m) => (
+                  <div>{m}</div>
+                ))}
+              </div>
+            </div>
           </div>
-          <p class="text-ink-body mt-1.5 text-[13.5px] leading-[1.55]">{p.desc}</p>
-          {p.metric && <div class="mono text-ink-soft mt-2 text-[11px]">{p.metric}</div>}
-          <div class="mono text-muted mt-2 space-y-0.5 text-[10.5px] leading-[1.55]">
-            {p.meta.map((m) => (
-              <div>{m}</div>
-            ))}
-          </div>
-        </div>
-      </div>
-    ))
-  }
-</div>
+        ))
+      }
+    </details>
+  </div>
+</section>
