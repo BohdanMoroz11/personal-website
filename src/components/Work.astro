@@ -52,12 +52,9 @@ const { work } = Astro.props;
           </div>
           <p class="text-ink-body mt-1.5 text-[13.5px] leading-[1.55]">{p.desc}</p>
           {p.metric && <div class="mono text-ink-soft mt-2 text-[11px]">{p.metric}</div>}
-          <div class="mono text-muted mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[10.5px]">
-            {p.meta.map((m, j) => (
-              <span>
-                {j > 0 && <span class="text-muted-line mr-2">·</span>}
-                {m}
-              </span>
+          <div class="mono text-muted mt-2 space-y-0.5 text-[10.5px] leading-[1.55]">
+            {p.meta.map((m) => (
+              <div>{m}</div>
             ))}
           </div>
         </div>

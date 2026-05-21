@@ -15,7 +15,7 @@
     "focusAside": "4 yrs",
     "domainsLabel": "Domains",
     "domainsValue": "Logistics (TMS) · HR onboarding · Fintech",
-    "domainsAside": "Direct",
+    "domainsAside": "Direct work",
     "stackLabel": "Stack",
     "stackValue": "React · Next.js · NestJS · React Native (Expo)",
     "stackAside": "TypeScript",
@@ -25,7 +25,7 @@
     "workingValue": "Remote · In person if you're in Sofia",
     "statusLabel": "Status",
     "statusValue": "Open to freelance work",
-    "statusAside": "& open to chat"
+    "statusAside": "& open to offers"
   },
   "work": {
     "section": "§ 01 — Selected work",
@@ -35,8 +35,11 @@
         "num": "01",
         "title": "ClaraHR",
         "tag": "Full-stack · Lead dev",
-        "desc": "Onboarding system for US truck drivers — a bot collects info over chat and registers them in the carrier's system, replacing manual HR back-and-forth. Microservices on NestJS, Next.js portal, Vite admin panel, full CI/CD with unit and integration tests. I own the server side.",
-        "meta": ["NestJS · Next.js · Microservices", "2025 → present"],
+        "desc": "Onboarding system for US truck drivers — a chat bot interviews them on whichever channel they prefer and files them in the carrier's system, replacing manual HR back-and-forth. I lead the server side.",
+        "meta": [
+          "Fastify · Next.js · Postgres · Sequelize · Redis · BullMQ · Socket.IO · Twilio · Telegram · Resend · AWS S3 · OpenAI · Docker Swarm · Vitest",
+          "2025 → present"
+        ],
         "metric": "8 carriers · 635 drivers onboarded",
         "url": "https://clarahr.io",
         "linkLabel": ""
@@ -45,8 +48,11 @@
         "num": "02",
         "title": "CargoHub",
         "tag": "Full-stack · Sole dev",
-        "desc": "Public freight marketplace where US shippers and brokers browse partner carriers' trucks, post loads, and book capacity directly — with accounts, live tracking, and document flow built in. An in-product AI assistant handles routine booking and dispatch steps.",
-        "meta": ["Next.js · TypeScript", "2026 → present"],
+        "desc": "Public freight marketplace where US shippers and brokers browse partner carriers' trucks, post loads, and book capacity directly. An in-product AI assistant handles routine booking and dispatch steps; accounts, live tracking, and document flow are built in.",
+        "meta": [
+          "Next.js · Postgres · Prisma · NextAuth · Google Maps · Resend · Zustand · Zod · SWR · MUI · OpenAI · DeepSeek · Playwright",
+          "2026 → present"
+        ],
         "metric": "9 carriers · ~2,500 trucks",
         "url": "https://map.cargoetl.com",
         "linkLabel": "live"
@@ -55,8 +61,11 @@
         "num": "03",
         "title": "CargoFinance",
         "tag": "Full-stack · Sole dev",
-        "desc": "Accounting and light-fintech tooling for a logistics back-office — invoicing, transfer tracking, payouts. Focused on getting an unfamiliar domain (AP/AR, reconciliation) into something operators could actually use.",
-        "meta": ["Next.js · TypeScript", "2026 → present"],
+        "desc": "Accounting and light-fintech tooling for a logistics back-office — invoicing, transfer tracking, payouts via bank rails. Focused on turning an unfamiliar domain (AP/AR, reconciliation) into something operators actually use.",
+        "meta": [
+          "Nest.js · Vite · Postgres · Prisma · TanStack Router · TanStack Query · Tailwind · Radix · Plaid · Zod · Vitest · Playwright · MSW",
+          "2026 → present"
+        ],
         "url": "",
         "linkLabel": ""
       },
@@ -64,8 +73,12 @@
         "num": "04",
         "title": "CargoETL",
         "tag": "Mobile · Frontend",
-        "desc": "Closed TMS platform for US logistics carriers and dispatchers. Built and maintained the Next.js dispatcher dashboard and the React Native (Expo) driver app — order flow, live tracking, document handling, dispatch comms.",
-        "meta": ["Next.js · React Native · Expo", "2024 → present"],
+        "desc": "Closed TMS platform for US logistics carriers and dispatchers. I built and maintain both ends: the Next.js dispatcher dashboard and the React Native (Expo) driver app — order flow, live tracking, documents, and dispatch comms.",
+        "meta": [
+          "Web: Next.js · Ant Design · MobX · Autobahn (WebSocket) · Google Maps · Sentry · TinyMCE",
+          "Mobile: React Native · Expo · Redux Toolkit · Zustand · Reanimated · React Native Maps · Firebase Messaging · Notifee · Sentry · Google Places",
+          "2024 → present"
+        ],
         "url": "https://cargoetl.com",
         "linkLabel": ""
       },
@@ -73,8 +86,8 @@
         "num": "05",
         "title": "Altek TMS",
         "tag": "Mobile · Frontend",
-        "desc": "Earlier TMS for US logistics carriers and dispatchers — Vue / Nuxt dispatcher dashboard plus a pure React Native driver app covering order flow, live tracking, and dispatch comms. My first multi-year production project; service has since wound down.",
-        "meta": ["Vue · Nuxt · React Native", "2022 → 2024"],
+        "desc": "Earlier TMS for US logistics carriers and dispatchers — dispatcher dashboard plus driver app, covering order flow, live tracking, and dispatch comms. My first multi-year production project; the service has since wound down.",
+        "meta": ["Vue · Nuxt · JavaScript · React Native", "2022 → 2024"],
         "url": "https://altek.digital",
         "linkLabel": ""
       }
@@ -82,7 +95,7 @@
   },
   "howIWork": {
     "section": "§ 02 — How I work",
-    "heading": "What hiring me actually looks like.",
+    "heading": "What working with me looks like.",
     "items": [
       {
         "n": "a.",
@@ -90,7 +103,7 @@
       },
       {
         "n": "b.",
-        "text": "TypeScript across the stack: React / Next.js on the web, React Native (Expo) on mobile, NestJS on the server. CI/CD and Docker by default; self-host on my own infra when it makes sense, happy on AWS / Vercel / Hetzner when it doesn't."
+        "text": "TypeScript across the stack: React / Next.js on the web, React Native (Expo) on mobile, NestJS/Fastify/Express on the server. CI/CD, testing, Docker by default; self-host infra when it makes sense, happy on AWS / Vercel / Hetzner when it doesn't."
       },
       {
         "n": "c.",
@@ -98,7 +111,7 @@
       },
       {
         "n": "d.",
-        "text": "Async-friendly and used to working with US clients from Sofia, Bulgaria (UTC+2). Work in English, Ukrainian, and Russian. Most of my career has been remote across time zones."
+        "text": "Async-friendly and used to working with US clients from Sofia, Bulgaria (UTC+2). Work in English, Ukrainian, and Russian."
       }
     ]
   },

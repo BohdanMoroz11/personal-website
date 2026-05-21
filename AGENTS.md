@@ -60,10 +60,7 @@ CI workflow is `.github/workflows/ci.yml`: three parallel jobs (`static`, `e2e`,
 
 ### When tests fail
 
-Treat failures as real until proven otherwise. Two real bugs were caught while wiring this up:
-
-1. The auto-language redirect in `Base.astro` used to fire on any locale root, bouncing explicit `/ru/` and `/uk/` visits back to `/`. It now only redirects from the unprefixed `/`.
-2. `--color-muted` (the `.label` color) was below WCAG AA contrast on both themes. Light/dark values were re-tuned in `src/styles/global.css`.
+Treat failures as real until proven otherwise.
 
 If you change muted colors, theme colors, the redirect script, or add/remove a locale, expect the relevant test to scream. That's the point.
 
