@@ -1,4 +1,5 @@
 export const siteConfig = {
+  googleAnalyticsId: "G-555D6RR3WR",
   contactEmail: "contact@bohdanmoroz.com",
   person: {
     givenName: "Bohdan",
