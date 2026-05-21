@@ -7,7 +7,8 @@
     "location": "София, Болгария · Свободен для проектов",
     "name": "Богдан Мороз.",
     "roleGeneral": "Software Engineer",
-    "roleEmphasis": "Прикладной ИИ"
+    "roleEmphasis": "Прикладной ИИ",
+    "contactCta": "→ contact@bohdanmoroz.com"
   },
   "facts": {
     "focusLabel": "Фокус",
@@ -24,12 +25,13 @@
     "workingLabel": "Формат",
     "workingValue": "Удалённо · Лично, если вы в Софии",
     "statusLabel": "Статус",
-    "statusValue": "Открыт к проектной работе",
-    "statusAside": "и к предложениям"
+    "statusValue": "Открыт к проектной работе →"
   },
   "work": {
     "section": "§ 01 — Избранные проекты",
     "heading": "Примеры моей работы — в основном для малого и среднего бизнеса в США.",
+    "stacksToggleClosed": "Показать стек",
+    "stacksToggleOpen": "Скрыть стек",
     "projects": [
       {
         "num": "01",

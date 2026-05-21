@@ -7,7 +7,8 @@
     "location": "Sofia, Bulgaria · Available",
     "name": "Bohdan Moroz.",
     "roleGeneral": "Software Engineer",
-    "roleEmphasis": "Applied AI"
+    "roleEmphasis": "Applied AI",
+    "contactCta": "→ contact@bohdanmoroz.com"
   },
   "facts": {
     "focusLabel": "Focus",
@@ -24,12 +25,13 @@
     "workingLabel": "Working",
     "workingValue": "Remote · In person if you're in Sofia",
     "statusLabel": "Status",
-    "statusValue": "Open to freelance work",
-    "statusAside": "& open to offers"
+    "statusValue": "Open to freelance work →"
   },
   "work": {
     "section": "§ 01 — Selected work",
     "heading": "Things I've built, mostly for US SMBs.",
+    "stacksToggleClosed": "Show tech stacks",
+    "stacksToggleOpen": "Hide tech stacks",
     "projects": [
       {
         "num": "01",
