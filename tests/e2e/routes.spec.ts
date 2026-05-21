@@ -50,11 +50,12 @@ for (const { path, lang, heroName } of ROUTES) {
       await expect(cta).toHaveAttribute("href", "mailto:contact@bohdanmoroz.com");
     });
 
-    test("facts status row is a mailto CTA ending with an arrow", async ({ page }) => {
+    test("facts status row exposes mailto CTAs on the value and the aside", async ({ page }) => {
       await page.goto(path);
-      const statusCta = page.getByRole("link", { name: /→\s*$/ });
-      await expect(statusCta.first()).toBeVisible();
-      await expect(statusCta.first()).toHaveAttribute("href", "mailto:contact@bohdanmoroz.com");
+      const row = page.locator(".row").filter({ hasText: /Open to freelance|Открыт|Відкритий/ });
+      const mailtos = row.locator('a[href="mailto:contact@bohdanmoroz.com"]');
+      // Status row exposes two mailto CTAs: the value and the aside.
+      await expect(mailtos).toHaveCount(2);
     });
 
     test("How I work renders before Selected Work in the DOM", async ({ page }) => {

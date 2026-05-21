@@ -25,10 +25,11 @@
     "workingLabel": "Working",
     "workingValue": "Remote · In person if you're in Sofia",
     "statusLabel": "Status",
-    "statusValue": "Open to freelance work →"
+    "statusValue": "Open to freelance work",
+    "statusAside": "& open to offers"
   },
   "work": {
-    "section": "§ 01 — Selected work",
+    "section": "§ 02 — Selected work",
     "heading": "Things I've built, mostly for US SMBs.",
     "stacksToggleClosed": "Show tech stacks",
     "stacksToggleOpen": "Hide tech stacks",
@@ -96,7 +97,7 @@
     ]
   },
   "howIWork": {
-    "section": "§ 02 — How I work",
+    "section": "§ 01 — How I work",
     "heading": "What working with me looks like.",
     "items": [
       {
