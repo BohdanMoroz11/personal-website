@@ -198,19 +198,11 @@ const structuredData = {
           };
 
           const target = pick();
-          if (target !== currentLang) {
-            const path = window.location.pathname;
-            const isLangRoot =
-              path === "/" ||
-              path === "/ru" ||
-              path === "/ru/" ||
-              path === "/uk" ||
-              path === "/uk/";
-            if (isLangRoot) {
-              window.location.replace(
-                paths[target] + window.location.search + window.location.hash,
-              );
-            }
+          // Only auto-redirect from the unprefixed default root. If a user
+          // explicitly lands on /ru/ or /uk/, respect that — even if their
+          // navigator language or stored preference says otherwise.
+          if (target !== currentLang && window.location.pathname === "/") {
+            window.location.replace(paths[target] + window.location.search + window.location.hash);
           }
         } catch {
           /* ignore */

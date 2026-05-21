@@ -7,3 +7,8 @@ dist/
 .DS_Store
 .superpowers/
 .playwright-mcp/
+
+# Test artifacts
+test-results/
+playwright-report/
+.lighthouseci/

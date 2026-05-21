@@ -3,3 +3,6 @@ node_modules
 .astro
 .claude
 package-lock.json
+test-results
+playwright-report
+.lighthouseci

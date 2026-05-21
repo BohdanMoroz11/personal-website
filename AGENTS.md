@@ -36,6 +36,36 @@ Editorial / paper-letter aesthetic: warm paper background, serif (Newsreader) he
 - `npm run preview`
 - `npm run format` / `npm run format:check` — Prettier write / check
 - `npm run lint` / `npm run lint:fix` — ESLint
+- `npm run typecheck` — `astro check` (TS + `.astro` diagnostics)
+- `npm run test:unit` — Vitest (i18n + dictionary parity)
+- `npm run test:e2e` — Playwright (routes, theme/lang switcher, axe a11y); auto-builds and serves via `astro preview`
+- `npm run test:lhci` — Lighthouse CI against the built `dist/`
+- `npm run test:all` — lint + format:check + typecheck + unit + e2e + lhci, in order
+
+## Testing
+
+Tests live under `tests/`:
+
+- `tests/unit/i18n.test.ts` — pure-function tests for `getLangFromUrl` and `useTranslations`.
+- `tests/unit/dictionary-parity.test.ts` — asserts every locale JSON has the same key shape as `en.json` (the source of truth). Add a new locale → this test forces you to fill in every key. The shape check normalizes string leaves to a type marker, so we compare structure, not values.
+- `tests/e2e/routes.spec.ts` — per-locale rendering, meta tags (canonical, og:image, description), hreflang completeness, JSON-LD validity, static assets, 404. Runs against the built site through `astro preview`.
+- `tests/e2e/theme-and-lang.spec.ts` — theme toggle persistence and language switcher (including the localStorage-driven redirect from `/`).
+- `tests/e2e/accessibility.spec.ts` — `@axe-core/playwright` against every route plus dark mode. Light + dark muted colors are tuned for WCAG AA — if you change them in `src/styles/global.css`, re-run these.
+
+Playwright is configured (`playwright.config.ts`) with two projects: desktop Chromium and Pixel 7 mobile emulation. The `webServer` block runs `npm run build && npm run preview` on port 4321; in local dev it reuses an already-running preview if you have one.
+
+Lighthouse CI config is `.lighthouserc.json`. It asserts hard floors: perf ≥ 0.95, a11y = 1.0, best-practices ≥ 0.95, SEO = 1.0 across `/`, `/ru/`, `/uk/`. Reports upload to Lighthouse temporary public storage and the URLs print at the end of the run. If a budget fails, **investigate the page**, not the threshold — the budgets are what they are because the current page meets them.
+
+CI workflow is `.github/workflows/ci.yml`: three parallel jobs (`static`, `e2e`, `lighthouse`). Playwright HTML report uploads as an artifact on failure.
+
+### When tests fail
+
+Treat failures as real until proven otherwise. Two real bugs were caught while wiring this up:
+
+1. The auto-language redirect in `Base.astro` used to fire on any locale root, bouncing explicit `/ru/` and `/uk/` visits back to `/`. It now only redirects from the unprefixed `/`.
+2. `--color-muted` (the `.label` color) was below WCAG AA contrast on both themes. Light/dark values were re-tuned in `src/styles/global.css`.
+
+If you change muted colors, theme colors, the redirect script, or add/remove a locale, expect the relevant test to scream. That's the point.
 
 ## Tooling
 
