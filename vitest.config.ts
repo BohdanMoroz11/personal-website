@@ -11,7 +11,6 @@ export default defineConfig({
       reportsDirectory: "coverage",
       include: ["src/i18n/**/*.ts"],
       exclude: ["src/i18n/locales/**"],
-      all: true,
       thresholds: {
         lines: 90,
         functions: 90,
