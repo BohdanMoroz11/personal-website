@@ -123,7 +123,7 @@ New devDependencies:
 
 Config files added or modified:
 
-- `vitest.config.ts` — convert to projects layout (`unit`, `component`), expand coverage `include` to `src/i18n/**`, `src/components/**`, `src/pages/**`.
+- `vitest.config.ts` — convert to projects layout (`unit`, `component`), expand coverage `include` to `src/i18n/**` and `src/components/**` (pages excluded per the coverage strategy section).
 - `playwright.config.ts` — add `firefox` and `webkit` projects; add coverage fixture wired only to chromium project.
 - `.htmlvalidate.json` — new, with rules tuned for static-site output (allow self-closing void elements per HTML5, etc.).
 - `.github/workflows/ci.yml` — restructure into tiered jobs (see CI section).
