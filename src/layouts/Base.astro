@@ -109,6 +109,15 @@ const structuredData = {
     },
   ],
 };
+
+const gaInitScript = siteConfig.googleAnalyticsId
+  ? [
+      "window.dataLayer = window.dataLayer || [];",
+      "function gtag(){dataLayer.push(arguments);}",
+      "gtag('js', new Date());",
+      `gtag('config', '${siteConfig.googleAnalyticsId}');`,
+    ].join("\n")
+  : null;
 ---
 
 <!doctype html>
@@ -209,6 +218,18 @@ const structuredData = {
     <meta name="twitter:image:alt" content="Bohdan Moroz — Software Engineer, Applied AI" />
 
     <script type="application/ld+json" is:inline set:html={JSON.stringify(structuredData)} />
+
+    {
+      siteConfig.googleAnalyticsId && (
+        <>
+          <script
+            async
+            src={`https://www.googletagmanager.com/gtag/js?id=${siteConfig.googleAnalyticsId}`}
+          />
+          {gaInitScript && <script is:inline set:html={gaInitScript} />}
+        </>
+      )
+    }
   </head>
 
   <body class="bg-paper text-ink min-h-screen">
