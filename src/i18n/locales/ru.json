@@ -31,6 +31,9 @@
     "infraValue": "CI/CD · Docker · self-host · Ollama / vLLM / LiteLLM",
     "workingLabel": "Формат",
     "workingValue": "Удалённо · Лично, если вы в Софии",
+    "employerLabel": "Работодатель",
+    "employerValue": "ETL Group LLC",
+    "employerAside": "с мая '24",
     "statusLabel": "Статус",
     "statusValue": "Открыт к проектной работе",
     "statusAside": "и к предложениям"
@@ -45,6 +48,7 @@
         "num": "01",
         "title": "ClaraHR",
         "tag": "Full-stack · Lead Dev",
+        "affiliation": "ETL Group",
         "desc": "Онбординг для американских дальнобойщиков: бот опрашивает водителя в удобном ему канале и регистрирует его в системе перевозчика, заменяя ручную HR-переписку. Серверная часть — на мне.",
         "meta": [
           "Fastify · Next.js · Postgres · Sequelize · Redis · BullMQ · Socket.IO · Twilio · Telegram · Resend · AWS S3 · OpenAI · Docker Swarm · Vitest",
@@ -58,6 +62,7 @@
         "num": "02",
         "title": "CargoHub",
         "tag": "Full-stack · Sole Dev",
+        "affiliation": "ETL Group",
         "desc": "Публичный маркетплейс грузоперевозок: американские грузоотправители и брокеры смотрят машины партнёров-перевозчиков, размещают грузы и бронируют мощности напрямую. Встроенный ИИ-ассистент закрывает рутинные шаги по бронированию и диспетчеризации; аккаунты, живой трекинг и документооборот — уже в продукте.",
         "meta": [
           "Next.js · Postgres · Prisma · NextAuth · Google Maps · Resend · Zustand · Zod · SWR · MUI · OpenAI · DeepSeek · Playwright",
@@ -71,6 +76,7 @@
         "num": "03",
         "title": "CargoFinance",
         "tag": "Full-stack · Sole Dev",
+        "affiliation": "ETL Group",
         "desc": "Бухгалтерия и лёгкая финтех-обвязка для бэк-офиса логистики — выставление счетов, отслеживание переводов, выплаты по банковским рельсам. Главное было превратить незнакомый домен (кредиторка/дебиторка, сверки) в инструмент, которым реально пользуются операторы.",
         "meta": [
           "Nest.js · Vite · Postgres · Prisma · TanStack Router · TanStack Query · Tailwind · Radix · Plaid · Zod · Vitest · Playwright · MSW",
@@ -83,6 +89,7 @@
         "num": "04",
         "title": "CargoETL",
         "tag": "Mobile · Frontend",
+        "affiliation": "ETL Group",
         "desc": "Закрытая TMS-платформа для перевозчиков и диспетчеров в США. Веду оба конца: диспетчерскую панель на Next.js и водительское приложение на React Native (Expo) — поток заказов, живой трекинг, документы, коммуникация с диспетчером.",
         "meta": [
           "Web: Next.js · Ant Design · MobX · Autobahn (WebSocket) · Google Maps · Sentry · TinyMCE",
@@ -96,6 +103,7 @@
         "num": "05",
         "title": "Altek TMS",
         "tag": "Mobile · Frontend",
+        "affiliation": "",
         "desc": "Более ранняя TMS для перевозчиков и диспетчеров в США — диспетчерская панель и водительское приложение: поток заказов, живой трекинг, коммуникация с диспетчером. Мой первый многолетний продакшн-проект; сервис с тех пор свернулся.",
         "meta": ["Vue · Nuxt · JavaScript · React Native", "2022 → 2024"],
         "url": "https://altek.digital",

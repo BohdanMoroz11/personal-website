@@ -64,6 +64,11 @@ const structuredData = {
         { "@type": "Language", name: "Russian", alternateName: "ru" },
       ],
       knowsAbout: [...siteConfig.knowsAbout],
+      worksFor: {
+        "@type": "Organization",
+        name: siteConfig.employer.name,
+        url: siteConfig.employer.url,
+      },
       hasOccupation: {
         "@type": "Occupation",
         name: schema.occupationName,

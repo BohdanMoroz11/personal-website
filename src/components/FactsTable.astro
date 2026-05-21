@@ -1,6 +1,6 @@
 ---
 import type { Dictionary } from "../i18n";
-import { mailtoContact } from "../config";
+import { mailtoContact, siteConfig } from "../config";
 
 interface Props {
   facts: Dictionary["facts"];
@@ -15,12 +15,20 @@ const rows: Array<{
   liveDot?: boolean;
   asideHref?: string;
   valueHref?: string;
+  valueExternal?: boolean;
 }> = [
   { label: facts.focusLabel, value: facts.focusValue, aside: facts.focusAside },
   { label: facts.domainsLabel, value: facts.domainsValue, aside: facts.domainsAside },
   { label: facts.stackLabel, value: facts.stackValue, aside: facts.stackAside },
   { label: facts.infraLabel, value: facts.infraValue },
   { label: facts.workingLabel, value: facts.workingValue },
+  {
+    label: facts.employerLabel,
+    value: facts.employerValue,
+    aside: facts.employerAside,
+    valueHref: siteConfig.employer.url,
+    valueExternal: true,
+  },
   {
     label: facts.statusLabel,
     value: facts.statusValue,
@@ -40,8 +48,13 @@ const rows: Array<{
         <div class="text-ink-soft flex items-center text-[15px]">
           {r.liveDot && <span class="bg-live mr-2 inline-block h-1.5 w-1.5 rounded-full" />}
           {r.valueHref ? (
-            <a href={r.valueHref} class="subtle">
+            <a
+              href={r.valueHref}
+              class="subtle"
+              {...(r.valueExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+            >
               {r.value}
+              {r.valueExternal && <span class="sr-only">(opens in a new tab)</span>}
             </a>
           ) : (
             r.value
