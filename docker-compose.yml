@@ -1,0 +1,7 @@
+services:
+  web:
+    image: ghcr.io/bohdanmoroz11/personal-website:latest
+    container_name: bohdanmoroz-web
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8080:80"
