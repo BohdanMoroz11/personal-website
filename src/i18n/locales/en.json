@@ -107,7 +107,7 @@
       },
       {
         "n": "c.",
-        "text": "Agentic AI is built into how I work — Claude and Codex agents handle the typing while I drive the architecture, review, and integration. Comfortable running self-hosted models too — Ollama, vLLM, LiteLLM — for work that can't ship traffic to OpenAI or Anthropic. Usually means meaningfully more shipped per week than a hands-on-keyboard pace."
+        "text": "Agentic AI is core to how I work — I've built my own tooling around it, so agents handle the typing while I drive architecture, review, and integration. I can also set up and run the infrastructure itself — self-hosted inference, gateways, routing — which I do day-to-day on corporate stacks. Net effect: meaningfully more shipped per week than a hands-on-keyboard pace."
       },
       {
         "n": "d.",
