@@ -1,6 +1,7 @@
 ---
 import type { Dictionary, Lang } from "../i18n";
 import { getLangFromUrl } from "../i18n";
+import { siteConfig } from "../config";
 import ThemeToggle from "./ThemeToggle.astro";
 import LangSwitch from "./LangSwitch.astro";
 
@@ -20,10 +21,10 @@ const currentLang: Lang = getLangFromUrl(Astro.url);
     <LangSwitch current={currentLang} />
   </div>
   <div class="flex items-center gap-5">
-    <a href={footer.githubUrl} class="subtle" rel="me noopener noreferrer" target="_blank">
+    <a href={siteConfig.githubUrl} class="subtle" rel="me noopener noreferrer" target="_blank">
       {footer.githubLabel}<span class="sr-only"> (opens in a new tab)</span>
     </a>
-    <a href={footer.linkedinUrl} class="subtle" rel="me noopener noreferrer" target="_blank">
+    <a href={siteConfig.linkedinUrl} class="subtle" rel="me noopener noreferrer" target="_blank">
       {footer.linkedinLabel}<span class="sr-only"> (opens in a new tab)</span>
     </a>
   </div>

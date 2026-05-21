@@ -4,13 +4,15 @@ import "@fontsource-variable/newsreader/wght.css";
 import "@fontsource-variable/jetbrains-mono/wght.css";
 import "../styles/global.css";
 import type { Dictionary, Lang } from "../i18n";
+import { mailtoContact, siteConfig } from "../config";
 
 interface Props {
   lang: Lang;
   meta: Dictionary["meta"];
+  schema: Dictionary["schema"];
 }
 
-const { lang, meta } = Astro.props;
+const { lang, meta, schema } = Astro.props;
 
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
 const ogImageUrl = new URL("/og-image.png", Astro.site).href;
@@ -26,11 +28,11 @@ const structuredData = {
     {
       "@type": "Person",
       "@id": personId,
-      name: "Bohdan Moroz",
-      givenName: "Bohdan",
-      familyName: "Moroz",
-      alternateName: ["Bogdan Moroz"],
-      jobTitle: "Software Engineer, Applied AI",
+      name: siteConfig.person.name,
+      givenName: siteConfig.person.givenName,
+      familyName: siteConfig.person.familyName,
+      alternateName: [...siteConfig.person.alternateNames],
+      jobTitle: schema.jobTitle,
       description: meta.description,
       url: siteUrl,
       mainEntityOfPage: { "@id": profilePageId },
@@ -40,7 +42,7 @@ const structuredData = {
         width: 1200,
         height: 630,
       },
-      email: "mailto:contact@bohdanmoroz.com",
+      email: mailtoContact,
       address: {
         "@type": "PostalAddress",
         addressLocality: "Sofia",
@@ -48,7 +50,7 @@ const structuredData = {
       },
       workLocation: {
         "@type": "Place",
-        name: "Sofia, Bulgaria",
+        name: schema.workLocationName,
         address: {
           "@type": "PostalAddress",
           addressLocality: "Sofia",
@@ -61,51 +63,28 @@ const structuredData = {
         { "@type": "Language", name: "Ukrainian", alternateName: "uk" },
         { "@type": "Language", name: "Russian", alternateName: "ru" },
       ],
-      knowsAbout: [
-        "TypeScript",
-        "React",
-        "Next.js",
-        "NestJS",
-        "React Native",
-        "Expo",
-        "Node.js",
-        "Applied AI",
-        "Agentic AI workflows",
-        "Large Language Models",
-        "Self-hosted LLM inference",
-        "Ollama",
-        "vLLM",
-        "LiteLLM",
-        "Docker",
-        "CI/CD",
-        "Transportation Management Systems",
-        "Freight logistics software",
-        "HR onboarding software",
-        "Fintech software",
-      ],
+      knowsAbout: [...siteConfig.knowsAbout],
       hasOccupation: {
         "@type": "Occupation",
-        name: "Software Engineer",
+        name: schema.occupationName,
         occupationLocation: {
           "@type": "City",
           name: "Sofia",
         },
-        skills:
-          "TypeScript, React, Next.js, NestJS, React Native, Expo, applied AI, agentic LLM workflows, self-hosted inference (Ollama, vLLM, LiteLLM), Docker, CI/CD",
+        skills: schema.occupationSkills,
       },
       seeks: {
         "@type": "Demand",
-        name: "Freelance software engineering engagements",
-        description:
-          "Open to freelance full-stack TypeScript engagements with US SMBs in logistics, HR, and fintech. Remote, or in person in Sofia.",
+        name: schema.seeksName,
+        description: schema.seeksDescription,
       },
-      sameAs: ["https://github.com/bohdanmoroz11", "https://www.linkedin.com/in/bohdan-moroz-dev/"],
+      sameAs: [siteConfig.githubUrl, siteConfig.linkedinUrl],
     },
     {
       "@type": "WebSite",
       "@id": websiteId,
       url: siteUrl,
-      name: "Bohdan Moroz",
+      name: siteConfig.person.name,
       description: meta.description,
       inLanguage: lang,
       publisher: { "@id": personId },
@@ -155,13 +134,11 @@ const structuredData = {
     <script is:inline>
       (() => {
         try {
-          const pref = localStorage.getItem("theme") || "system";
+          const stored = localStorage.getItem("theme");
+          const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
           const resolved =
-            pref === "system"
-              ? window.matchMedia("(prefers-color-scheme: dark)").matches
-                ? "dark"
-                : "light"
-              : pref;
+            stored === "light" || stored === "dark" ? stored : systemDark ? "dark" : "light";
+          const pref = stored === "light" || stored === "dark" ? stored : resolved;
           document.documentElement.dataset.theme = resolved;
           document.documentElement.dataset.themePref = pref;
         } catch {

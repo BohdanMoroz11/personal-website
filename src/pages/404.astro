@@ -6,7 +6,7 @@ const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 ---
 
-<Base lang={lang} meta={t.meta}>
+<Base lang={lang} meta={t.meta} schema={t.schema}>
   <section class="px-6 pt-12 pb-12 sm:px-11 sm:pt-16 sm:pb-16">
     <div class="label">{t.notFound.section}</div>
     <h1 class="serif mt-3 text-4xl leading-[1.05] sm:text-[40px]">{t.notFound.heading}</h1>

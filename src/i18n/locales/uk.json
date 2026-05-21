@@ -7,8 +7,15 @@
     "location": "Софія, Болгарія · Вільний для проєктів",
     "name": "Богдан Мороз.",
     "roleGeneral": "Software Engineer",
-    "roleEmphasis": "Прикладний ШІ",
-    "contactCta": "→ contact@bohdanmoroz.com"
+    "roleEmphasis": "Прикладний ШІ"
+  },
+  "schema": {
+    "jobTitle": "Software Engineer, Прикладний ШІ",
+    "workLocationName": "Софія, Болгарія",
+    "occupationName": "Software Engineer",
+    "occupationSkills": "TypeScript, React, Next.js, NestJS, React Native, Expo, прикладний ШІ, agentic LLM workflows, self-hosted inference (Ollama, vLLM, LiteLLM), Docker, CI/CD",
+    "seeksName": "Проєктна робота з розробки ПЗ",
+    "seeksDescription": "Відкритий до проєктної full-stack TypeScript-розробки для малого та середнього бізнесу в США в логістиці, HR і фінтеху. Віддалено або особисто в Софії."
   },
   "facts": {
     "focusLabel": "Фокус",
@@ -130,10 +137,7 @@
     "back": "Повернутися на bohdanmoroz.com"
   },
   "footer": {
-    "email": "contact@bohdanmoroz.com",
     "githubLabel": "github",
-    "githubUrl": "https://github.com/bohdanmoroz11",
-    "linkedinLabel": "linkedin",
-    "linkedinUrl": "https://www.linkedin.com/in/bohdan-moroz-dev/"
+    "linkedinLabel": "linkedin"
   }
 }

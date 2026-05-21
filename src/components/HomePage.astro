@@ -1,0 +1,26 @@
+---
+import Base from "../layouts/Base.astro";
+import Hero from "./Hero.astro";
+import FactsTable from "./FactsTable.astro";
+import Work from "./Work.astro";
+import HowIWork from "./HowIWork.astro";
+import Contact from "./Contact.astro";
+import Footer from "./Footer.astro";
+import { useTranslations, type Lang } from "../i18n";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<Base lang={lang} meta={t.meta} schema={t.schema}>
+  <Hero hero={t.hero} />
+  <FactsTable facts={t.facts} />
+  <HowIWork howIWork={t.howIWork} />
+  <Work work={t.work} />
+  <Contact contact={t.contact} />
+  <Footer footer={t.footer} />
+</Base>

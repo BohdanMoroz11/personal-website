@@ -1,12 +1,12 @@
 ---
 import type { Dictionary } from "../i18n";
+import { mailtoContact } from "../config";
 
 interface Props {
   facts: Dictionary["facts"];
-  email: string;
 }
 
-const { facts, email } = Astro.props;
+const { facts } = Astro.props;
 
 const rows: Array<{
   label: string;
@@ -24,9 +24,9 @@ const rows: Array<{
   {
     label: facts.statusLabel,
     value: facts.statusValue,
-    valueHref: `mailto:${email}`,
+    valueHref: mailtoContact,
     aside: facts.statusAside,
-    asideHref: `mailto:${email}`,
+    asideHref: mailtoContact,
     liveDot: true,
   },
 ];
