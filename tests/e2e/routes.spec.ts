@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { contactEmail, mailtoContact } from "../../src/config";
 
 const ROUTES = [
   { path: "/", lang: "en", heroName: "Bohdan Moroz." },
@@ -43,17 +44,32 @@ for (const { path, lang, heroName } of ROUTES) {
       expect(() => JSON.parse(raw ?? "")).not.toThrow();
     });
 
+    test("JSON-LD Person uses localized jobTitle", async ({ page }) => {
+      await page.goto(path);
+      const raw = await page.locator('script[type="application/ld+json"]').textContent();
+      const data = JSON.parse(raw ?? "");
+      const person = data["@graph"].find((n: { "@type"?: string }) => n["@type"] === "Person");
+      expect(person?.jobTitle).toBeTruthy();
+      if (lang === "ru") {
+        expect(person.jobTitle).toContain("Прикладной ИИ");
+      } else if (lang === "uk") {
+        expect(person.jobTitle).toContain("Прикладний ШІ");
+      } else {
+        expect(person.jobTitle).toContain("Applied AI");
+      }
+    });
+
     test("hero shows a visible mailto contact CTA", async ({ page }) => {
       await page.goto(path);
-      const cta = page.locator("header").getByRole("link", { name: /contact@bohdanmoroz\.com/ });
+      const cta = page.locator("header").getByRole("link", { name: new RegExp(contactEmail) });
       await expect(cta).toBeVisible();
-      await expect(cta).toHaveAttribute("href", "mailto:contact@bohdanmoroz.com");
+      await expect(cta).toHaveAttribute("href", mailtoContact);
     });
 
     test("facts status row exposes mailto CTAs on the value and the aside", async ({ page }) => {
       await page.goto(path);
       const row = page.locator(".row").filter({ hasText: /Open to freelance|Открыт|Відкритий/ });
-      const mailtos = row.locator('a[href="mailto:contact@bohdanmoroz.com"]');
+      const mailtos = row.locator(`a[href="${mailtoContact}"]`);
       // Status row exposes two mailto CTAs: the value and the aside.
       await expect(mailtos).toHaveCount(2);
     });

@@ -1,12 +1,12 @@
 ---
 import type { Dictionary } from "../i18n";
+import { contactEmail, mailtoContact } from "../config";
 
 interface Props {
   contact: Dictionary["contact"];
-  email: string;
 }
 
-const { contact, email } = Astro.props;
+const { contact } = Astro.props;
 ---
 
 <section class="section-divider px-6 pt-9 pb-2 sm:px-11">
@@ -18,8 +18,8 @@ const { contact, email } = Astro.props;
   <p class="text-ink-soft mt-1 text-[14px] leading-[1.6]">
     {contact.body}
   </p>
-  <a href={`mailto:${email}`} class="serif text-ink mt-5 inline-block text-[20px]">
-    <span class="highlight-underline">{email}</span>
+  <a href={mailtoContact} class="serif text-ink mt-5 inline-block text-[20px]">
+    <span class="highlight-underline">{contactEmail}</span>
     <span
       aria-hidden="true"
       class="text-muted ml-0.5 inline-block align-[2px] font-sans text-[12px] leading-none">↗</span

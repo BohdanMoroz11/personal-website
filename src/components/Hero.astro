@@ -1,5 +1,6 @@
 ---
 import type { Dictionary } from "../i18n";
+import { contactEmail, mailtoContact } from "../config";
 
 interface Props {
   hero: Dictionary["hero"];
@@ -12,7 +13,7 @@ const { hero } = Astro.props;
   <div class="label">
     {hero.location}
     <span class="hero-sep">·</span>
-    <a href="mailto:contact@bohdanmoroz.com" class="hero-email">contact@bohdanmoroz.com</a>
+    <a href={mailtoContact} class="hero-email">{contactEmail}</a>
   </div>
   <h1 class="serif mt-3 text-4xl leading-[1.05] sm:text-[40px]">
     {hero.name}

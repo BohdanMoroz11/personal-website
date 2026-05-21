@@ -7,8 +7,15 @@
     "location": "Sofia, Bulgaria · Available",
     "name": "Bohdan Moroz.",
     "roleGeneral": "Software Engineer",
-    "roleEmphasis": "Applied AI",
-    "contactCta": "→ contact@bohdanmoroz.com"
+    "roleEmphasis": "Applied AI"
+  },
+  "schema": {
+    "jobTitle": "Software Engineer, Applied AI",
+    "workLocationName": "Sofia, Bulgaria",
+    "occupationName": "Software Engineer",
+    "occupationSkills": "TypeScript, React, Next.js, NestJS, React Native, Expo, applied AI, agentic LLM workflows, self-hosted inference (Ollama, vLLM, LiteLLM), Docker, CI/CD",
+    "seeksName": "Freelance software engineering engagements",
+    "seeksDescription": "Open to freelance full-stack TypeScript engagements with US SMBs in logistics, HR, and fintech. Remote, or in person in Sofia."
   },
   "facts": {
     "focusLabel": "Focus",
@@ -130,10 +137,7 @@
     "back": "Back to bohdanmoroz.com"
   },
   "footer": {
-    "email": "contact@bohdanmoroz.com",
     "githubLabel": "github",
-    "githubUrl": "https://github.com/bohdanmoroz11",
-    "linkedinLabel": "linkedin",
-    "linkedinUrl": "https://www.linkedin.com/in/bohdan-moroz-dev/"
+    "linkedinLabel": "linkedin"
   }
 }

@@ -1,22 +1,5 @@
 ---
-import Base from "../../layouts/Base.astro";
-import Hero from "../../components/Hero.astro";
-import FactsTable from "../../components/FactsTable.astro";
-import Work from "../../components/Work.astro";
-import HowIWork from "../../components/HowIWork.astro";
-import Contact from "../../components/Contact.astro";
-import Footer from "../../components/Footer.astro";
-import { useTranslations } from "../../i18n";
-
-const lang = "ru" as const;
-const t = useTranslations(lang);
+import HomePage from "../../components/HomePage.astro";
 ---
 
-<Base lang={lang} meta={t.meta}>
-  <Hero hero={t.hero} />
-  <FactsTable facts={t.facts} email={t.footer.email} />
-  <HowIWork howIWork={t.howIWork} />
-  <Work work={t.work} />
-  <Contact contact={t.contact} email={t.footer.email} />
-  <Footer footer={t.footer} />
-</Base>
+<HomePage lang="ru" />
