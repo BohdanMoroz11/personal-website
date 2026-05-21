@@ -14,6 +14,7 @@ const rows: Array<{
   aside?: string;
   liveDot?: boolean;
   asideHref?: string;
+  valueHref?: string;
 }> = [
   { label: facts.focusLabel, value: facts.focusValue, aside: facts.focusAside },
   { label: facts.domainsLabel, value: facts.domainsValue, aside: facts.domainsAside },
@@ -23,8 +24,7 @@ const rows: Array<{
   {
     label: facts.statusLabel,
     value: facts.statusValue,
-    aside: facts.statusAside,
-    asideHref: `mailto:${email}`,
+    valueHref: `mailto:${email}`,
     liveDot: true,
   },
 ];
@@ -37,7 +37,13 @@ const rows: Array<{
         <div class="label">{r.label}</div>
         <div class="text-ink-soft flex items-center text-[15px]">
           {r.liveDot && <span class="bg-live mr-2 inline-block h-1.5 w-1.5 rounded-full" />}
-          {r.value}
+          {r.valueHref ? (
+            <a href={r.valueHref} class="subtle">
+              {r.value}
+            </a>
+          ) : (
+            r.value
+          )}
         </div>
         <div class="row-right mono text-muted text-[11px]">
           {r.aside && r.asideHref ? (
