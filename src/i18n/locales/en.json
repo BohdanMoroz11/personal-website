@@ -31,6 +31,9 @@
     "infraValue": "CI/CD · Docker · self-host · Ollama / vLLM / LiteLLM",
     "workingLabel": "Working",
     "workingValue": "Remote · In person if you're in Sofia",
+    "employerLabel": "Employer",
+    "employerValue": "ETL Group LLC",
+    "employerAside": "since May '24",
     "statusLabel": "Status",
     "statusValue": "Open to freelance work",
     "statusAside": "& open to offers"
@@ -45,6 +48,7 @@
         "num": "01",
         "title": "ClaraHR",
         "tag": "Full-stack · Lead dev",
+        "affiliation": "ETL Group",
         "desc": "Onboarding system for US truck drivers — a chat bot interviews them on whichever channel they prefer and files them in the carrier's system, replacing manual HR back-and-forth. I lead the server side.",
         "meta": [
           "Fastify · Next.js · Postgres · Sequelize · Redis · BullMQ · Socket.IO · Twilio · Telegram · Resend · AWS S3 · OpenAI · Docker Swarm · Vitest",
@@ -58,6 +62,7 @@
         "num": "02",
         "title": "CargoHub",
         "tag": "Full-stack · Sole dev",
+        "affiliation": "ETL Group",
         "desc": "Public freight marketplace where US shippers and brokers browse partner carriers' trucks, post loads, and book capacity directly. An in-product AI assistant handles routine booking and dispatch steps; accounts, live tracking, and document flow are built in.",
         "meta": [
           "Next.js · Postgres · Prisma · NextAuth · Google Maps · Resend · Zustand · Zod · SWR · MUI · OpenAI · DeepSeek · Playwright",
@@ -71,6 +76,7 @@
         "num": "03",
         "title": "CargoFinance",
         "tag": "Full-stack · Sole dev",
+        "affiliation": "ETL Group",
         "desc": "Accounting and light-fintech tooling for a logistics back-office — invoicing, transfer tracking, payouts via bank rails. Focused on turning an unfamiliar domain (AP/AR, reconciliation) into something operators actually use.",
         "meta": [
           "Nest.js · Vite · Postgres · Prisma · TanStack Router · TanStack Query · Tailwind · Radix · Plaid · Zod · Vitest · Playwright · MSW",
@@ -83,6 +89,7 @@
         "num": "04",
         "title": "CargoETL",
         "tag": "Mobile · Frontend",
+        "affiliation": "ETL Group",
         "desc": "Closed TMS platform for US logistics carriers and dispatchers. I built and maintain both ends: the Next.js dispatcher dashboard and the React Native (Expo) driver app — order flow, live tracking, documents, and dispatch comms.",
         "meta": [
           "Web: Next.js · Ant Design · MobX · Autobahn (WebSocket) · Google Maps · Sentry · TinyMCE",
@@ -96,6 +103,7 @@
         "num": "05",
         "title": "Altek TMS",
         "tag": "Mobile · Frontend",
+        "affiliation": "",
         "desc": "Earlier TMS for US logistics carriers and dispatchers — dispatcher dashboard plus driver app, covering order flow, live tracking, and dispatch comms. My first multi-year production project; the service has since wound down.",
         "meta": ["Vue · Nuxt · JavaScript · React Native", "2022 → 2024"],
         "url": "https://altek.digital",

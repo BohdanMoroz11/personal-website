@@ -9,6 +9,10 @@ export const siteConfig = {
   },
   githubUrl: "https://github.com/bohdanmoroz11",
   linkedinUrl: "https://www.linkedin.com/in/bohdan-moroz-dev/",
+  employer: {
+    name: "ETL Group LLC",
+    url: "https://etlgroupllc.com",
+  },
   knowsAbout: [
     "TypeScript",
     "React",
