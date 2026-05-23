@@ -1,20 +1,21 @@
 const TYPE_MS = 26;
 
-function renderAvailable(prefix: string, available: string): string {
-  return `${prefix}<span class="text-ok">${available}</span>`;
+function renderStatus(prefix: string, status: string, statusClass: string): string {
+  return `${prefix}<span class="${statusClass}">${status}</span>`;
 }
 
 /** Typewriter boot line with blinking cursor. */
 export function initBootline(
   el: HTMLElement,
   prefix: string,
-  available: string,
+  status: string,
   reducedMotion: boolean,
+  statusClass = "text-ok",
 ): void {
-  const full = prefix + available;
+  const full = prefix + status;
 
   if (reducedMotion) {
-    el.innerHTML = renderAvailable(prefix, available);
+    el.innerHTML = renderStatus(prefix, status, statusClass);
     return;
   }
 
@@ -29,7 +30,7 @@ export function initBootline(
       i += 1;
       window.setTimeout(step, TYPE_MS);
     } else {
-      el.innerHTML = renderAvailable(prefix, available);
+      el.innerHTML = renderStatus(prefix, status, statusClass);
       cursor.classList.add("animate-cursor-blink");
       el.appendChild(cursor);
     }

@@ -288,10 +288,17 @@
     ]
   },
   "notFound": {
-    "section": "§ 404 — Not found",
-    "heading": "This page doesn't exist.",
-    "body": "The URL you followed isn't here. The site is a single page — try the front door.",
-    "back": "Back to bohdanmoroz.com"
+    "code": "404",
+    "bootline": {
+      "prefix": "> error: route_not_found — ",
+      "status": "signal lost"
+    },
+    "num": "§ ERR",
+    "title": "Signal Lost",
+    "subtitle": "<< REQUESTED ADDRESS NOT IN ROUTING TABLE >>",
+    "body": "The URL you followed isn't mapped to any endpoint on this site. It's a single-page deployment — the main channel is one scroll away.",
+    "back": "Return to main channel",
+    "backHint": "bohdanmoroz.com"
   },
   "footer": {
     "signature": "BM // BOHDANMOROZ.COM",

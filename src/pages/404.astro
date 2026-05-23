@@ -1,25 +1,15 @@
 ---
 import Base from "../layouts/Base.astro";
-import { getLangFromUrl, useTranslations } from "../i18n";
+import NotFound from "../components/NotFound.astro";
+import Footer from "../components/Footer.astro";
+import { defaultLang, getLangFromUrl, useTranslations } from "../i18n";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+const homeHref = lang === defaultLang ? "/" : `/${lang}/`;
 ---
 
 <Base lang={lang} meta={t.meta} schema={t.schema}>
-  <section class="px-6 pt-12 pb-12 sm:px-11 sm:pt-16 sm:pb-16">
-    <div class="label">{t.notFound.section}</div>
-    <h1 class="serif mt-3 text-4xl leading-[1.05] sm:text-[40px]">{t.notFound.heading}</h1>
-    <p class="text-ink-soft mt-4 text-[15px] leading-[1.6]">
-      {t.notFound.body}
-    </p>
-    <a href="/" class="serif text-ink mt-6 inline-block text-[18px]">
-      <span class="highlight-underline">{t.notFound.back}</span>
-      <span
-        aria-hidden="true"
-        class="text-muted ml-0.5 inline-block align-[2px] font-sans text-[12px] leading-none"
-        >→</span
-      >
-    </a>
-  </section>
+  <NotFound notFound={t.notFound} homeHref={homeHref} />
+  <Footer footer={t.footer} />
 </Base>

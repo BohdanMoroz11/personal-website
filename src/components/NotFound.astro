@@ -1,0 +1,106 @@
+---
+import type { Dictionary } from "../i18n";
+
+interface Props {
+  notFound: Dictionary["notFound"];
+  homeHref: string;
+}
+
+const { notFound, homeHref } = Astro.props;
+---
+
+<main class="not-found">
+  <div class="site-wrap not-found-inner">
+    <p class="not-found-code font-display text-signal font-bold select-none" aria-hidden="true">
+      {notFound.code}
+    </p>
+
+    <div
+      id="nf-bootline"
+      class="nf-bootline text-steel-dim font-mono text-xs tracking-[0.07em]"
+      data-prefix={notFound.bootline.prefix}
+      data-status={notFound.bootline.status}
+      data-status-class="text-signal"
+    >
+    </div>
+
+    <div class="not-found-head signal-lock on">
+      <span
+        class="border-signal-dk text-signal inline-block border px-[11px] py-1.5 font-mono text-xs tracking-[0.08em]"
+      >
+        {notFound.num}
+      </span>
+      <h1 class="heading-display mt-6 text-[clamp(36px,7vw,72px)] leading-[0.95]">
+        {notFound.title}
+      </h1>
+      <p class="label-mono mt-4 tracking-[0.13em]">{notFound.subtitle}</p>
+    </div>
+
+    <div class="not-found-panel signal-edge on panel mt-10 max-w-[520px]">
+      <p class="text-steel text-[15px] leading-[1.65]">
+        {notFound.body}
+      </p>
+      <a href={homeHref} class="mail-btn mt-7">
+        <span class="mail-btn-arrow" aria-hidden="true">▸</span>
+        {notFound.back}
+        <span class="text-steel-dim"> — {notFound.backHint}</span>
+      </a>
+    </div>
+  </div>
+</main>
+
+<script>
+  import { initBootline } from "../scripts/v2/bootline";
+
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const el = document.getElementById("nf-bootline");
+  if (el?.dataset.prefix && el.dataset.status) {
+    initBootline(
+      el,
+      el.dataset.prefix,
+      el.dataset.status,
+      reduced,
+      el.dataset.statusClass ?? "text-ok",
+    );
+  }
+</script>
+
+<style>
+  .not-found {
+    display: grid;
+    min-height: 100vh;
+    place-items: center;
+    padding-block: 48px;
+  }
+
+  .not-found-inner {
+    width: 100%;
+    position: relative;
+  }
+
+  .not-found-code {
+    position: absolute;
+    top: -0.15em;
+    left: -0.04em;
+    font-size: clamp(120px, 28vw, 280px);
+    line-height: 0.85;
+    letter-spacing: -0.04em;
+    opacity: 0.07;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .nf-bootline {
+    min-height: 1.5em;
+    margin-bottom: 28px;
+  }
+
+  .not-found-panel {
+    padding: 28px 30px;
+    background: var(--color-bg-2);
+  }
+
+  .not-found-panel.signal-edge::before {
+    background: var(--color-signal);
+  }
+</style>
