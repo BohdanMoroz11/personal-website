@@ -38,6 +38,6 @@ describe("useTranslations", () => {
 
   it("returns the English dictionary for the default lang", () => {
     const t = useTranslations(defaultLang);
-    expect(t.hero.name).toMatch(/Bohdan Moroz/);
+    expect(`${t.hero.nameLine1} ${t.hero.nameLine2}`).toMatch(/Bohdan Moroz/);
   });
 });

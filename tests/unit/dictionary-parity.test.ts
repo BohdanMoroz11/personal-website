@@ -24,9 +24,9 @@ function shape(value: Json): Json {
 }
 
 const dictionaries: Record<Lang, Json> = {
-  en: en as Json,
-  ru: ru as Json,
-  uk: uk as Json,
+  en: en as unknown as Json,
+  ru: ru as unknown as Json,
+  uk: uk as unknown as Json,
 };
 
 describe("dictionary parity", () => {
@@ -36,7 +36,7 @@ describe("dictionary parity", () => {
     }
   });
 
-  const enShape = shape(en as Json);
+  const enShape = shape(en as unknown as Json);
 
   it.each((Object.keys(languages) as Lang[]).filter((l) => l !== "en"))(
     "%s has the same key shape as en",
@@ -65,7 +65,7 @@ describe("dictionary parity", () => {
     return path.reduce<Json>((acc, key) => (acc as Record<string | number, Json>)[key], value);
   }
 
-  const required = requiredPaths(en as Json);
+  const required = requiredPaths(en as unknown as Json);
 
   it.each((Object.keys(languages) as Lang[]).filter((l) => l !== "en"))(
     "%s populates every string en populates",

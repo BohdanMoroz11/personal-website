@@ -13,7 +13,7 @@ export const defaultLang = "en" satisfies keyof typeof languages;
 export type Lang = keyof typeof languages;
 export type Dictionary = typeof en;
 
-const dictionaries: Record<Lang, Dictionary> = { en, ru: ru as Dictionary, uk: uk as Dictionary };
+const dictionaries: Record<Lang, Dictionary> = { en, ru, uk };
 
 export function getLangFromUrl(url: URL): Lang {
   const [, maybeLang] = url.pathname.split("/");
