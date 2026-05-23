@@ -13,7 +13,7 @@ const { dossier } = Astro.props;
   <div class="site-wrap">
     <SectionHead num={dossier.num} title={dossier.title} subtitle={dossier.subtitle} />
 
-    <div class="signal-lock signal-edge">
+    <div>
       {
         dossier.cases.map((c) => (
           <article class:list={["case", { open: c.defaultOpen }]}>
@@ -28,7 +28,7 @@ const { dossier } = Astro.props;
                   <span class="font-display text-ice text-xl font-bold tracking-tight max-sm:text-lg">
                     {c.name}
                   </span>
-                  <span class="border-line-2 text-steel-dim border px-2 py-0.75 font-mono text-[10px] tracking-[0.12em] uppercase">
+                  <span class="border-line-2 text-ice/80 border px-2 py-0.75 font-mono text-[10px] tracking-[0.12em] uppercase">
                     {c.role}
                   </span>
                   {c.live && (
@@ -37,7 +37,7 @@ const { dossier } = Astro.props;
                     </span>
                   )}
                 </span>
-                <span class="text-steel-dim mt-2 block font-mono text-[11px] tracking-[0.03em]">
+                <span class="text-ice mt-2 block font-mono text-[11px] tracking-[0.03em]">
                   {c.tease}
                 </span>
               </span>
@@ -46,7 +46,7 @@ const { dossier } = Astro.props;
                   <span class="font-display text-ice block text-2xl leading-none font-bold tracking-tight max-[920px]:text-lg">
                     {c.metricNum}
                   </span>
-                  <span class="text-steel-dim mt-1.25 block font-mono text-[9.5px] tracking-[0.09em] uppercase">
+                  <span class="text-ice/75 mt-1.25 block font-mono text-[9.5px] tracking-[0.09em] uppercase">
                     {c.metricCap}
                   </span>
                 </span>
@@ -58,9 +58,12 @@ const { dossier } = Astro.props;
                 </span>
               </span>
             </button>
-            <div class="case-detail max-h-0 overflow-hidden transition-[max-height] duration-[380ms] ease-[cubic-bezier(0.4,0,0.2,1)]">
+            <div
+              class="case-detail max-h-0 overflow-hidden transition-[max-height] duration-[380ms] ease-[cubic-bezier(0.4,0,0.2,1)]"
+              hidden={!c.defaultOpen}
+            >
               <div class="border-line bg-bg-bright border-t px-6 py-6 max-sm:px-[18px] max-sm:py-5">
-                <p class="text-steel mb-[18px] max-w-[680px] text-[14.5px] leading-normal">
+                <p class="text-ice mb-[18px] max-w-[680px] text-[14.5px] leading-normal">
                   {c.desc}
                   {c.descBold && <strong class="text-ice font-semibold">{c.descBold}</strong>}
                   {c.descAfter}
@@ -69,7 +72,7 @@ const { dossier } = Astro.props;
                 <ul class="mb-[18px] flex flex-wrap gap-1.5">
                   {c.stack.map((tag) => (
                     <li>
-                      <span class="border-line bg-bg text-steel hover:border-signal-dk hover:text-ice inline-block border px-2 py-1 font-mono text-[10.5px] transition-colors duration-200">
+                      <span class="border-line bg-bg text-ice/85 hover:border-signal-dk hover:text-ice inline-block border px-2 py-1 font-mono text-[10.5px] transition-colors duration-200">
                         {tag}
                       </span>
                     </li>
@@ -143,13 +146,16 @@ const { dossier } = Astro.props;
     font-family: var(--font-mono);
     font-size: 19px;
     font-weight: 700;
-    color: var(--color-steel-dim);
+    color: var(--color-ice);
     transition: color 0.2s;
   }
 
-  .case:hover .case-id,
-  .case.open .case-id {
+  .case:hover:not(.open) .case-id {
     color: var(--color-signal);
+  }
+
+  .case.open .case-id {
+    color: var(--color-ice);
   }
 
   .case.open .case-chev {

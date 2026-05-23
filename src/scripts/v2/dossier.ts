@@ -5,6 +5,7 @@ function setOpen(card: HTMLElement, open: boolean): void {
 
   card.classList.toggle("open", open);
   bar.setAttribute("aria-expanded", String(open));
+  detail.toggleAttribute("hidden", !open);
   detail.style.maxHeight = open ? `${detail.scrollHeight}px` : "";
 }
 
@@ -25,7 +26,8 @@ export function initDossierAccordion(): void {
     });
   });
 
-  document.querySelectorAll<HTMLElement>(".case.open .case-detail").forEach((detail) => {
-    detail.style.maxHeight = `${detail.scrollHeight}px`;
+  document.querySelectorAll<HTMLElement>(".case").forEach((card) => {
+    const open = card.classList.contains("open");
+    setOpen(card, open);
   });
 }

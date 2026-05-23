@@ -1,11 +1,20 @@
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
+import { settleV2Page } from "./helpers/settle-v2-page";
 
 const ROUTES = ["/", "/ru/", "/uk/", "/this-route-does-not-exist"];
 
 for (const path of ROUTES) {
   test(`${path} has no detectable WCAG 2.1 a11y violations`, async ({ page }) => {
-    await page.goto(path, { waitUntil: "domcontentloaded" });
+    await page.goto(path, { waitUntil: "load" });
+    await settleV2Page(page);
+    await settleV2Page(page);
+
+    expect(await page.locator(".signal-lock:not(.on)").count()).toBe(0);
+    if (path !== "/this-route-does-not-exist") {
+      expect(await page.locator(".case.open").count()).toBe(0);
+    }
+
     const results = await new AxeBuilder({ page })
       .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
       .analyze();
