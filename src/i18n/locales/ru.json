@@ -1,125 +1,125 @@
 {
   "meta": {
-    "title": "Bohdan Moroz — Software Engineer · Applied AI",
-    "description": "Bohdan Moroz — software engineer working in applied AI. Four years building production web and mobile apps for US logistics, HR, and fintech teams. Open to freelance work."
+    "title": "Богдан Мороз — Software Engineer · Прикладной ИИ",
+    "description": "Богдан Мороз — software engineer, работаю с прикладным ИИ. Четыре года делаю веб- и мобильные продукты для команд из США в логистике, HR и финтехе. Открыт к проектной работе."
   },
   "schema": {
-    "jobTitle": "Software Engineer, Applied AI",
-    "workLocationName": "Sofia, Bulgaria",
+    "jobTitle": "Software Engineer, Прикладной ИИ",
+    "workLocationName": "София, Болгария",
     "occupationName": "Software Engineer",
-    "occupationSkills": "TypeScript, React, Next.js, NestJS, React Native, Expo, applied AI, agentic LLM workflows, self-hosted inference (Ollama, vLLM, LiteLLM), Docker, CI/CD",
-    "seeksName": "Freelance software engineering engagements",
-    "seeksDescription": "Open to freelance full-stack TypeScript engagements with US SMBs in logistics, HR, and fintech. Remote, or in person in Sofia."
+    "occupationSkills": "TypeScript, React, Next.js, NestJS, React Native, Expo, прикладной ИИ, agentic LLM workflows, self-hosted inference (Ollama, vLLM, LiteLLM), Docker, CI/CD",
+    "seeksName": "Проектная работа в разработке ПО",
+    "seeksDescription": "Открыт к проектной full-stack TypeScript-разработке для малого и среднего бизнеса в США в логистике, HR и финтехе. Удалённо или лично в Софии."
   },
   "topbar": {
     "brand": "BOHDAN MOROZ",
     "nav": [
-      { "num": "01", "label": "Protocol", "href": "#protocol" },
-      { "num": "02", "label": "Dossier", "href": "#dossier" },
-      { "num": "03", "label": "Channel", "href": "#contact" }
+      { "num": "01", "label": "Протокол", "href": "#protocol" },
+      { "num": "02", "label": "Досье", "href": "#dossier" },
+      { "num": "03", "label": "Связь", "href": "#contact" }
     ],
     "clockSuffix": "UTC+2"
   },
   "hero": {
     "bootline": {
-      "prefix": "> bohdanmoroz.com — sofia, bulgaria — ",
-      "available": "available for work"
+      "prefix": "> bohdanmoroz.com — софия, болгария — ",
+      "available": "доступен для проектов"
     },
-    "nameLine1": "Bohdan",
-    "nameLine2": "Moroz",
+    "nameLine1": "Богдан",
+    "nameLine2": "Мороз",
     "roleGeneral": "Software Engineer",
-    "roleDomain": "Applied AI",
-    "tagline": "Four years shipping production web & mobile systems for US logistics, HR & fintech operators.",
+    "roleDomain": "Прикладной ИИ",
+    "tagline": "Четыре года делаю production web & mobile для операторов из США в логистике, HR и финтехе.",
     "specs": [
       {
-        "key": "Experience",
-        "value": "4 years",
+        "key": "Опыт",
+        "value": "4 года",
         "valueUrl": "",
-        "aside": "agentic AI · end-to-end delivery"
+        "aside": "agentic AI · полный цикл разработки"
       },
       {
-        "key": "Domains",
-        "value": "Logistics · HR · Fintech",
+        "key": "Домены",
+        "value": "Логистика · HR · Финтех",
         "valueUrl": "",
-        "aside": "TMS · onboarding · payments"
+        "aside": "TMS · онбординг · платежи"
       },
       {
-        "key": "Core stack",
+        "key": "Стек",
         "value": "TypeScript",
         "valueUrl": "",
         "aside": "React · Next · NestJS · RN (Expo)"
       },
       {
-        "key": "Infra",
+        "key": "Инфра",
         "value": "CI/CD · Docker",
         "valueUrl": "",
         "aside": "self-host · Ollama / vLLM / LiteLLM"
       },
       {
-        "key": "Languages",
+        "key": "Языки",
         "value": "EN · UK · RU",
         "valueUrl": "",
         "aside": "async, US clients · UTC+2"
       },
       {
-        "key": "Employer",
+        "key": "Работодатель",
         "value": "ETL Group LLC ↗",
         "valueUrl": "https://etlgroupllc.com",
-        "aside": "since May 2024"
+        "aside": "с мая 2024"
       }
     ]
   },
   "protocol": {
     "id": "protocol",
     "num": "§ 01",
-    "title": "Operating Protocol",
-    "subtitle": "<< WHAT WORKING WITH ME LOOKS LIKE >>",
+    "title": "Рабочий протокол",
+    "subtitle": "<< КАК ВЫГЛЯДИТ РАБОТА СО МНОЙ >>",
     "items": [
       {
         "letter": "A",
         "name": "Ownership",
-        "lead": "End-to-end ownership.",
-        "rest": "Comfortable taking a feature from a half-formed Figma or a paragraph of requirements all the way through frontend, backend, infrastructure and deploy — no handoffs."
+        "lead": "Полная ответственность за задачу.",
+        "rest": "Беру фичу с полусырого Figma или абзаца требований и довожу через фронт, бэк, инфраструктуру и деплой — без передач по цепочке."
       },
       {
         "letter": "B",
         "name": "Stack",
-        "lead": "TypeScript across the stack.",
-        "rest": "React / Next.js on web, React Native (Expo) on mobile, NestJS / Fastify / Express on the server. CI/CD, testing, Docker by default; self-host when it makes sense, AWS / Vercel / Hetzner when it doesn't."
+        "lead": "TypeScript по всему стеку.",
+        "rest": "React / Next.js на вебе, React Native (Expo) на мобильном, NestJS / Fastify / Express на сервере. CI/CD, тесты, Docker по умолчанию; self-host, когда оправдано, AWS / Vercel / Hetzner — когда нет."
       },
       {
         "letter": "C",
         "name": "Throughput",
-        "lead": "Agentic AI is core to how I work.",
-        "rest": "I've built my own tooling around it, so agents handle the typing while I drive architecture, review and integration. I can also set up and run the infrastructure itself — self-hosted inference, gateways, routing — which I do day-to-day on corporate stacks."
+        "lead": "Агентный ИИ — основа моего процесса.",
+        "rest": "Вокруг агентов собран свой набор инструментов: они пишут код, я отвечаю за архитектуру, ревью и интеграцию. Инфру под inference, шлюзы и роутинг поднимаю сам — на основной работе этим занимаюсь каждый день."
       },
       {
         "letter": "D",
         "name": "Comms",
         "lead": "Async-friendly.",
-        "rest": "Used to working with US clients from Sofia, Bulgaria (UTC+2). Operates in English, Ukrainian and Russian."
+        "rest": "Привык работать с US-клиентами из Софии, Болгария (UTC+2). Языки: английский, украинский, русский."
       }
     ]
   },
   "dossier": {
     "id": "dossier",
     "num": "§ 02",
-    "title": "Selected Dossier",
-    "subtitle": "<< FIELD RECORD — BUILT MOSTLY FOR US SMBS · CLICK TO EXPAND >>",
+    "title": "Избранное досье",
+    "subtitle": "<< ПОЛЕВЫЕ ЗАПИСИ — В ОСНОВНОМ ДЛЯ US SMB · НАЖМИТЕ, ЧТОБЫ РАСКРЫТЬ >>",
     "stackLabel": "// stack manifest",
-    "linkOpen": "Open record ↗",
-    "linkClosed": "Closed record",
+    "linkOpen": "Открыть запись ↗",
+    "linkClosed": "Закрытая запись",
     "liveLabel": "● Live",
     "cases": [
       {
         "id": "01",
         "name": "ClaraHR",
         "role": "Full-stack · Lead dev · ETL Group",
-        "tease": "Driver onboarding system — chatbot interviews & files",
+        "tease": "Онбординг водителей — чат-бот интервьюирует и оформляет",
         "metricNum": "635",
-        "metricCap": "Drivers · 8 carriers",
-        "desc": "Onboarding system for US truck drivers — a chatbot interviews them on whichever channel they prefer and files them in the carrier's system, replacing manual HR back-and-forth. ",
-        "descBold": "I lead the server side.",
+        "metricCap": "Водителей · 8 перевозчиков",
+        "desc": "Онбординг для американских дальнобойщиков — чат-бот опрашивает водителя в удобном канале и регистрирует его в системе перевозчика, заменяя ручную HR-переписку. ",
+        "descBold": "Серверная часть — на мне.",
         "descAfter": "",
         "stack": [
           "Fastify",
@@ -137,7 +137,7 @@
           "Docker Swarm",
           "Vitest"
         ],
-        "years": "2025 → PRESENT",
+        "years": "2025 → Н. В.",
         "url": "https://clarahr.io",
         "live": false,
         "defaultOpen": true
@@ -146,10 +146,10 @@
         "id": "02",
         "name": "CargoHub",
         "role": "Full-stack · Sole dev · ETL Group",
-        "tease": "Public freight marketplace with in-product AI dispatch",
-        "metricNum": "~2,500",
-        "metricCap": "Trucks · 9 carriers",
-        "desc": "Public freight marketplace where US shippers and brokers browse partner carriers' trucks, post loads and book capacity directly. An in-product AI assistant handles routine booking and dispatch; accounts, live tracking and document flow are built in.",
+        "tease": "Публичный freight marketplace с in-product AI dispatch",
+        "metricNum": "~2 500",
+        "metricCap": "Машин · 9 перевозчиков",
+        "desc": "Публичный маркетплейс грузоперевозок: shippers и brokers смотрят машины партнёров, размещают грузы и бронируют мощности напрямую. In-product AI-ассистент закрывает рутинное бронирование и dispatch; аккаунты, live tracking и документооборот встроены.",
         "descBold": "",
         "descAfter": "",
         "stack": [
@@ -167,7 +167,7 @@
           "DeepSeek",
           "Playwright"
         ],
-        "years": "2026 → PRESENT",
+        "years": "2026 → Н. В.",
         "url": "https://map.cargoetl.com",
         "live": true,
         "defaultOpen": false
@@ -176,12 +176,12 @@
         "id": "03",
         "name": "CargoFinance",
         "role": "Full-stack · Sole dev · ETL Group",
-        "tease": "Accounting & light-fintech tooling for logistics back-office",
+        "tease": "Бухгалтерия и light-fintech для бэк-офиса логистики",
         "metricNum": "AP/AR",
         "metricCap": "Invoicing · payouts",
-        "desc": "Accounting and light-fintech tooling for a logistics back-office — invoicing, transfer tracking, payouts via bank rails. Focused on turning an unfamiliar domain (",
+        "desc": "Бухгалтерия и light-fintech для бэк-офиса логистики — invoicing, transfer tracking, payouts по банковским рельсам. Главное — превратить незнакомый домен (",
         "descBold": "AP/AR, reconciliation",
-        "descAfter": ") into something operators actually use.",
+        "descAfter": ") в инструмент, которым реально пользуются операторы.",
         "stack": [
           "NestJS",
           "Vite",
@@ -197,7 +197,7 @@
           "Playwright",
           "MSW"
         ],
-        "years": "2026 → PRESENT",
+        "years": "2026 → Н. В.",
         "url": "",
         "live": false,
         "defaultOpen": false
@@ -206,12 +206,12 @@
         "id": "04",
         "name": "CargoETL",
         "role": "Mobile · Frontend · ETL Group",
-        "tease": "Closed TMS — dispatcher dashboard + driver app",
+        "tease": "Closed TMS — dashboard диспетчера + driver app",
         "metricNum": "2×",
         "metricCap": "Web + mobile",
-        "desc": "Closed TMS platform for US logistics carriers and dispatchers. I built and maintain ",
-        "descBold": "both ends",
-        "descAfter": ": the Next.js dispatcher dashboard and the React Native (Expo) driver app — order flow, live tracking, documents and dispatch comms.",
+        "desc": "Closed TMS для американских carriers и dispatchers. Строю и поддерживаю ",
+        "descBold": "оба конца",
+        "descAfter": ": Next.js dashboard диспетчера и React Native (Expo) driver app — order flow, live tracking, documents и dispatch comms.",
         "stack": [
           "Next.js",
           "Ant Design",
@@ -226,7 +226,7 @@
           "RN Maps",
           "Firebase"
         ],
-        "years": "2024 → PRESENT",
+        "years": "2024 → Н. В.",
         "url": "https://cargoetl.com",
         "live": false,
         "defaultOpen": false
@@ -235,10 +235,10 @@
         "id": "05",
         "name": "Altek TMS",
         "role": "Mobile · Frontend",
-        "tease": "First multi-year production project — TMS, since wound down",
-        "metricNum": "2 yrs",
-        "metricCap": "First prod project",
-        "desc": "Earlier TMS for US logistics carriers and dispatchers — dispatcher dashboard plus driver app, covering order flow, live tracking and dispatch comms. My first multi-year production project; the service has since wound down.",
+        "tease": "Первый многолетний production-проект — TMS, сервис закрыт",
+        "metricNum": "2 года",
+        "metricCap": "Первый prod-проект",
+        "desc": "Ранний TMS для американских carriers и dispatchers — dashboard диспетчера и driver app: order flow, live tracking и dispatch comms. Мой первый многолетний production-проект; сервис с тех пор закрыт.",
         "descBold": "",
         "descAfter": "",
         "stack": ["Vue", "Nuxt", "JavaScript", "React Native"],
@@ -252,26 +252,26 @@
   "contact": {
     "id": "contact",
     "num": "§ 03",
-    "title": "Open Channel",
-    "subtitle": "<< FASTEST ROUTE OF CONTACT — EMAIL >>",
-    "pitchBefore": "I read everything that lands in my inbox and ",
-    "pitchBold": "reply within a day",
-    "pitchAfter": ". Tell me a bit about the project — stack, timeline, what you're trying to ship — and we'll go from there.",
+    "title": "Открытый канал",
+    "subtitle": "<< САМЫЙ БЫСТРЫЙ КОНТАКТ — EMAIL >>",
+    "pitchBefore": "Читаю всё, что попадает в инбокс, и ",
+    "pitchBold": "отвечаю в течение дня",
+    "pitchAfter": ". Расскажите немного о проекте — стек, сроки, что хотите выпустить — и дальше разберёмся.",
     "fields": [
       {
-        "key": "Location",
-        "value": "Sofia, Bulgaria · Remote-first",
+        "key": "Локация",
+        "value": "София, Болгария · Remote-first",
         "links": [],
         "accent": false
       },
       {
-        "key": "In person",
-        "value": "Your office, or my coworking — WorkBetter 1.0",
+        "key": "Лично",
+        "value": "Ваш офис или мой коворкинг — WorkBetter 1.0",
         "links": [],
         "accent": false
       },
       {
-        "key": "Network",
+        "key": "Сеть",
         "value": "",
         "links": [
           { "label": "GitHub", "url": "https://github.com/bohdanmoroz11" },
@@ -280,18 +280,25 @@
         "accent": false
       },
       {
-        "key": "Clearance",
-        "value": "● Open to freelance & offers",
+        "key": "Статус",
+        "value": "● Открыт к проектной работе и офферам",
         "links": [],
         "accent": true
       }
     ]
   },
   "notFound": {
-    "section": "§ 404 — Not found",
-    "heading": "This page doesn't exist.",
-    "body": "The URL you followed isn't here. The site is a single page — try the front door.",
-    "back": "Back to bohdanmoroz.com"
+    "code": "404",
+    "bootline": {
+      "prefix": "> error: route_not_found — ",
+      "status": "сигнал потерян"
+    },
+    "num": "§ ERR",
+    "title": "Сигнал потерян",
+    "subtitle": "<< ЗАПРОШЕННЫЙ АДРЕС ОТСУТСТВУЕТ В ТАБЛИЦЕ МАРШРУТИЗАЦИИ >>",
+    "body": "URL, по которому вы пришли, не сопоставлен ни с одним endpoint на этом сайте. Это single-page deployment — главный канал в одном скролле отсюда.",
+    "back": "Вернуться на главный канал",
+    "backHint": "bohdanmoroz.com"
   },
   "footer": {
     "signature": "BM // BOHDANMOROZ.COM",
