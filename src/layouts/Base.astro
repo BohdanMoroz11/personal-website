@@ -1,7 +1,13 @@
 ---
+import "@fontsource/chakra-petch/400.css";
+import "@fontsource/chakra-petch/500.css";
+import "@fontsource/chakra-petch/600.css";
+import "@fontsource/chakra-petch/700.css";
+import "@fontsource-variable/jetbrains-mono/wght.css";
+/* V1 fonts — restore if light/editorial theme returns
 import "@fontsource-variable/inter/wght.css";
 import "@fontsource-variable/newsreader/wght.css";
-import "@fontsource-variable/jetbrains-mono/wght.css";
+*/
 import "../styles/global.css";
 import type { Dictionary, Lang } from "../i18n";
 import { mailtoContact, siteConfig } from "../config";
@@ -142,9 +148,11 @@ const gaInitScript = siteConfig.googleAnalyticsId
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="alternate" type="application/xml" title="Sitemap" href="/sitemap-index.xml" />
 
+    <meta name="theme-color" content="#191e24" />
+
+    <!-- V1 theme bootstrap — restore when light theme returns
     <meta name="theme-color" content="#fbfaf6" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#1a1714" media="(prefers-color-scheme: dark)" />
-
     <script is:inline>
       (() => {
         try {
@@ -160,6 +168,7 @@ const gaInitScript = siteConfig.googleAnalyticsId
         }
       })();
     </script>
+    -->
 
     <link rel="canonical" href={canonicalUrl} />
     <link rel="alternate" hreflang="en" href={new URL("/", Astro.site).href} />
@@ -237,11 +246,9 @@ const gaInitScript = siteConfig.googleAnalyticsId
     }
   </head>
 
-  <body class="bg-paper text-ink min-h-screen">
-    <main class="mx-auto max-w-[760px] px-5 py-10 sm:py-16">
-      <article class="border-paper-edge bg-paper overflow-hidden rounded-2xl border">
-        <slot />
-      </article>
-    </main>
+  <body>
+    <div class="fx-grid" aria-hidden="true"></div>
+    <div class="fx-scan" aria-hidden="true"></div>
+    <slot />
   </body>
 </html>
