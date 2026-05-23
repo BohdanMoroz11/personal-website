@@ -1,6 +1,7 @@
 ---
 import type { Dictionary } from "../i18n";
 import { contactEmail, mailtoContact } from "../config";
+import SectionHead from "./SectionHead.astro";
 
 interface Props {
   contact: Dictionary["contact"];
@@ -9,20 +10,81 @@ interface Props {
 const { contact } = Astro.props;
 ---
 
-<section class="section-divider px-6 pt-9 pb-2 sm:px-11">
-  <div class="label">{contact.section}</div>
-  <h2 class="serif mt-2 text-[22px]">{contact.heading}</h2>
+<section id={contact.id} class="site-section border-line border-b">
+  <div class="site-wrap">
+    <SectionHead num={contact.num} title={contact.title} subtitle={contact.subtitle} />
+
+    <div class="signal-lock signal-edge contact-grid border-line bg-bg-2 border">
+      <div
+        class="contact-main border-line border-r px-[38px] py-10 max-[920px]:border-r-0 max-[920px]:border-b max-sm:px-[22px] max-sm:py-[30px]"
+      >
+        <p class="text-steel mb-[26px] max-w-[460px] text-[15px] leading-normal">
+          {contact.pitchBefore}
+          <strong class="text-ice font-semibold">{contact.pitchBold}</strong>
+          {contact.pitchAfter}
+        </p>
+        <a href={mailtoContact} class="mail-btn">
+          <span class="mail-btn-arrow" aria-hidden="true">▸</span>
+          {contactEmail}
+        </a>
+      </div>
+
+      <dl
+        class="flex flex-col gap-[19px] px-[34px] py-[38px] max-sm:gap-4 max-sm:px-[22px] max-sm:py-7"
+      >
+        {
+          contact.fields.map((field) => (
+            <div>
+              <dt class="label-mono mb-1.5 tracking-[0.13em]">{field.key}</dt>
+              <dd class:list={["text-ice text-sm", field.accent && "text-ok"]}>
+                {field.links.length > 0 ? (
+                  <>
+                    {field.links.map((link, i) => (
+                      <>
+                        {i > 0 && " · "}
+                        <a
+                          href={link.url}
+                          target="_blank"
+                          rel="me noopener noreferrer"
+                          class="border-line-2 hover:border-signal hover:text-signal border-b transition-colors duration-200"
+                        >
+                          {link.label}
+                          <span class="sr-only"> (opens in a new tab)</span>
+                        </a>
+                      </>
+                    ))}
+                  </>
+                ) : (
+                  field.value
+                )}
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </div>
 </section>
 
-<div class="px-6 pb-9 sm:px-11">
-  <p class="text-ink-soft mt-1 text-[14px] leading-[1.6]">
-    {contact.body}
-  </p>
-  <a href={mailtoContact} class="serif text-ink mt-5 inline-block text-[20px]">
-    <span class="highlight-underline">{contactEmail}</span>
-    <span
-      aria-hidden="true"
-      class="text-muted ml-0.5 inline-block align-[2px] font-sans text-[12px] leading-none">↗</span
-    >
-  </a>
-</div>
+<style>
+  .site-section {
+    padding-block: var(--spacing-section-y);
+  }
+
+  @media (max-width: 620px) {
+    .site-section {
+      padding-block: 46px;
+    }
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+  }
+
+  @media (max-width: 920px) {
+    .contact-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

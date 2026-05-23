@@ -31,12 +31,11 @@ for (const path of ROUTES) {
   });
 }
 
+/* V1 dark-mode axe pass via theme toggle — restore when light theme returns
 test("axe passes in dark mode too", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: /theme/i }).click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-  // The toggle adds a `.theme-transition` class for 300ms; axe reads computed
-  // colors and will see mid-transition values if we don't wait it out.
   await expect(page.locator("html")).not.toHaveClass(/theme-transition/);
   const results = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa"]).analyze();
   if (results.violations.length) {
@@ -44,3 +43,4 @@ test("axe passes in dark mode too", async ({ page }) => {
   }
   expect(results.violations).toEqual([]);
 });
+*/

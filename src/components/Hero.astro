@@ -9,16 +9,74 @@ interface Props {
 const { hero } = Astro.props;
 ---
 
-<header class="px-6 pt-10 pb-7 sm:px-11 sm:pt-12">
-  <div class="label">
-    {hero.location}
-    <span class="hero-sep">·</span>
-    <a href={mailtoContact} class="hero-email">{contactEmail}</a>
+<section class="hero-section border-line border-b" id="top">
+  <div class="site-wrap">
+    <div
+      id="bootline"
+      class="text-steel-dim mb-[34px] min-h-[2.4em] font-mono text-xs leading-normal tracking-[0.07em] max-sm:mb-6 max-sm:text-[11px] max-sm:tracking-[0.04em]"
+      data-prefix={hero.bootline.prefix}
+      data-available={hero.bootline.available}
+    >
+    </div>
+
+    <h1 class="heading-display text-[clamp(54px,10vw,140px)] leading-[0.92] tracking-[-0.025em]">
+      {hero.nameLine1}
+      <span class="text-steel-dim block">{hero.nameLine2}</span>
+    </h1>
+
+    <p
+      class="text-steel mt-6 max-w-[500px] font-mono text-[clamp(13px,1.5vw,15px)] leading-[1.7] tracking-[0.04em] max-sm:mt-[18px]"
+    >
+      {hero.roleGeneral}
+      <span class="text-signal"> //</span>
+      {hero.roleDomain}. {hero.tagline}
+    </p>
+
+    <div class="mt-[30px] max-sm:mt-6">
+      <a href={mailtoContact} class="mail-btn max-sm:px-4 max-sm:py-3.25 max-sm:text-xs">
+        <span class="mail-btn-arrow" aria-hidden="true">▸</span>
+        {contactEmail}
+      </a>
+    </div>
+
+    <dl class="spec-grid mt-[42px] max-sm:mt-[30px]">
+      {
+        hero.specs.map((spec) => (
+          <div class="spec-cell">
+            <dt class="label-mono mb-2.25">{spec.key}</dt>
+            <dd class="text-ice text-sm">
+              {spec.valueUrl ? (
+                <a
+                  href={spec.valueUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="border-signal-dk hover:border-signal hover:text-signal border-b transition-colors duration-200"
+                >
+                  {spec.value}
+                  <span class="sr-only"> (opens in a new tab)</span>
+                </a>
+              ) : (
+                spec.value
+              )}
+              {spec.aside && (
+                <span class="text-steel-dim mt-0.75 block font-mono text-[11px]">{spec.aside}</span>
+              )}
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
   </div>
-  <h1 class="serif mt-3 text-4xl leading-[1.05] sm:text-[40px]">
-    {hero.name}
-  </h1>
-  <p class="serif text-ink-soft mt-2 text-[22px] leading-[1.2] sm:text-[24px]">
-    {hero.roleGeneral} · <span class="highlight-underline">{hero.roleEmphasis}</span>.
-  </p>
-</header>
+</section>
+
+<style>
+  .hero-section {
+    padding-block: 78px 70px;
+  }
+
+  @media (max-width: 620px) {
+    .hero-section {
+      padding-block: 30px 44px;
+    }
+  }
+</style>

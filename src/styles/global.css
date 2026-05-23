@@ -185,6 +185,61 @@
   .hairline-r {
     @apply border-line border-r;
   }
+
+  /* Hero spec strip — 3×2 bordered grid */
+  .spec-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border: 1px solid var(--color-line-2);
+    background: var(--color-bg-bright);
+  }
+
+  .spec-cell {
+    padding: 20px 22px;
+    border-right: 1px solid var(--color-line);
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .spec-cell:nth-child(3n) {
+    border-right: 0;
+  }
+
+  .spec-cell:nth-child(n + 4) {
+    border-bottom: 0;
+  }
+
+  @media (max-width: 920px) {
+    .spec-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .spec-cell {
+      border-right: 1px solid var(--color-line);
+      border-bottom: 1px solid var(--color-line);
+    }
+
+    .spec-cell:nth-child(3n) {
+      border-right: 1px solid var(--color-line);
+    }
+
+    .spec-cell:nth-child(2n) {
+      border-right: 0;
+    }
+
+    .spec-cell:nth-child(n + 4) {
+      border-bottom: 1px solid var(--color-line);
+    }
+
+    .spec-cell:nth-child(n + 5) {
+      border-bottom: 0;
+    }
+  }
+
+  @media (max-width: 620px) {
+    .spec-cell {
+      padding: 15px 14px;
+    }
+  }
 }
 
 /* ---------------------------------------------------------------------------

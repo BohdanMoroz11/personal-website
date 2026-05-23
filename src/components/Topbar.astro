@@ -1,0 +1,47 @@
+---
+import type { Dictionary } from "../i18n";
+
+interface Props {
+  topbar: Dictionary["topbar"];
+}
+
+const { topbar } = Astro.props;
+---
+
+<header class="border-line bg-bg-glass sticky top-0 z-40 border-b backdrop-blur-[8px]">
+  <div class="site-wrap flex h-(--spacing-topbar-h) items-center justify-between">
+    <a
+      href="#top"
+      class="text-ice flex items-center gap-2.5 font-mono text-xs tracking-[0.16em] uppercase"
+    >
+      <span
+        class="border-signal text-signal grid h-[23px] w-[23px] place-items-center border text-[11px] font-bold"
+        aria-hidden="true">B</span
+      >
+      {topbar.brand}
+    </a>
+
+    <nav class="flex gap-1 max-[920px]:hidden" aria-label="Sections">
+      {
+        topbar.nav.map((item) => (
+          <a
+            href={item.href}
+            class="text-steel-dim hover:border-line-2 hover:text-ice border border-transparent px-3.25 py-1.75 font-mono text-[11px] tracking-[0.13em] uppercase transition-colors duration-200"
+          >
+            <span class="text-signal mr-1.5">{item.num}</span>
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div
+      id="clock"
+      class="text-steel-dim font-mono text-[11px] tracking-[0.1em] tabular-nums"
+      aria-live="off"
+      data-suffix={topbar.clockSuffix}
+    >
+      --:--:-- {topbar.clockSuffix}
+    </div>
+  </div>
+</header>

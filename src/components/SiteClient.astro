@@ -1,0 +1,21 @@
+<script>
+  import { initBootline } from "../scripts/v2/bootline";
+  import { initClock } from "../scripts/v2/clock";
+  import { initDossierAccordion } from "../scripts/v2/dossier";
+  import { initSignalLock } from "../scripts/v2/signal-lock";
+
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const clockEl = document.getElementById("clock");
+  if (clockEl?.dataset.suffix) {
+    initClock(clockEl, clockEl.dataset.suffix);
+  }
+
+  const bootEl = document.getElementById("bootline");
+  if (bootEl?.dataset.prefix && bootEl.dataset.available) {
+    initBootline(bootEl, bootEl.dataset.prefix, bootEl.dataset.available, reducedMotion);
+  }
+
+  initSignalLock(reducedMotion);
+  initDossierAccordion();
+</script>

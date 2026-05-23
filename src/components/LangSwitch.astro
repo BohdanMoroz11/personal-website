@@ -20,39 +20,39 @@ const longLabel: Record<Lang, string> = {
 };
 ---
 
-<nav class="lang-switch mono" aria-label="Language">
+<nav class="flex gap-1.5 font-mono text-[11px]" aria-label="Language">
   {
-    items.map(({ code, href, label }, i) => (
-      <>
-        {i > 0 && (
-          <span aria-hidden="true" class="lang-sep">
-            ·
-          </span>
-        )}
-        <a
-          href={href}
-          class:list={["lang-link", { "is-current": code === current }]}
-          hreflang={code}
-          lang={code}
-          aria-current={code === current ? "true" : undefined}
-          data-lang={code}
-          title={longLabel[code]}
-        >
-          {label}
-        </a>
-      </>
+    items.map(({ code, href, label }) => (
+      <a
+        href={href}
+        class:list={[
+          "border-line border px-2.5 py-1.25 tracking-[0.1em] transition-colors duration-200",
+          code === current
+            ? "border-signal-dk text-ice"
+            : "text-steel-dim hover:border-signal-dk hover:text-ice",
+        ]}
+        hreflang={code}
+        lang={code}
+        aria-current={code === current ? "true" : undefined}
+        data-lang={code}
+        title={longLabel[code]}
+      >
+        {label}
+      </a>
     ))
   }
 </nav>
 
 <script>
-  document.querySelectorAll<HTMLAnchorElement>(".lang-switch a[data-lang]").forEach((a) => {
-    a.addEventListener("click", () => {
-      try {
-        localStorage.setItem("lang", a.dataset.lang!);
-      } catch {
-        /* ignore */
-      }
+  document
+    .querySelectorAll<HTMLAnchorElement>("nav[aria-label='Language'] a[data-lang]")
+    .forEach((a) => {
+      a.addEventListener("click", () => {
+        try {
+          localStorage.setItem("lang", a.dataset.lang!);
+        } catch {
+          /* ignore */
+        }
+      });
     });
-  });
 </script>
