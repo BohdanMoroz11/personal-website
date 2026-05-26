@@ -14,7 +14,7 @@ const { contact } = Astro.props;
   <div class="site-wrap">
     <SectionHead num={contact.num} title={contact.title} subtitle={contact.subtitle} />
 
-    <div class="contact-grid border-line bg-bg-2 border">
+    <div class="contact-grid signal-edge border-line bg-bg-2 border">
       <div
         class="contact-main border-line border-r px-[38px] py-10 max-[920px]:border-r-0 max-[920px]:border-b max-sm:px-[22px] max-sm:py-[30px]"
       >
@@ -80,6 +80,10 @@ const { contact } = Astro.props;
   .contact-grid {
     display: grid;
     grid-template-columns: 1.4fr 1fr;
+  }
+
+  .contact-grid .label-mono {
+    color: var(--color-steel-panel);
   }
 
   @media (max-width: 920px) {

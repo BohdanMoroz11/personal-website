@@ -19,5 +19,5 @@ export function initSignalLock(reducedMotion: boolean): void {
     { rootMargin: lockMargin, threshold: 0.1 },
   );
 
-  document.querySelectorAll(".signal-lock").forEach((el) => io.observe(el));
+  document.querySelectorAll(".signal-lock, .signal-edge").forEach((el) => io.observe(el));
 }

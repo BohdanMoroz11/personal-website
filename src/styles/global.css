@@ -14,11 +14,13 @@
   --color-line: #3a4550;
   --color-line-2: #4d5b68;
 
-  --color-steel: #c5ced6;
-  --color-steel-dim: #aeb9c4;
+  --color-steel: #aeb9c4;
+  --color-steel-dim: #73808d;
+  --color-steel-panel: #99a5b1;
   --color-ice: #f3f6f9;
 
   --color-signal: #e0563d;
+  --color-signal-lit: #ff8a72;
   --color-signal-dk: #6e271c;
   --color-ok: #79b89a;
 
@@ -123,7 +125,7 @@
   }
 
   .label-mono {
-    @apply text-steel font-mono text-[10px] tracking-[0.15em] uppercase;
+    @apply text-steel-dim font-mono text-[10px] tracking-[0.15em] uppercase;
   }
 
   .heading-display {
@@ -158,7 +160,7 @@
 
   /* Mail CTA — shared by hero + contact */
   .mail-btn {
-    @apply border-line-2 bg-bg-bright inline-flex items-center gap-3 border px-5.5 py-3.75 font-mono text-sm tracking-wide text-white transition-colors duration-200;
+    @apply border-line-2 bg-bg-bright text-ice inline-flex items-center gap-3 border px-5.5 py-3.75 font-mono text-sm tracking-wide transition-colors duration-200;
   }
 
   .mail-btn:hover {
@@ -198,6 +200,11 @@
     padding: 20px 22px;
     border-right: 1px solid var(--color-line);
     border-bottom: 1px solid var(--color-line);
+  }
+
+  .spec-cell .label-mono,
+  .spec-cell .text-steel-panel {
+    color: var(--color-steel-panel);
   }
 
   .spec-cell:nth-child(3n) {

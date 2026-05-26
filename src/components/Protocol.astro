@@ -13,7 +13,7 @@ const { protocol } = Astro.props;
   <div class="site-wrap">
     <SectionHead num={protocol.num} title={protocol.title} subtitle={protocol.subtitle} />
 
-    <div class="proto-grid border-line border">
+    <div class="proto-grid signal-edge border-line border">
       {
         protocol.items.map((item) => (
           <div class="proto-cell">
@@ -23,7 +23,7 @@ const { protocol } = Astro.props;
               </span>
               <span class="label-mono tracking-[0.15em]">{item.name}</span>
             </div>
-            <p class="text-ice text-[14.5px] leading-normal">
+            <p class="text-steel text-[14.5px] leading-normal">
               <strong class="text-ice font-semibold">{item.lead}</strong>
               {item.rest}
             </p>
@@ -56,6 +56,10 @@ const { protocol } = Astro.props;
     border-bottom: 1px solid var(--color-line);
     background: var(--color-bg-2);
     transition: background-color 0.2s;
+  }
+
+  .proto-cell .label-mono {
+    color: var(--color-steel-panel);
   }
 
   .proto-cell:nth-child(2n) {
