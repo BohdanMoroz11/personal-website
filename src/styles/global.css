@@ -49,7 +49,7 @@
 @layer base {
   html {
     scroll-behavior: smooth;
-    scroll-padding-top: calc(var(--spacing-topbar-h) + 12px);
+    scroll-padding-top: var(--spacing-topbar-h);
     color-scheme: dark;
   }
 
@@ -76,7 +76,7 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    html {
+    z html {
       scroll-behavior: auto;
     }
 
