@@ -60,7 +60,7 @@ const { dossier } = Astro.props;
             </button>
             <div
               class="case-detail max-h-0 overflow-hidden transition-[max-height] duration-[380ms] ease-[cubic-bezier(0.4,0,0.2,1)]"
-              hidden={!c.defaultOpen}
+              style={c.defaultOpen ? "max-height: 9999px" : undefined}
             >
               <div class="border-line bg-bg-bright border-t px-6 py-6 max-sm:px-[18px] max-sm:py-5">
                 <p class="text-steel mb-[18px] max-w-[680px] text-[14.5px] leading-normal">
@@ -166,10 +166,6 @@ const { dossier } = Astro.props;
 
   .case-main {
     padding: 20px 26px;
-  }
-
-  .case-detail .label-mono {
-    color: var(--color-steel-panel);
   }
 
   @media (max-width: 620px) {

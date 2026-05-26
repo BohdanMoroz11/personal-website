@@ -17,8 +17,7 @@
       { "num": "01", "label": "Протокол", "href": "#protocol" },
       { "num": "02", "label": "Досье", "href": "#dossier" },
       { "num": "03", "label": "Связь", "href": "#contact" }
-    ],
-    "clockSuffix": "UTC+2"
+    ]
   },
   "hero": {
     "bootline": {

@@ -5,7 +5,6 @@ function setOpen(card: HTMLElement, open: boolean): void {
 
   card.classList.toggle("open", open);
   bar.setAttribute("aria-expanded", String(open));
-  detail.toggleAttribute("hidden", !open);
   detail.style.maxHeight = open ? `${detail.scrollHeight}px` : "";
 }
 
@@ -26,8 +25,24 @@ export function initDossierAccordion(): void {
     });
   });
 
+  // Initialise every card so its max-height matches reality and not the
+  // SSR placeholder, then keep the open one in sync if its content reflows.
   document.querySelectorAll<HTMLElement>(".case").forEach((card) => {
-    const open = card.classList.contains("open");
-    setOpen(card, open);
+    setOpen(card, card.classList.contains("open"));
   });
+
+  if (typeof ResizeObserver !== "undefined") {
+    const ro = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const detail = entry.target as HTMLElement;
+        const card = detail.closest<HTMLElement>(".case");
+        if (card?.classList.contains("open")) {
+          detail.style.maxHeight = `${detail.scrollHeight}px`;
+        }
+      }
+    });
+    document
+      .querySelectorAll<HTMLElement>(".case-detail")
+      .forEach((d) => ro.observe(d.firstElementChild ?? d));
+  }
 }

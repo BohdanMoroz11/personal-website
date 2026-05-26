@@ -22,6 +22,9 @@ const { notFound, homeHref } = Astro.props;
       data-status={notFound.bootline.status}
       data-status-class="text-signal"
     >
+      <noscript>
+        {notFound.bootline.prefix}<span class="text-signal">{notFound.bootline.status}</span>
+      </noscript>
     </div>
 
     <div class="not-found-head signal-lock on">

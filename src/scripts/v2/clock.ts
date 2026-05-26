@@ -1,11 +1,22 @@
-const pad = (n: number) => (n < 10 ? `0${n}` : String(n));
+const TZ = "Europe/Sofia";
 
-/** Live Sofia clock (UTC+2 fixed offset). */
-export function initClock(el: HTMLElement, suffix: string): () => void {
+const formatter = new Intl.DateTimeFormat("en-GB", {
+  timeZone: TZ,
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+  hour12: false,
+  timeZoneName: "shortOffset",
+});
+
+/** Live Sofia clock — honours DST (EET ↔ EEST) via Intl. */
+export function initClock(el: HTMLElement): () => void {
   const tick = () => {
-    const now = new Date();
-    const utc = new Date(now.getTime() + (now.getTimezoneOffset() + 120) * 60_000);
-    el.textContent = `${pad(utc.getHours())}:${pad(utc.getMinutes())}:${pad(utc.getSeconds())} ${suffix}`;
+    const parts = formatter.formatToParts(new Date());
+    const get = (type: Intl.DateTimeFormatPartTypes) =>
+      parts.find((p) => p.type === type)?.value ?? "";
+    const offset = (get("timeZoneName") || "GMT+2").replace(/^GMT/, "UTC");
+    el.textContent = `${get("hour")}:${get("minute")}:${get("second")} ${offset}`;
   };
 
   tick();

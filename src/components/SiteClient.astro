@@ -7,8 +7,8 @@
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   const clockEl = document.getElementById("clock");
-  if (clockEl?.dataset.suffix) {
-    initClock(clockEl, clockEl.dataset.suffix);
+  if (clockEl) {
+    initClock(clockEl);
   }
 
   const bootEl = document.getElementById("bootline");

@@ -17,6 +17,9 @@ const { hero } = Astro.props;
       data-prefix={hero.bootline.prefix}
       data-available={hero.bootline.available}
     >
+      <noscript>
+        {hero.bootline.prefix}<span class="text-ok">{hero.bootline.available}</span>
+      </noscript>
     </div>
 
     <h1 class="heading-display text-[clamp(54px,10vw,140px)] leading-[0.92] tracking-[-0.025em]">

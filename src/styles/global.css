@@ -49,6 +49,7 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: calc(var(--spacing-topbar-h) + 12px);
     color-scheme: dark;
   }
 
@@ -87,6 +88,10 @@
       @apply bg-signal transition-none;
     }
 
+    .case-detail {
+      transition: none;
+    }
+
     .cursor-blink {
       display: none;
     }
@@ -120,12 +125,12 @@
   }
 
   /* Typography helpers */
-  .font-mono {
-    font-family: var(--font-mono);
+  .label-mono {
+    @apply text-steel-panel font-mono text-[10px] tracking-[0.15em] uppercase;
   }
 
-  .label-mono {
-    @apply text-steel-dim font-mono text-[10px] tracking-[0.15em] uppercase;
+  .label-mono-dim {
+    @apply text-steel-dim;
   }
 
   .heading-display {
@@ -200,11 +205,6 @@
     padding: 20px 22px;
     border-right: 1px solid var(--color-line);
     border-bottom: 1px solid var(--color-line);
-  }
-
-  .spec-cell .label-mono,
-  .spec-cell .text-steel-panel {
-    color: var(--color-steel-panel);
   }
 
   .spec-cell:nth-child(3n) {

@@ -5,12 +5,12 @@ test.describe("V2 client interactions", () => {
     await page.goto("/");
     const clock = page.locator("#clock");
     await expect(clock).toBeVisible();
-    await expect(clock).toContainText("UTC+2");
+    await expect(clock).toContainText(/UTC[+-]\d/);
 
     const first = await clock.textContent();
     await page.waitForTimeout(1100);
     const second = await clock.textContent();
-    expect(second).toMatch(/^\d{2}:\d{2}:\d{2} UTC\+2$/);
+    expect(second).toMatch(/^\d{2}:\d{2}:\d{2} UTC[+-]\d+(:\d{2})?$/);
     expect(second).not.toBe(first);
   });
 

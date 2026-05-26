@@ -19,10 +19,12 @@ const t = useTranslations(lang);
 
 <Base lang={lang} meta={t.meta} schema={t.schema}>
   <Topbar topbar={t.topbar} />
-  <Hero hero={t.hero} />
-  <Protocol protocol={t.protocol} />
-  <Dossier dossier={t.dossier} />
-  <Contact contact={t.contact} />
+  <main>
+    <Hero hero={t.hero} />
+    <Protocol protocol={t.protocol} />
+    <Dossier dossier={t.dossier} />
+    <Contact contact={t.contact} />
+  </main>
   <Footer footer={t.footer} />
   <SiteClient />
 </Base>
