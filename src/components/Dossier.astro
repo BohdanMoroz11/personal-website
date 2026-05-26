@@ -42,14 +42,32 @@ const { dossier } = Astro.props;
                 </span>
               </span>
               <span class="case-side flex items-center gap-6 px-6 max-[920px]:gap-3 max-[920px]:px-3.5 max-[560px]:[&_.case-metric]:hidden">
-                <span class="case-metric text-right">
-                  <span class="font-display text-ice block text-2xl leading-none font-bold tracking-tight max-[920px]:text-lg">
-                    {c.metricNum}
+                {c.metricNum && (
+                  <span class="case-metric flex items-stretch gap-4 max-[920px]:gap-3">
+                    <span class="text-right">
+                      <span class="font-display text-ice block text-2xl leading-none font-bold tracking-tight max-[920px]:text-lg">
+                        {c.metricNum}
+                      </span>
+                      {c.metricCap && (
+                        <span class="text-steel-panel mt-1.25 block font-mono text-[9.5px] tracking-[0.09em] uppercase">
+                          {c.metricCap}
+                        </span>
+                      )}
+                    </span>
+                    {c.metricNum2 && (
+                      <span class="border-line border-l pl-4 text-left max-[920px]:pl-3">
+                        <span class="font-display text-ice block text-2xl leading-none font-bold tracking-tight max-[920px]:text-lg">
+                          {c.metricNum2}
+                        </span>
+                        {c.metricCap2 && (
+                          <span class="text-steel-panel mt-1.25 block font-mono text-[9.5px] tracking-[0.09em] uppercase">
+                            {c.metricCap2}
+                          </span>
+                        )}
+                      </span>
+                    )}
                   </span>
-                  <span class="text-steel-panel mt-1.25 block font-mono text-[9.5px] tracking-[0.09em] uppercase">
-                    {c.metricCap}
-                  </span>
-                </span>
+                )}
                 <span
                   class="case-chev text-signal font-mono text-[13px] transition-transform duration-300"
                   aria-hidden="true"
@@ -68,6 +86,35 @@ const { dossier } = Astro.props;
                   {c.descBold && <strong class="text-ice font-semibold">{c.descBold}</strong>}
                   {c.descAfter}
                 </p>
+                {c.metricNum && (
+                  <div class="mb-[18px] hidden max-[560px]:block">
+                    <p class="label-mono mb-2.5 tracking-[0.13em]">{dossier.metricsLabel}</p>
+                    <div class="flex items-stretch gap-4">
+                      <span class="text-left">
+                        <span class="font-display text-ice block text-2xl leading-none font-bold tracking-tight">
+                          {c.metricNum}
+                        </span>
+                        {c.metricCap && (
+                          <span class="text-steel-panel mt-1.25 block font-mono text-[9.5px] tracking-[0.09em] uppercase">
+                            {c.metricCap}
+                          </span>
+                        )}
+                      </span>
+                      {c.metricNum2 && (
+                        <span class="border-line border-l pl-4 text-left">
+                          <span class="font-display text-ice block text-2xl leading-none font-bold tracking-tight">
+                            {c.metricNum2}
+                          </span>
+                          {c.metricCap2 && (
+                            <span class="text-steel-panel mt-1.25 block font-mono text-[9.5px] tracking-[0.09em] uppercase">
+                              {c.metricCap2}
+                            </span>
+                          )}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                )}
                 <p class="label-mono mb-2.5 tracking-[0.13em]">{dossier.stackLabel}</p>
                 <ul class="mb-[18px] flex flex-wrap gap-1.5">
                   {c.stack.map((tag) => (
