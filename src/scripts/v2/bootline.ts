@@ -1,9 +1,5 @@
 const TYPE_MS = 26;
 
-function renderStatus(prefix: string, status: string, statusClass: string): string {
-  return `${prefix}<span class="${statusClass}">${status}</span>`;
-}
-
 /** Typewriter boot line with blinking cursor. */
 export function initBootline(
   el: HTMLElement,
@@ -12,27 +8,39 @@ export function initBootline(
   reducedMotion: boolean,
   statusClass = "text-ok",
 ): void {
-  const full = prefix + status;
-
-  if (reducedMotion) {
-    el.innerHTML = renderStatus(prefix, status, statusClass);
-    return;
-  }
-
   const cursor = document.createElement("span");
   cursor.className = "inline-block h-[13px] w-[7px] -translate-y-px bg-signal align-[-2px]";
 
+  const statusSpan = document.createElement("span");
+  statusSpan.className = statusClass;
+
+  const prefixNode = document.createTextNode("");
+  el.replaceChildren(prefixNode, statusSpan);
+
+  const paint = (n: number) => {
+    if (n <= prefix.length) {
+      prefixNode.data = prefix.slice(0, n);
+      statusSpan.textContent = "";
+    } else {
+      prefixNode.data = prefix;
+      statusSpan.textContent = status.slice(0, n - prefix.length);
+    }
+  };
+
+  if (reducedMotion) {
+    paint(prefix.length + status.length);
+    return;
+  }
+
   let i = 0;
   const step = () => {
-    if (i <= full.length) {
-      el.textContent = full.slice(0, i);
-      el.appendChild(cursor);
+    paint(i);
+    el.appendChild(cursor);
+    if (i <= prefix.length + status.length) {
       i += 1;
       window.setTimeout(step, TYPE_MS);
     } else {
-      el.innerHTML = renderStatus(prefix, status, statusClass);
       cursor.classList.add("animate-cursor-blink");
-      el.appendChild(cursor);
     }
   };
 

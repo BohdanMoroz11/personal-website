@@ -1,9 +1,11 @@
 ---
-import "@fontsource/chakra-petch/400.css";
-import "@fontsource/chakra-petch/500.css";
-import "@fontsource/chakra-petch/600.css";
-import "@fontsource/chakra-petch/700.css";
+import "@fontsource/chakra-petch/latin-400.css";
+import "@fontsource/chakra-petch/latin-500.css";
+import "@fontsource/chakra-petch/latin-600.css";
+import "@fontsource/chakra-petch/latin-700.css";
 import "@fontsource-variable/jetbrains-mono/wght.css";
+import chakraPetch700 from "@fontsource/chakra-petch/files/chakra-petch-latin-700-normal.woff2?url";
+import jetbrainsMonoVar from "@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2?url";
 import "../styles/global.css";
 import type { Dictionary, Lang } from "../i18n";
 import { mailtoContact, siteConfig } from "../config";
@@ -142,6 +144,15 @@ const gaInitScript = siteConfig.googleAnalyticsId
     <meta name="format-detection" content="telephone=no" />
     <title>{meta.title}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <link rel="preload" as="font" type="font/woff2" href={chakraPetch700} crossorigin="anonymous" />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href={jetbrainsMonoVar}
+      crossorigin="anonymous"
+    />
     <link rel="alternate" type="application/xml" title="Sitemap" href="/sitemap-index.xml" />
 
     <meta name="theme-color" content="#191e24" />
