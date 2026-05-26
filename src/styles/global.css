@@ -32,6 +32,7 @@
 
   --spacing-site-x: 36px;
   --spacing-section-y: 78px;
+  --spacing-section-y-sm: 46px;
   --spacing-topbar-h: 58px;
 
   --animate-cursor-blink: cursor-blink 1s steps(1) infinite;
@@ -76,7 +77,7 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    z html {
+    html {
       scroll-behavior: auto;
     }
 
@@ -122,6 +123,16 @@
   /* Layout shell — max-width page gutter used by every section */
   .site-wrap {
     @apply relative z-2 mx-auto max-w-(--width-site) px-9;
+  }
+
+  .site-section {
+    padding-block: var(--spacing-section-y);
+  }
+
+  @media (max-width: 620px) {
+    .site-section {
+      padding-block: var(--spacing-section-y-sm);
+    }
   }
 
   /* Typography helpers */

@@ -34,9 +34,9 @@ export function initDossierAccordion(): void {
   if (typeof ResizeObserver !== "undefined") {
     const ro = new ResizeObserver((entries) => {
       for (const entry of entries) {
-        const detail = entry.target as HTMLElement;
-        const card = detail.closest<HTMLElement>(".case");
-        if (card?.classList.contains("open")) {
+        const detail = (entry.target as HTMLElement).closest<HTMLElement>(".case-detail");
+        const card = detail?.closest<HTMLElement>(".case");
+        if (detail && card?.classList.contains("open")) {
           detail.style.maxHeight = `${detail.scrollHeight}px`;
         }
       }
