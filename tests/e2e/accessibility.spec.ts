@@ -1,11 +1,20 @@
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
+import { settleV2Page } from "./helpers/settle-v2-page";
 
 const ROUTES = ["/", "/ru/", "/uk/", "/this-route-does-not-exist"];
 
 for (const path of ROUTES) {
   test(`${path} has no detectable WCAG 2.1 a11y violations`, async ({ page }) => {
-    await page.goto(path, { waitUntil: "domcontentloaded" });
+    await page.goto(path, { waitUntil: "load" });
+    await settleV2Page(page);
+    await settleV2Page(page);
+
+    expect(await page.locator(".signal-lock:not(.on)").count()).toBe(0);
+    if (path !== "/this-route-does-not-exist") {
+      expect(await page.locator(".case.open").count()).toBe(0);
+    }
+
     const results = await new AxeBuilder({ page })
       .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
       .analyze();
@@ -31,12 +40,11 @@ for (const path of ROUTES) {
   });
 }
 
+/* V1 dark-mode axe pass via theme toggle — restore when light theme returns
 test("axe passes in dark mode too", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: /theme/i }).click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-  // The toggle adds a `.theme-transition` class for 300ms; axe reads computed
-  // colors and will see mid-transition values if we don't wait it out.
   await expect(page.locator("html")).not.toHaveClass(/theme-transition/);
   const results = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa"]).analyze();
   if (results.violations.length) {
@@ -44,3 +52,4 @@ test("axe passes in dark mode too", async ({ page }) => {
   }
   expect(results.violations).toEqual([]);
 });
+*/

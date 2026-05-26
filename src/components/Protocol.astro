@@ -1,0 +1,85 @@
+---
+import type { Dictionary } from "../i18n";
+import SectionHead from "./SectionHead.astro";
+
+interface Props {
+  protocol: Dictionary["protocol"];
+}
+
+const { protocol } = Astro.props;
+---
+
+<section id={protocol.id} class="site-section border-line border-b">
+  <div class="site-wrap">
+    <SectionHead num={protocol.num} title={protocol.title} subtitle={protocol.subtitle} />
+
+    <div class="proto-grid signal-lock signal-edge border-line border">
+      {
+        protocol.items.map((item) => (
+          <div class="proto-cell">
+            <div class="mb-3.25 flex items-center gap-3">
+              <span class="border-signal-dk text-signal grid h-[26px] w-[26px] place-items-center border font-mono text-[13px] font-bold">
+                {item.letter}
+              </span>
+              <span class="label-mono tracking-[0.15em]">{item.name}</span>
+            </div>
+            <p class="text-steel text-[14.5px] leading-normal">
+              <strong class="text-ice font-semibold">{item.lead}</strong>
+              {item.rest}
+            </p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .proto-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .proto-cell {
+    padding: 28px 30px;
+    border-right: 1px solid var(--color-line);
+    border-bottom: 1px solid var(--color-line);
+    background: var(--color-bg-2);
+    transition: background-color 0.2s;
+  }
+
+  .proto-cell:nth-child(2n) {
+    border-right: 0;
+  }
+
+  .proto-cell:nth-child(n + 3) {
+    border-bottom: 0;
+  }
+
+  @media (hover: hover) {
+    .proto-cell:hover {
+      background: var(--color-bg-3);
+    }
+  }
+
+  @media (max-width: 920px) {
+    .proto-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .proto-cell {
+      border-right: 0;
+      border-bottom: 1px solid var(--color-line);
+    }
+
+    .proto-cell:last-child {
+      border-bottom: 0;
+    }
+  }
+
+  @media (max-width: 620px) {
+    .proto-cell {
+      padding: 22px 20px;
+    }
+  }
+</style>

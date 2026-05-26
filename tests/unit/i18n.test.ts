@@ -38,6 +38,15 @@ describe("useTranslations", () => {
 
   it("returns the English dictionary for the default lang", () => {
     const t = useTranslations(defaultLang);
-    expect(t.hero.name).toMatch(/Bohdan Moroz/);
+    expect(`${t.hero.nameLine1} ${t.hero.nameLine2}`).toMatch(/Bohdan Moroz/);
+  });
+
+  it("returns localized hero names for ru and uk", () => {
+    expect(
+      `${useTranslations("ru").hero.nameLine1} ${useTranslations("ru").hero.nameLine2}`,
+    ).toMatch(/Богдан Мороз/);
+    expect(
+      `${useTranslations("uk").hero.nameLine1} ${useTranslations("uk").hero.nameLine2}`,
+    ).toMatch(/Богдан Мороз/);
   });
 });

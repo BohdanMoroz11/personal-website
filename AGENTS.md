@@ -2,6 +2,14 @@
 
 Single-page personal site for Bohdan Moroz, a full-stack TypeScript engineer (Sofia, Bulgaria) advertising freelance availability to US SMBs in logistics, HR, and fintech.
 
+## V2 redesign (in progress)
+
+Visual V2 is being built on branch **`v2`**. V1 on `main` is the shipped editorial/paper design; V2 is a dark tactical-terminal redesign ported from a pure HTML mockup.
+
+- **About doc:** [`docs/V2.md`](docs/V2.md) — goals, V1→V2 mapping, port phases, open decisions, acceptance criteria
+- **Reference mockup:** [`V2_REFRENCE.html`](V2_REFRENCE.html) — source of truth for layout, copy, CSS, and interaction until ported
+- **Workflow:** all V2 commits on `v2`; no separate PRs until ready to merge to `main`
+
 ## Stack
 
 - **Astro 6** (static, no SSR adapter configured)

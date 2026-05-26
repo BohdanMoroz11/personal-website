@@ -1,7 +1,11 @@
 ---
-import "@fontsource-variable/inter/wght.css";
-import "@fontsource-variable/newsreader/wght.css";
+import "@fontsource/chakra-petch/latin-400.css";
+import "@fontsource/chakra-petch/latin-500.css";
+import "@fontsource/chakra-petch/latin-600.css";
+import "@fontsource/chakra-petch/latin-700.css";
 import "@fontsource-variable/jetbrains-mono/wght.css";
+import chakraPetch700 from "@fontsource/chakra-petch/files/chakra-petch-latin-700-normal.woff2?url";
+import jetbrainsMonoVar from "@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2?url";
 import "../styles/global.css";
 import type { Dictionary, Lang } from "../i18n";
 import { mailtoContact, siteConfig } from "../config";
@@ -140,11 +144,22 @@ const gaInitScript = siteConfig.googleAnalyticsId
     <meta name="format-detection" content="telephone=no" />
     <title>{meta.title}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <link rel="preload" as="font" type="font/woff2" href={chakraPetch700} crossorigin="anonymous" />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href={jetbrainsMonoVar}
+      crossorigin="anonymous"
+    />
     <link rel="alternate" type="application/xml" title="Sitemap" href="/sitemap-index.xml" />
 
+    <meta name="theme-color" content="#191e24" />
+
+    <!-- V1 theme bootstrap — restore when light theme returns
     <meta name="theme-color" content="#fbfaf6" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#1a1714" media="(prefers-color-scheme: dark)" />
-
     <script is:inline>
       (() => {
         try {
@@ -160,6 +175,7 @@ const gaInitScript = siteConfig.googleAnalyticsId
         }
       })();
     </script>
+    -->
 
     <link rel="canonical" href={canonicalUrl} />
     <link rel="alternate" hreflang="en" href={new URL("/", Astro.site).href} />
@@ -237,11 +253,9 @@ const gaInitScript = siteConfig.googleAnalyticsId
     }
   </head>
 
-  <body class="bg-paper text-ink min-h-screen">
-    <main class="mx-auto max-w-[760px] px-5 py-10 sm:py-16">
-      <article class="border-paper-edge bg-paper overflow-hidden rounded-2xl border">
-        <slot />
-      </article>
-    </main>
+  <body>
+    <div class="fx-grid" aria-hidden="true"></div>
+    <div class="fx-scan" aria-hidden="true"></div>
+    <slot />
   </body>
 </html>

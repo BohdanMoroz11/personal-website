@@ -1,11 +1,12 @@
 ---
 import Base from "../layouts/Base.astro";
+import Topbar from "./Topbar.astro";
 import Hero from "./Hero.astro";
-import FactsTable from "./FactsTable.astro";
-import Work from "./Work.astro";
-import HowIWork from "./HowIWork.astro";
+import Protocol from "./Protocol.astro";
+import Dossier from "./Dossier.astro";
 import Contact from "./Contact.astro";
 import Footer from "./Footer.astro";
+import SiteClient from "./SiteClient.astro";
 import { useTranslations, type Lang } from "../i18n";
 
 interface Props {
@@ -17,10 +18,13 @@ const t = useTranslations(lang);
 ---
 
 <Base lang={lang} meta={t.meta} schema={t.schema}>
-  <Hero hero={t.hero} />
-  <FactsTable facts={t.facts} />
-  <HowIWork howIWork={t.howIWork} />
-  <Work work={t.work} />
-  <Contact contact={t.contact} />
+  <Topbar topbar={t.topbar} />
+  <main>
+    <Hero hero={t.hero} />
+    <Protocol protocol={t.protocol} />
+    <Dossier dossier={t.dossier} />
+    <Contact contact={t.contact} />
+  </main>
   <Footer footer={t.footer} />
+  <SiteClient />
 </Base>

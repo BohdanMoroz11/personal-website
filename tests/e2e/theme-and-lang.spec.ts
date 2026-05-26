@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 
+/* V1 theme toggle — restore when light theme returns
 test.describe("theme toggle", () => {
   test("toggles between light and dark and persists", async ({ page }) => {
     await page.goto("/");
@@ -16,6 +17,7 @@ test.describe("theme toggle", () => {
     await expect(page.locator("html")).toHaveAttribute("data-theme", next);
   });
 });
+*/
 
 test.describe("language switcher", () => {
   test("navigates between locales and marks the current one", async ({ page }) => {
@@ -37,10 +39,8 @@ test.describe("language switcher", () => {
     await page.locator("a[data-lang=uk]").click();
     await expect(page).toHaveURL(/\/uk\/?$/);
 
-    // Open a fresh page in the same context (localStorage shared) and hit "/".
     const fresh = await context.newPage();
     await fresh.goto("/");
-    // The bootstrap redirect runs synchronously before paint on lang-root URLs.
     await fresh.waitForURL(/\/uk\/?$/);
     await expect(fresh.locator("html")).toHaveAttribute("lang", "uk");
   });

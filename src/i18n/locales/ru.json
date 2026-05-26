@@ -3,12 +3,6 @@
     "title": "Богдан Мороз — Software Engineer · Прикладной ИИ",
     "description": "Богдан Мороз — software engineer, работаю с прикладным ИИ. Четыре года делаю веб- и мобильные продукты для команд из США в логистике, HR и финтехе. Открыт к проектной работе."
   },
-  "hero": {
-    "location": "София, Болгария · Свободен для проектов",
-    "name": "Богдан Мороз.",
-    "roleGeneral": "Software Engineer",
-    "roleEmphasis": "Прикладной ИИ"
-  },
   "schema": {
     "jobTitle": "Software Engineer, Прикладной ИИ",
     "workLocationName": "София, Болгария",
@@ -17,135 +11,309 @@
     "seeksName": "Проектная работа в разработке ПО",
     "seeksDescription": "Открыт к проектной full-stack TypeScript-разработке для малого и среднего бизнеса в США в логистике, HR и финтехе. Удалённо или лично в Софии."
   },
-  "facts": {
-    "focusLabel": "Фокус",
-    "focusValue": "Agentic AI · Полный цикл разработки",
-    "focusAside": "4 года",
-    "domainsLabel": "Домены",
-    "domainsValue": "Логистика (TMS) · HR-онбординг · Финтех",
-    "domainsAside": "Прямая работа",
-    "stackLabel": "Стек",
-    "stackValue": "React · Next.js · NestJS · React Native (Expo)",
-    "stackAside": "TypeScript",
-    "infraLabel": "Инфра",
-    "infraValue": "CI/CD · Docker · self-host · Ollama / vLLM / LiteLLM",
-    "workingLabel": "Формат",
-    "workingValue": "Удалённо · Лично, если вы в Софии",
-    "employerLabel": "Работодатель",
-    "employerValue": "ETL Group LLC",
-    "employerAside": "с мая '24",
-    "statusLabel": "Статус",
-    "statusValue": "Открыт к проектной работе",
-    "statusAside": "и к предложениям"
+  "topbar": {
+    "brand": "BOHDAN MOROZ",
+    "nav": [
+      { "num": "01", "label": "Протокол", "href": "#protocol" },
+      { "num": "02", "label": "Досье", "href": "#dossier" },
+      { "num": "03", "label": "Связь", "href": "#contact" }
+    ]
   },
-  "work": {
-    "section": "§ 02 — Избранные проекты",
-    "heading": "Примеры моей работы — в основном для малого и среднего бизнеса в США.",
-    "stacksToggleClosed": "Показать стек",
-    "stacksToggleOpen": "Скрыть стек",
-    "projects": [
+  "hero": {
+    "bootline": {
+      "prefix": "> bohdanmoroz.com — софия, болгария — ",
+      "available": "доступен для проектов"
+    },
+    "nameLine1": "Богдан",
+    "nameLine2": "Мороз",
+    "roleGeneral": "Software Engineer",
+    "roleDomain": "Прикладной ИИ",
+    "tagline": "Четыре года вывожу в прод production web & mobile-системы для операторов из США в логистике, HR и финтехе.",
+    "specs": [
       {
-        "num": "01",
-        "title": "ClaraHR",
-        "tag": "Full-stack · Lead Dev",
-        "affiliation": "ETL Group",
-        "desc": "Онбординг для американских дальнобойщиков: бот опрашивает водителя в удобном ему канале и регистрирует его в системе перевозчика, заменяя ручную HR-переписку. Серверная часть — на мне.",
-        "meta": [
-          "Fastify · Next.js · Postgres · Sequelize · Redis · BullMQ · Socket.IO · Twilio · Telegram · Resend · AWS S3 · OpenAI · Docker Swarm · Vitest",
-          "2025 → н. в."
-        ],
-        "metric": "8 перевозчиков · 635 онбордингов",
-        "url": "https://clarahr.io",
-        "linkLabel": ""
+        "key": "Опыт",
+        "value": "4 года",
+        "valueUrl": "",
+        "aside": "agentic AI · полный цикл разработки"
       },
       {
-        "num": "02",
-        "title": "CargoHub",
-        "tag": "Full-stack · Sole Dev",
-        "affiliation": "ETL Group",
-        "desc": "Публичный маркетплейс грузоперевозок: американские грузоотправители и брокеры смотрят машины партнёров-перевозчиков, размещают грузы и бронируют мощности напрямую. Встроенный ИИ-ассистент закрывает рутинные шаги по бронированию и диспетчеризации; аккаунты, живой трекинг и документооборот — уже в продукте.",
-        "meta": [
-          "Next.js · Postgres · Prisma · NextAuth · Google Maps · Resend · Zustand · Zod · SWR · MUI · OpenAI · DeepSeek · Playwright",
-          "2026 → н. в."
-        ],
-        "metric": "9 перевозчиков · ~2 500 машин",
-        "url": "https://map.cargoetl.com",
-        "linkLabel": "live"
+        "key": "Домены",
+        "value": "Логистика · HR · Финтех",
+        "valueUrl": "",
+        "aside": "TMS · онбординг · платежи"
       },
       {
-        "num": "03",
-        "title": "CargoFinance",
-        "tag": "Full-stack · Sole Dev",
-        "affiliation": "ETL Group",
-        "desc": "Бухгалтерия и лёгкая финтех-обвязка для бэк-офиса логистики — выставление счетов, отслеживание переводов, выплаты по банковским рельсам. Главное было превратить незнакомый домен (кредиторка/дебиторка, сверки) в инструмент, которым реально пользуются операторы.",
-        "meta": [
-          "Nest.js · Vite · Postgres · Prisma · TanStack Router · TanStack Query · Tailwind · Radix · Plaid · Zod · Vitest · Playwright · MSW",
-          "2026 → н. в."
-        ],
-        "url": "",
-        "linkLabel": ""
+        "key": "Стек",
+        "value": "TypeScript",
+        "valueUrl": "",
+        "aside": "React · Next · NestJS · RN (Expo)"
       },
       {
-        "num": "04",
-        "title": "CargoETL",
-        "tag": "Mobile · Frontend",
-        "affiliation": "ETL Group",
-        "desc": "Закрытая TMS-платформа для перевозчиков и диспетчеров в США. Веду оба конца: диспетчерскую панель на Next.js и водительское приложение на React Native (Expo) — поток заказов, живой трекинг, документы, коммуникация с диспетчером.",
-        "meta": [
-          "Web: Next.js · Ant Design · MobX · Autobahn (WebSocket) · Google Maps · Sentry · TinyMCE",
-          "Mobile: React Native · Expo · Redux Toolkit · Zustand · Reanimated · React Native Maps · Firebase Messaging · Notifee · Sentry · Google Places",
-          "2024 → н. в."
-        ],
-        "url": "https://cargoetl.com",
-        "linkLabel": ""
+        "key": "Инфра",
+        "value": "CI/CD · Docker",
+        "valueUrl": "",
+        "aside": "self-host · Ollama / vLLM / LiteLLM"
       },
       {
-        "num": "05",
-        "title": "Altek TMS",
-        "tag": "Mobile · Frontend",
-        "affiliation": "",
-        "desc": "Более ранняя TMS для перевозчиков и диспетчеров в США — диспетчерская панель и водительское приложение: поток заказов, живой трекинг, коммуникация с диспетчером. Мой первый многолетний продакшн-проект; сервис с тех пор свернулся.",
-        "meta": ["Vue · Nuxt · JavaScript · React Native", "2022 → 2024"],
-        "url": "https://altek.digital",
-        "linkLabel": ""
+        "key": "Языки",
+        "value": "EN · UK · RU",
+        "valueUrl": "",
+        "aside": "async, US clients · UTC+2"
+      },
+      {
+        "key": "Работодатель",
+        "value": "ETL Group LLC ↗",
+        "valueUrl": "https://etlgroupllc.com",
+        "aside": "с мая 2024"
       }
     ]
   },
-  "howIWork": {
-    "section": "§ 01 — Как я работаю",
-    "heading": "Как выглядит работа со мной.",
+  "protocol": {
+    "id": "protocol",
+    "num": "§ 01",
+    "title": "Рабочий протокол",
+    "subtitle": "<< КАК ВЫГЛЯДИТ РАБОТА СО МНОЙ >>",
     "items": [
       {
-        "n": "a.",
-        "text": "Полная ответственность за задачу. Беру её с полусырого макета в Figma или абзаца требований и довожу до конца через фронт, бэк, инфру и деплой."
+        "letter": "A",
+        "name": "Ownership",
+        "lead": "Полная ответственность за задачу.",
+        "rest": "Беру фичу с полусырого Figma или абзаца требований и довожу через фронт, бэк, инфраструктуру и деплой."
       },
       {
-        "n": "b.",
-        "text": "TypeScript по всему стеку: React / Next.js на вебе, React Native (Expo) на мобильном, NestJS/Fastify/Express на сервере. CI/CD, тесты, Docker по умолчанию; self-host на своей инфре, когда это оправдано, AWS / Vercel / Hetzner — когда нет."
+        "letter": "B",
+        "name": "Stack",
+        "lead": "TypeScript по всему стеку.",
+        "rest": "React / Next.js на вебе, React Native (Expo) на мобильном, NestJS / Fastify / Express на сервере. CI/CD, тесты, Docker по умолчанию; self-host, когда оправдано, AWS / Vercel / Hetzner — когда нет."
       },
       {
-        "n": "c.",
-        "text": "Агентный ИИ — основа моего процесса. Вокруг агентов у меня собран свой набор инструментов: они пишут код, я отвечаю за архитектуру, ревью и то, как всё это собирается вместе. Инфру под это тоже поднимаю сам — self-hosted модели, шлюзы, роутинг; на основной работе как раз этим и занимаюсь. По итогу за неделю выходит сильно больше, чем если бы я печатал всё руками."
+        "letter": "C",
+        "name": "Throughput",
+        "lead": "Агентный ИИ — основа моего процесса.",
+        "rest": "Вокруг агентов собран свой набор инструментов: они пишут код, я отвечаю за архитектуру, ревью и интеграцию. Инфру под inference, шлюзы и роутинг поднимаю сам — на основной работе этим занимаюсь каждый день."
       },
       {
-        "n": "d.",
-        "text": "Привык работать асинхронно с разными часовыми поясами — из Софии, Болгария (UTC+2). Языки: английский, украинский, русский."
+        "letter": "D",
+        "name": "Comms",
+        "lead": "Async-friendly.",
+        "rest": "Привык работать с US-клиентами из Софии, Болгария (UTC+2). Языки: английский, украинский, русский."
+      }
+    ]
+  },
+  "dossier": {
+    "id": "dossier",
+    "num": "§ 02",
+    "title": "Избранное досье",
+    "subtitle": "<< ПОЛЕВЫЕ ЗАПИСИ — В ОСНОВНОМ ДЛЯ US SMB · НАЖМИТЕ, ЧТОБЫ РАСКРЫТЬ >>",
+    "stackLabel": "// stack manifest",
+    "metricsLabel": "// field metrics",
+    "linkOpen": "Открыть запись ↗",
+    "linkClosed": "Закрытая запись",
+    "liveLabel": "● Live",
+    "cases": [
+      {
+        "id": "01",
+        "name": "ClaraHR",
+        "role": "Full-stack · Lead dev · ETL Group",
+        "tease": "Онбординг водителей — чат-бот интервьюирует и заводит в систему",
+        "metricNum": "635",
+        "metricCap": "Водителей",
+        "metricNum2": "8",
+        "metricCap2": "Перевозчиков",
+        "desc": "Онбординг для американских дальнобойщиков — чат-бот опрашивает водителя в удобном канале и регистрирует его в системе перевозчика, заменяя ручную работу HR. ",
+        "descBold": "Серверная часть — на мне.",
+        "descAfter": "",
+        "stack": [
+          "Fastify",
+          "Next.js",
+          "Postgres",
+          "Sequelize",
+          "Redis",
+          "BullMQ",
+          "Socket.IO",
+          "Twilio",
+          "Telegram",
+          "Resend",
+          "AWS S3",
+          "OpenAI",
+          "Docker Swarm",
+          "Vitest"
+        ],
+        "years": "2025 → Н. В.",
+        "url": "https://clarahr.io",
+        "live": false,
+        "defaultOpen": true
+      },
+      {
+        "id": "02",
+        "name": "CargoHub",
+        "role": "Full-stack · Sole dev · ETL Group",
+        "tease": "Публичный freight marketplace с in-product AI dispatch",
+        "metricNum": "~2 500",
+        "metricCap": "Машин",
+        "metricNum2": "9",
+        "metricCap2": "Перевозчиков",
+        "desc": "Публичный маркетплейс грузоперевозок: shippers и brokers смотрят машины партнёров, размещают грузы и бронируют транспорт напрямую. In-product AI-ассистент закрывает рутинное бронирование и dispatch; аккаунты, live tracking и документооборот встроены.",
+        "descBold": "",
+        "descAfter": "",
+        "stack": [
+          "Next.js",
+          "Postgres",
+          "Prisma",
+          "NextAuth",
+          "Google Maps",
+          "Resend",
+          "Zustand",
+          "Zod",
+          "SWR",
+          "MUI",
+          "OpenAI",
+          "DeepSeek",
+          "Playwright"
+        ],
+        "years": "2026 → Н. В.",
+        "url": "https://map.cargoetl.com",
+        "live": true,
+        "defaultOpen": false
+      },
+      {
+        "id": "03",
+        "name": "CargoFinance",
+        "role": "Full-stack · Sole dev · ETL Group",
+        "tease": "Бухгалтерия и light-fintech для бэк-офиса логистики",
+        "metricNum": "",
+        "metricCap": "",
+        "metricNum2": "",
+        "metricCap2": "",
+        "desc": "Бухгалтерия и light-fintech для бэк-офиса логистики — invoicing, transfer tracking, payouts через банковские каналы. Задача — превратить незнакомый домен (",
+        "descBold": "AP/AR, reconciliation",
+        "descAfter": ") в инструмент, которым реально пользуются операторы.",
+        "stack": [
+          "NestJS",
+          "Vite",
+          "Postgres",
+          "Prisma",
+          "TanStack Router",
+          "TanStack Query",
+          "Tailwind",
+          "Radix",
+          "Plaid",
+          "Zod",
+          "Vitest",
+          "Playwright",
+          "MSW"
+        ],
+        "years": "2026 → Н. В.",
+        "url": "",
+        "live": false,
+        "defaultOpen": false
+      },
+      {
+        "id": "04",
+        "name": "CargoETL",
+        "role": "Mobile · Frontend · ETL Group",
+        "tease": "Closed TMS — dashboard диспетчера + driver app",
+        "metricNum": "",
+        "metricCap": "",
+        "metricNum2": "",
+        "metricCap2": "",
+        "desc": "Closed TMS для американских carriers и dispatchers. Строю и поддерживаю ",
+        "descBold": "и веб, и мобайл",
+        "descAfter": ": Next.js dashboard диспетчера и React Native (Expo) driver app — order flow, live tracking, documents и dispatch comms.",
+        "stack": [
+          "Next.js",
+          "Ant Design",
+          "MobX",
+          "Autobahn WS",
+          "Google Maps",
+          "Sentry",
+          "React Native",
+          "Expo",
+          "Redux Toolkit",
+          "Reanimated",
+          "RN Maps",
+          "Firebase"
+        ],
+        "years": "2024 → Н. В.",
+        "url": "https://cargoetl.com",
+        "live": false,
+        "defaultOpen": false
+      },
+      {
+        "id": "05",
+        "name": "Altek TMS",
+        "role": "Mobile · Frontend",
+        "tease": "Первый многолетний production-проект — TMS, сервис закрыт",
+        "metricNum": "",
+        "metricCap": "",
+        "metricNum2": "",
+        "metricCap2": "",
+        "desc": "Ранний TMS для американских carriers и dispatchers — dashboard диспетчера и driver app: order flow, live tracking и dispatch comms. Мой первый многолетний production-проект; сервис с тех пор закрыт.",
+        "descBold": "",
+        "descAfter": "",
+        "stack": ["Vue", "Nuxt", "JavaScript", "React Native"],
+        "years": "2022 → 2024",
+        "url": "https://altek.digital",
+        "live": false,
+        "defaultOpen": false
       }
     ]
   },
   "contact": {
-    "section": "§ 03 — Связаться",
-    "heading": "Быстрее всего — написать на почту.",
-    "body": "Читаю всё, что приходит в инбокс, и отвечаю в течение дня. Расскажите немного о проекте — стек, сроки, что хотите выпустить — и дальше разберёмся. Если вы в Софии, могу встретиться лично — у вас в офисе или в моём коворкинге (WorkBetter 1.0), как удобнее."
+    "id": "contact",
+    "num": "§ 03",
+    "title": "Открытый канал",
+    "subtitle": "<< САМЫЙ БЫСТРЫЙ КОНТАКТ — EMAIL >>",
+    "pitchBefore": "Читаю всё, что попадает в инбокс, и ",
+    "pitchBold": "отвечаю в течение дня",
+    "pitchAfter": ". Расскажите немного о проекте — стек, сроки, что хотите запустить — и дальше разберёмся.",
+    "fields": [
+      {
+        "key": "Локация",
+        "value": "София, Болгария · Remote-first",
+        "links": [],
+        "accent": false
+      },
+      {
+        "key": "Лично",
+        "value": "Ваш офис или мой коворкинг — WorkBetter 1.0",
+        "links": [],
+        "accent": false
+      },
+      {
+        "key": "Сеть",
+        "value": "",
+        "links": [
+          { "label": "GitHub", "url": "https://github.com/bohdanmoroz11" },
+          { "label": "LinkedIn", "url": "https://www.linkedin.com/in/bohdan-moroz-dev/" }
+        ],
+        "accent": false
+      },
+      {
+        "key": "Статус",
+        "value": "● Открыт к проектной работе и офферам",
+        "links": [],
+        "accent": true
+      }
+    ]
   },
   "notFound": {
-    "section": "§ 404 — Не найдено",
-    "heading": "Этой страницы не существует.",
-    "body": "URL, по которому вы пришли, ведёт в никуда. Сайт — одна страница, загляните с главной.",
-    "back": "Вернуться на bohdanmoroz.com"
+    "code": "404",
+    "bootline": {
+      "prefix": "> error: route_not_found — ",
+      "status": "сигнал потерян"
+    },
+    "num": "§ ERR",
+    "title": "Сигнал потерян",
+    "subtitle": "<< ЗАПРОШЕННЫЙ АДРЕС ОТСУТСТВУЕТ В ТАБЛИЦЕ МАРШРУТИЗАЦИИ >>",
+    "body": "URL, по которому вы пришли, не сопоставлен ни с одним endpoint на этом сайте. Это single-page deployment — весь контент на главной.",
+    "back": "Вернуться на главный канал",
+    "backHint": "bohdanmoroz.com"
   },
   "footer": {
-    "githubLabel": "github",
-    "linkedinLabel": "linkedin"
+    "signature": "BM // BOHDANMOROZ.COM",
+    "signatureAccent": "— NO CORPORATE AFFILIATION",
+    "githubLabel": "GitHub",
+    "linkedinLabel": "LinkedIn"
   }
 }

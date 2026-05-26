@@ -1,0 +1,217 @@
+---
+import type { Dictionary } from "../i18n";
+import SectionHead from "./SectionHead.astro";
+
+interface Props {
+  dossier: Dictionary["dossier"];
+}
+
+const { dossier } = Astro.props;
+---
+
+<section id={dossier.id} class="site-section border-line border-b">
+  <div class="site-wrap">
+    <SectionHead num={dossier.num} title={dossier.title} subtitle={dossier.subtitle} />
+
+    <div class="signal-lock signal-edge">
+      {
+        dossier.cases.map((c) => (
+          <article class:list={["case", { open: c.defaultOpen }]}>
+            <button
+              type="button"
+              class="case-bar grid w-full cursor-pointer grid-cols-[62px_1fr_auto] items-center border-0 bg-transparent text-left font-[inherit] text-inherit max-[920px]:grid-cols-[46px_1fr_auto]"
+              aria-expanded={c.defaultOpen ? "true" : "false"}
+            >
+              <span class="case-id">{c.id}</span>
+              <span class="case-main">
+                <span class="flex flex-wrap items-baseline gap-[13px]">
+                  <span class="font-display text-ice text-xl font-bold tracking-tight max-sm:text-lg">
+                    {c.name}
+                  </span>
+                  <span class="border-line-2 text-steel-panel border px-2 py-0.75 font-mono text-[10px] tracking-[0.12em] uppercase">
+                    {c.role}
+                  </span>
+                  {c.live && (
+                    <span class="text-ok font-mono text-[10px] tracking-[0.12em] uppercase">
+                      {dossier.liveLabel}
+                    </span>
+                  )}
+                </span>
+                <span class="text-steel-panel mt-2 block font-mono text-[11px] tracking-[0.03em]">
+                  {c.tease}
+                </span>
+              </span>
+              <span class="case-side flex items-center gap-6 px-6 max-[920px]:gap-3 max-[920px]:px-3.5 max-[560px]:[&_.case-metric]:hidden">
+                {c.metricNum && (
+                  <span class="case-metric flex items-stretch gap-4 max-[920px]:gap-3">
+                    <span class="text-right">
+                      <span class="font-display text-ice block text-2xl leading-none font-bold tracking-tight max-[920px]:text-lg">
+                        {c.metricNum}
+                      </span>
+                      {c.metricCap && (
+                        <span class="text-steel-panel mt-1.25 block font-mono text-[9.5px] tracking-[0.09em] uppercase">
+                          {c.metricCap}
+                        </span>
+                      )}
+                    </span>
+                    {c.metricNum2 && (
+                      <span class="border-line border-l pl-4 text-left max-[920px]:pl-3">
+                        <span class="font-display text-ice block text-2xl leading-none font-bold tracking-tight max-[920px]:text-lg">
+                          {c.metricNum2}
+                        </span>
+                        {c.metricCap2 && (
+                          <span class="text-steel-panel mt-1.25 block font-mono text-[9.5px] tracking-[0.09em] uppercase">
+                            {c.metricCap2}
+                          </span>
+                        )}
+                      </span>
+                    )}
+                  </span>
+                )}
+                <span
+                  class="case-chev text-signal font-mono text-[13px] transition-transform duration-300"
+                  aria-hidden="true"
+                >
+                  ▸
+                </span>
+              </span>
+            </button>
+            <div
+              class="case-detail max-h-0 overflow-hidden transition-[max-height] duration-[380ms] ease-[cubic-bezier(0.4,0,0.2,1)]"
+              style={c.defaultOpen ? "max-height: 9999px" : undefined}
+            >
+              <div class="border-line bg-bg-bright border-t px-6 py-6 max-sm:px-[18px] max-sm:py-5">
+                <p class="text-steel mb-[18px] max-w-[680px] text-[14.5px] leading-normal">
+                  {c.desc}
+                  {c.descBold && <strong class="text-ice font-semibold">{c.descBold}</strong>}
+                  {c.descAfter}
+                </p>
+                {c.metricNum && (
+                  <div class="mb-[18px] hidden max-[560px]:block">
+                    <p class="label-mono mb-2.5 tracking-[0.13em]">{dossier.metricsLabel}</p>
+                    <div class="flex items-stretch gap-4">
+                      <span class="text-left">
+                        <span class="font-display text-ice block text-2xl leading-none font-bold tracking-tight">
+                          {c.metricNum}
+                        </span>
+                        {c.metricCap && (
+                          <span class="text-steel-panel mt-1.25 block font-mono text-[9.5px] tracking-[0.09em] uppercase">
+                            {c.metricCap}
+                          </span>
+                        )}
+                      </span>
+                      {c.metricNum2 && (
+                        <span class="border-line border-l pl-4 text-left">
+                          <span class="font-display text-ice block text-2xl leading-none font-bold tracking-tight">
+                            {c.metricNum2}
+                          </span>
+                          {c.metricCap2 && (
+                            <span class="text-steel-panel mt-1.25 block font-mono text-[9.5px] tracking-[0.09em] uppercase">
+                              {c.metricCap2}
+                            </span>
+                          )}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                )}
+                <p class="label-mono mb-2.5 tracking-[0.13em]">{dossier.stackLabel}</p>
+                <ul class="mb-[18px] flex flex-wrap gap-1.5">
+                  {c.stack.map((tag) => (
+                    <li>
+                      <span class="border-line bg-bg text-steel hover:border-signal-dk hover:text-ice inline-block border px-2 py-1 font-mono text-[10.5px] transition-colors duration-200">
+                        {tag}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+                <div class="border-line flex flex-wrap items-center justify-between gap-3 border-t pt-4">
+                  <span class="text-signal font-mono text-[11px] tracking-[0.07em] uppercase">
+                    {c.years}
+                  </span>
+                  {c.url ? (
+                    <a
+                      href={c.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="border-line-2 text-ice hover:border-signal hover:text-signal border px-3.5 py-2 font-mono text-[11px] tracking-[0.1em] uppercase transition-colors duration-200"
+                    >
+                      {dossier.linkOpen}
+                      <span class="sr-only"> (opens in a new tab)</span>
+                    </a>
+                  ) : (
+                    <span class="border-line text-steel-dim pointer-events-none border px-3.5 py-2 font-mono text-[11px] tracking-[0.1em] uppercase">
+                      {dossier.linkClosed}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .case {
+    margin-bottom: -1px;
+    border: 1px solid var(--color-line);
+    background: var(--color-bg-2);
+  }
+
+  .case.open {
+    background: var(--color-bg-3);
+  }
+
+  .case-bar {
+    border-bottom: 1px solid transparent;
+  }
+
+  .case.open .case-bar {
+    border-bottom-color: var(--color-line);
+  }
+
+  .case-id {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: stretch;
+    padding-block: 22px;
+    border-right: 1px solid var(--color-line);
+    font-family: var(--font-mono);
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--color-steel-panel);
+    transition: color 0.2s;
+  }
+
+  .case.open .case-id {
+    color: var(--color-signal);
+  }
+
+  @media (hover: hover) {
+    .case:hover:not(.open) .case-id {
+      color: var(--color-signal);
+    }
+  }
+
+  .case.open .case-chev {
+    transform: rotate(90deg);
+  }
+
+  .case-main {
+    padding: 20px 26px;
+  }
+
+  @media (max-width: 620px) {
+    .case-main {
+      padding: 16px 18px;
+    }
+
+    .case-id {
+      font-size: 16px;
+    }
+  }
+</style>

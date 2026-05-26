@@ -3,12 +3,6 @@
     "title": "Bohdan Moroz — Software Engineer · Applied AI",
     "description": "Bohdan Moroz — software engineer working in applied AI. Four years building production web and mobile apps for US logistics, HR, and fintech teams. Open to freelance work."
   },
-  "hero": {
-    "location": "Sofia, Bulgaria · Available",
-    "name": "Bohdan Moroz.",
-    "roleGeneral": "Software Engineer",
-    "roleEmphasis": "Applied AI"
-  },
   "schema": {
     "jobTitle": "Software Engineer, Applied AI",
     "workLocationName": "Sofia, Bulgaria",
@@ -17,135 +11,309 @@
     "seeksName": "Freelance software engineering engagements",
     "seeksDescription": "Open to freelance full-stack TypeScript engagements with US SMBs in logistics, HR, and fintech. Remote, or in person in Sofia."
   },
-  "facts": {
-    "focusLabel": "Focus",
-    "focusValue": "Agentic AI workflows · End-to-end delivery",
-    "focusAside": "4 yrs",
-    "domainsLabel": "Domains",
-    "domainsValue": "Logistics (TMS) · HR onboarding · Fintech",
-    "domainsAside": "Direct work",
-    "stackLabel": "Stack",
-    "stackValue": "React · Next.js · NestJS · React Native (Expo)",
-    "stackAside": "TypeScript",
-    "infraLabel": "Infra",
-    "infraValue": "CI/CD · Docker · self-host · Ollama / vLLM / LiteLLM",
-    "workingLabel": "Working",
-    "workingValue": "Remote · In person if you're in Sofia",
-    "employerLabel": "Employer",
-    "employerValue": "ETL Group LLC",
-    "employerAside": "since May '24",
-    "statusLabel": "Status",
-    "statusValue": "Open to freelance work",
-    "statusAside": "& open to offers"
+  "topbar": {
+    "brand": "BOHDAN MOROZ",
+    "nav": [
+      { "num": "01", "label": "Protocol", "href": "#protocol" },
+      { "num": "02", "label": "Dossier", "href": "#dossier" },
+      { "num": "03", "label": "Channel", "href": "#contact" }
+    ]
   },
-  "work": {
-    "section": "§ 02 — Selected work",
-    "heading": "Things I've built, mostly for US SMBs.",
-    "stacksToggleClosed": "Show tech stacks",
-    "stacksToggleOpen": "Hide tech stacks",
-    "projects": [
+  "hero": {
+    "bootline": {
+      "prefix": "> bohdanmoroz.com — sofia, bulgaria — ",
+      "available": "available for work"
+    },
+    "nameLine1": "Bohdan",
+    "nameLine2": "Moroz",
+    "roleGeneral": "Software Engineer",
+    "roleDomain": "Applied AI",
+    "tagline": "Four years shipping production web & mobile systems for US logistics, HR & fintech operators.",
+    "specs": [
       {
-        "num": "01",
-        "title": "ClaraHR",
-        "tag": "Full-stack · Lead dev",
-        "affiliation": "ETL Group",
-        "desc": "Onboarding system for US truck drivers — a chat bot interviews them on whichever channel they prefer and files them in the carrier's system, replacing manual HR back-and-forth. I lead the server side.",
-        "meta": [
-          "Fastify · Next.js · Postgres · Sequelize · Redis · BullMQ · Socket.IO · Twilio · Telegram · Resend · AWS S3 · OpenAI · Docker Swarm · Vitest",
-          "2025 → present"
-        ],
-        "metric": "8 carriers · 635 drivers onboarded",
-        "url": "https://clarahr.io",
-        "linkLabel": ""
+        "key": "Experience",
+        "value": "4 years",
+        "valueUrl": "",
+        "aside": "agentic AI · end-to-end delivery"
       },
       {
-        "num": "02",
-        "title": "CargoHub",
-        "tag": "Full-stack · Sole dev",
-        "affiliation": "ETL Group",
-        "desc": "Public freight marketplace where US shippers and brokers browse partner carriers' trucks, post loads, and book capacity directly. An in-product AI assistant handles routine booking and dispatch steps; accounts, live tracking, and document flow are built in.",
-        "meta": [
-          "Next.js · Postgres · Prisma · NextAuth · Google Maps · Resend · Zustand · Zod · SWR · MUI · OpenAI · DeepSeek · Playwright",
-          "2026 → present"
-        ],
-        "metric": "9 carriers · ~2,500 trucks",
-        "url": "https://map.cargoetl.com",
-        "linkLabel": "live"
+        "key": "Domains",
+        "value": "Logistics · HR · Fintech",
+        "valueUrl": "",
+        "aside": "TMS · onboarding · payments"
       },
       {
-        "num": "03",
-        "title": "CargoFinance",
-        "tag": "Full-stack · Sole dev",
-        "affiliation": "ETL Group",
-        "desc": "Accounting and light-fintech tooling for a logistics back-office — invoicing, transfer tracking, payouts via bank rails. Focused on turning an unfamiliar domain (AP/AR, reconciliation) into something operators actually use.",
-        "meta": [
-          "Nest.js · Vite · Postgres · Prisma · TanStack Router · TanStack Query · Tailwind · Radix · Plaid · Zod · Vitest · Playwright · MSW",
-          "2026 → present"
-        ],
-        "url": "",
-        "linkLabel": ""
+        "key": "Core stack",
+        "value": "TypeScript",
+        "valueUrl": "",
+        "aside": "React · Next · NestJS · RN (Expo)"
       },
       {
-        "num": "04",
-        "title": "CargoETL",
-        "tag": "Mobile · Frontend",
-        "affiliation": "ETL Group",
-        "desc": "Closed TMS platform for US logistics carriers and dispatchers. I built and maintain both ends: the Next.js dispatcher dashboard and the React Native (Expo) driver app — order flow, live tracking, documents, and dispatch comms.",
-        "meta": [
-          "Web: Next.js · Ant Design · MobX · Autobahn (WebSocket) · Google Maps · Sentry · TinyMCE",
-          "Mobile: React Native · Expo · Redux Toolkit · Zustand · Reanimated · React Native Maps · Firebase Messaging · Notifee · Sentry · Google Places",
-          "2024 → present"
-        ],
-        "url": "https://cargoetl.com",
-        "linkLabel": ""
+        "key": "Infra",
+        "value": "CI/CD · Docker",
+        "valueUrl": "",
+        "aside": "self-host · Ollama / vLLM / LiteLLM"
       },
       {
-        "num": "05",
-        "title": "Altek TMS",
-        "tag": "Mobile · Frontend",
-        "affiliation": "",
-        "desc": "Earlier TMS for US logistics carriers and dispatchers — dispatcher dashboard plus driver app, covering order flow, live tracking, and dispatch comms. My first multi-year production project; the service has since wound down.",
-        "meta": ["Vue · Nuxt · JavaScript · React Native", "2022 → 2024"],
-        "url": "https://altek.digital",
-        "linkLabel": ""
+        "key": "Languages",
+        "value": "EN · UK · RU",
+        "valueUrl": "",
+        "aside": "async, US clients · UTC+2"
+      },
+      {
+        "key": "Employer",
+        "value": "ETL Group LLC ↗",
+        "valueUrl": "https://etlgroupllc.com",
+        "aside": "since May 2024"
       }
     ]
   },
-  "howIWork": {
-    "section": "§ 01 — How I work",
-    "heading": "What working with me looks like.",
+  "protocol": {
+    "id": "protocol",
+    "num": "§ 01",
+    "title": "Operating Protocol",
+    "subtitle": "<< WHAT WORKING WITH ME LOOKS LIKE >>",
     "items": [
       {
-        "n": "a.",
-        "text": "End-to-end ownership. Comfortable taking a feature from a half-formed Figma or a paragraph of requirements all the way through frontend, backend, infrastructure, and deploy — without needing handoffs along the way."
+        "letter": "A",
+        "name": "Ownership",
+        "lead": "End-to-end ownership.",
+        "rest": "Comfortable taking a feature from a half-formed Figma or a paragraph of requirements all the way through frontend, backend, infrastructure and deploy — no handoffs."
       },
       {
-        "n": "b.",
-        "text": "TypeScript across the stack: React / Next.js on the web, React Native (Expo) on mobile, NestJS/Fastify/Express on the server. CI/CD, testing, Docker by default; self-host infra when it makes sense, happy on AWS / Vercel / Hetzner when it doesn't."
+        "letter": "B",
+        "name": "Stack",
+        "lead": "TypeScript across the stack.",
+        "rest": "React / Next.js on web, React Native (Expo) on mobile, NestJS / Fastify / Express on the server. CI/CD, testing, Docker by default; self-host when it makes sense, AWS / Vercel / Hetzner when it doesn't."
       },
       {
-        "n": "c.",
-        "text": "Agentic AI is core to how I work — I've built my own tooling around it, so agents handle the typing while I drive architecture, review, and integration. I can also set up and run the infrastructure itself — self-hosted inference, gateways, routing — which I do day-to-day on corporate stacks. Net effect: meaningfully more shipped per week than a hands-on-keyboard pace."
+        "letter": "C",
+        "name": "Throughput",
+        "lead": "Agentic AI is core to how I work.",
+        "rest": "I've built my own tooling around it, so agents handle the typing while I drive architecture, review and integration. I can also set up and run the infrastructure itself — self-hosted inference, gateways, routing — which I do day-to-day on corporate stacks."
       },
       {
-        "n": "d.",
-        "text": "Async-friendly and used to working with US clients from Sofia, Bulgaria (UTC+2). Work in English, Ukrainian, and Russian."
+        "letter": "D",
+        "name": "Comms",
+        "lead": "Async-friendly.",
+        "rest": "Used to working with US clients from Sofia, Bulgaria (UTC+2). Operates in English, Ukrainian and Russian."
+      }
+    ]
+  },
+  "dossier": {
+    "id": "dossier",
+    "num": "§ 02",
+    "title": "Selected Dossier",
+    "subtitle": "<< FIELD RECORD — BUILT MOSTLY FOR US SMBS · CLICK TO EXPAND >>",
+    "stackLabel": "// stack manifest",
+    "metricsLabel": "// field metrics",
+    "linkOpen": "Open record ↗",
+    "linkClosed": "Closed record",
+    "liveLabel": "● Live",
+    "cases": [
+      {
+        "id": "01",
+        "name": "ClaraHR",
+        "role": "Full-stack · Lead dev · ETL Group",
+        "tease": "Driver onboarding system — chatbot interviews & files",
+        "metricNum": "635",
+        "metricCap": "Drivers",
+        "metricNum2": "8",
+        "metricCap2": "Carriers",
+        "desc": "Onboarding system for US truck drivers — a chatbot interviews them on whichever channel they prefer and files them in the carrier's system, replacing manual HR back-and-forth. ",
+        "descBold": "I lead the server side.",
+        "descAfter": "",
+        "stack": [
+          "Fastify",
+          "Next.js",
+          "Postgres",
+          "Sequelize",
+          "Redis",
+          "BullMQ",
+          "Socket.IO",
+          "Twilio",
+          "Telegram",
+          "Resend",
+          "AWS S3",
+          "OpenAI",
+          "Docker Swarm",
+          "Vitest"
+        ],
+        "years": "2025 → PRESENT",
+        "url": "https://clarahr.io",
+        "live": false,
+        "defaultOpen": true
+      },
+      {
+        "id": "02",
+        "name": "CargoHub",
+        "role": "Full-stack · Sole dev · ETL Group",
+        "tease": "Public freight marketplace with in-product AI dispatch",
+        "metricNum": "~2,500",
+        "metricCap": "Trucks",
+        "metricNum2": "9",
+        "metricCap2": "Carriers",
+        "desc": "Public freight marketplace where US shippers and brokers browse partner carriers' trucks, post loads and book capacity directly. An in-product AI assistant handles routine booking and dispatch; accounts, live tracking and document flow are built in.",
+        "descBold": "",
+        "descAfter": "",
+        "stack": [
+          "Next.js",
+          "Postgres",
+          "Prisma",
+          "NextAuth",
+          "Google Maps",
+          "Resend",
+          "Zustand",
+          "Zod",
+          "SWR",
+          "MUI",
+          "OpenAI",
+          "DeepSeek",
+          "Playwright"
+        ],
+        "years": "2026 → PRESENT",
+        "url": "https://map.cargoetl.com",
+        "live": true,
+        "defaultOpen": false
+      },
+      {
+        "id": "03",
+        "name": "CargoFinance",
+        "role": "Full-stack · Sole dev · ETL Group",
+        "tease": "Accounting & light-fintech tooling for logistics back-office",
+        "metricNum": "",
+        "metricCap": "",
+        "metricNum2": "",
+        "metricCap2": "",
+        "desc": "Accounting and light-fintech tooling for a logistics back-office — invoicing, transfer tracking, payouts via bank rails. Focused on turning an unfamiliar domain (",
+        "descBold": "AP/AR, reconciliation",
+        "descAfter": ") into something operators actually use.",
+        "stack": [
+          "NestJS",
+          "Vite",
+          "Postgres",
+          "Prisma",
+          "TanStack Router",
+          "TanStack Query",
+          "Tailwind",
+          "Radix",
+          "Plaid",
+          "Zod",
+          "Vitest",
+          "Playwright",
+          "MSW"
+        ],
+        "years": "2026 → PRESENT",
+        "url": "",
+        "live": false,
+        "defaultOpen": false
+      },
+      {
+        "id": "04",
+        "name": "CargoETL",
+        "role": "Mobile · Frontend · ETL Group",
+        "tease": "Closed TMS — dispatcher dashboard + driver app",
+        "metricNum": "",
+        "metricCap": "",
+        "metricNum2": "",
+        "metricCap2": "",
+        "desc": "Closed TMS platform for US logistics carriers and dispatchers. I built and maintain ",
+        "descBold": "both ends",
+        "descAfter": ": the Next.js dispatcher dashboard and the React Native (Expo) driver app — order flow, live tracking, documents and dispatch comms.",
+        "stack": [
+          "Next.js",
+          "Ant Design",
+          "MobX",
+          "Autobahn WS",
+          "Google Maps",
+          "Sentry",
+          "React Native",
+          "Expo",
+          "Redux Toolkit",
+          "Reanimated",
+          "RN Maps",
+          "Firebase"
+        ],
+        "years": "2024 → PRESENT",
+        "url": "https://cargoetl.com",
+        "live": false,
+        "defaultOpen": false
+      },
+      {
+        "id": "05",
+        "name": "Altek TMS",
+        "role": "Mobile · Frontend",
+        "tease": "First multi-year production project — TMS, since wound down",
+        "metricNum": "",
+        "metricCap": "",
+        "metricNum2": "",
+        "metricCap2": "",
+        "desc": "Earlier TMS for US logistics carriers and dispatchers — dispatcher dashboard plus driver app, covering order flow, live tracking and dispatch comms. My first multi-year production project; the service has since wound down.",
+        "descBold": "",
+        "descAfter": "",
+        "stack": ["Vue", "Nuxt", "JavaScript", "React Native"],
+        "years": "2022 → 2024",
+        "url": "https://altek.digital",
+        "live": false,
+        "defaultOpen": false
       }
     ]
   },
   "contact": {
-    "section": "§ 03 — Get in touch",
-    "heading": "The fastest way to reach me is email.",
-    "body": "I read everything that lands in my inbox and reply within a day. Tell me a bit about the project — stack, timeline, what you're trying to ship — and we'll go from there. If you're in Sofia, I'm happy to meet in person — at your office, or at my coworking (WorkBetter 1.0) if that's easier."
+    "id": "contact",
+    "num": "§ 03",
+    "title": "Open Channel",
+    "subtitle": "<< FASTEST ROUTE OF CONTACT — EMAIL >>",
+    "pitchBefore": "I read everything that lands in my inbox and ",
+    "pitchBold": "reply within a day",
+    "pitchAfter": ". Tell me a bit about the project — stack, timeline, what you're trying to ship — and we'll go from there.",
+    "fields": [
+      {
+        "key": "Location",
+        "value": "Sofia, Bulgaria · Remote-first",
+        "links": [],
+        "accent": false
+      },
+      {
+        "key": "In person",
+        "value": "Your office, or my coworking — WorkBetter 1.0",
+        "links": [],
+        "accent": false
+      },
+      {
+        "key": "Network",
+        "value": "",
+        "links": [
+          { "label": "GitHub", "url": "https://github.com/bohdanmoroz11" },
+          { "label": "LinkedIn", "url": "https://www.linkedin.com/in/bohdan-moroz-dev/" }
+        ],
+        "accent": false
+      },
+      {
+        "key": "Clearance",
+        "value": "● Open to freelance & offers",
+        "links": [],
+        "accent": true
+      }
+    ]
   },
   "notFound": {
-    "section": "§ 404 — Not found",
-    "heading": "This page doesn't exist.",
-    "body": "The URL you followed isn't here. The site is a single page — try the front door.",
-    "back": "Back to bohdanmoroz.com"
+    "code": "404",
+    "bootline": {
+      "prefix": "> error: route_not_found — ",
+      "status": "signal lost"
+    },
+    "num": "§ ERR",
+    "title": "Signal Lost",
+    "subtitle": "<< REQUESTED ADDRESS NOT IN ROUTING TABLE >>",
+    "body": "The URL you followed isn't mapped to any endpoint on this site. It's a single-page deployment — the main channel is one scroll away.",
+    "back": "Return to main channel",
+    "backHint": "bohdanmoroz.com"
   },
   "footer": {
-    "githubLabel": "github",
-    "linkedinLabel": "linkedin"
+    "signature": "BM // BOHDANMOROZ.COM",
+    "signatureAccent": "— NO CORPORATE AFFILIATION",
+    "githubLabel": "GitHub",
+    "linkedinLabel": "LinkedIn"
   }
 }
