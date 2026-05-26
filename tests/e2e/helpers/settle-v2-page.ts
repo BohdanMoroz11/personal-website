@@ -2,6 +2,10 @@ import type { Page } from "@playwright/test";
 
 /** Put V2 motion/lock states into their settled, fully-visible form before a11y audits. */
 export async function settleV2Page(page: Page): Promise<void> {
+  await page.addStyleTag({
+    content: `.signal-lock, .signal-edge, .signal-edge::before, .case-detail { transition: none !important; }`,
+  });
+
   await page.evaluate(() => {
     document.querySelectorAll(".signal-lock, .signal-edge").forEach((el) => {
       el.classList.add("on");

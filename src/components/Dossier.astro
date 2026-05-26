@@ -13,7 +13,7 @@ const { dossier } = Astro.props;
   <div class="site-wrap">
     <SectionHead num={dossier.num} title={dossier.title} subtitle={dossier.subtitle} />
 
-    <div class="signal-edge">
+    <div class="signal-lock signal-edge">
       {
         dossier.cases.map((c) => (
           <article class:list={["case", { open: c.defaultOpen }]}>
@@ -24,7 +24,7 @@ const { dossier } = Astro.props;
             >
               <span class="case-id">{c.id}</span>
               <span class="case-main">
-                <span class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                <span class="flex flex-wrap items-baseline gap-[13px]">
                   <span class="font-display text-ice text-xl font-bold tracking-tight max-sm:text-lg">
                     {c.name}
                   </span>
@@ -79,7 +79,7 @@ const { dossier } = Astro.props;
                   ))}
                 </ul>
                 <div class="border-line flex flex-wrap items-center justify-between gap-3 border-t pt-4">
-                  <span class="text-signal-lit font-mono text-[11px] tracking-[0.07em] uppercase">
+                  <span class="text-signal font-mono text-[11px] tracking-[0.07em] uppercase">
                     {c.years}
                   </span>
                   {c.url ? (

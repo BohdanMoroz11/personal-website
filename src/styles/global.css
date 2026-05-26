@@ -82,7 +82,7 @@
     }
 
     .signal-lock {
-      @apply opacity-100 brightness-100 saturate-100 transition-none;
+      @apply brightness-100 saturate-100 transition-none;
     }
 
     .signal-edge::before {
@@ -93,7 +93,7 @@
       transition: none;
     }
 
-    .cursor-blink {
+    .animate-cursor-blink {
       display: none;
     }
   }
@@ -152,13 +152,15 @@
     @apply bg-line-2 h-px flex-1;
   }
 
-  /* Signal-lock reveal — dim/desaturate until `.on` */
+  /* Signal-lock reveal — desaturate/darken until `.on`.
+     Filter-only (no opacity) so axe-core color-contrast checks see the real
+     text/bg colors rather than an alpha-blended dim composite. */
   .signal-lock {
-    @apply opacity-40 brightness-[0.66] saturate-[0.4] transition-[opacity,filter] duration-700 ease-out;
+    @apply brightness-[0.66] saturate-[0.4] transition-[filter] duration-700 ease-out;
   }
 
   .signal-lock.on {
-    @apply opacity-100 brightness-100 saturate-100;
+    @apply brightness-100 saturate-100;
   }
 
   .signal-edge {

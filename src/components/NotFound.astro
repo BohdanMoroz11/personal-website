@@ -11,7 +11,11 @@ const { notFound, homeHref } = Astro.props;
 
 <main class="not-found">
   <div class="site-wrap not-found-inner">
-    <p class="not-found-code font-display text-signal font-bold select-none" aria-hidden="true">
+    <p
+      class="not-found-code font-display text-signal font-bold select-none"
+      aria-hidden="true"
+      data-i18n="code"
+    >
       {notFound.code}
     </p>
 
@@ -30,23 +34,26 @@ const { notFound, homeHref } = Astro.props;
     <div class="not-found-head signal-lock on">
       <span
         class="border-signal-dk text-signal inline-block border px-[11px] py-1.5 font-mono text-xs tracking-[0.08em]"
+        data-i18n="num"
       >
         {notFound.num}
       </span>
-      <h1 class="heading-display mt-6 text-[clamp(36px,7vw,72px)] leading-[0.95]">
+      <h1 class="heading-display mt-6 text-[clamp(36px,7vw,72px)] leading-[0.95]" data-i18n="title">
         {notFound.title}
       </h1>
-      <p class="label-mono mt-4 tracking-[0.13em]">{notFound.subtitle}</p>
+      <p class="label-mono mt-4 tracking-[0.13em]" data-i18n="subtitle">{notFound.subtitle}</p>
     </div>
 
     <div class="not-found-panel signal-edge on panel mt-10 max-w-[520px]">
-      <p class="text-steel text-[15px] leading-[1.65]">
+      <p class="text-steel text-[15px] leading-[1.65]" data-i18n="body">
         {notFound.body}
       </p>
-      <a href={homeHref} class="mail-btn mt-7">
+      <a href={homeHref} class="mail-btn mt-7" data-back-link>
         <span class="mail-btn-arrow" aria-hidden="true">▸</span>
-        {notFound.back}
-        <span class="text-steel-panel"> — {notFound.backHint}</span>
+        <span data-i18n="back">{notFound.back}</span>
+        <span class="text-steel-panel">
+          — <span data-i18n="backHint">{notFound.backHint}</span></span
+        >
       </a>
     </div>
   </div>
