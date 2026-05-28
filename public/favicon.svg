@@ -1,6 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="12" fill="#1a1815"/>
-  <text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle"
-        font-family="Georgia, 'Iowan Old Style', serif" font-size="36" font-weight="500" fill="#fbfaf6">b</text>
-  <rect x="14" y="44" width="20" height="4" fill="#f4c542" opacity="0.85" transform="skewX(-4)"/>
+  <rect width="64" height="64" fill="#191e24"/>
+  <rect x="0.5" y="0.5" width="63" height="63" fill="none" stroke="#3a4550" stroke-width="1"/>
+  <path d="M17 13 H10 V51 H17" fill="none" stroke="#73808d" stroke-width="3" stroke-linecap="square" stroke-linejoin="miter"/>
+  <path d="M47 13 H54 V51 H47" fill="none" stroke="#73808d" stroke-width="3" stroke-linecap="square" stroke-linejoin="miter"/>
+  <g transform="translate(17 48) scale(0.45)" fill="#f3f6f9" fill-rule="evenodd">
+    <path d="M6.5 0L6.5-70L50.4-70L60.4-60L60.4-40.4L56.4-36.3L63.5-29.1L63.5-10.8L52.7 0L6.5 0ZM19.8-40.7L43.4-40.7L47-44.3L47-55.1L43.5-58.6L19.8-58.6L19.8-40.7ZM19.8-11.4L45.8-11.4L50.1-15.7L50.1-25.5L45.8-29.8L19.8-29.8L19.8-11.4Z"/>
+  </g>
+  <rect x="44" y="54" width="10" height="3" fill="#e0563d"/>
 </svg>

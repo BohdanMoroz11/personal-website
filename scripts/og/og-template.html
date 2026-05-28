@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>OG</title>
+    <style>
+      @font-face {
+        font-family: "Chakra Petch";
+        font-weight: 500;
+        font-style: normal;
+        src: url("../../node_modules/@fontsource/chakra-petch/files/chakra-petch-latin-500-normal.woff2")
+          format("woff2");
+        font-display: block;
+      }
+      @font-face {
+        font-family: "Chakra Petch";
+        font-weight: 700;
+        font-style: normal;
+        src: url("../../node_modules/@fontsource/chakra-petch/files/chakra-petch-latin-700-normal.woff2")
+          format("woff2");
+        font-display: block;
+      }
+      @font-face {
+        font-family: "JetBrains Mono";
+        font-weight: 400 700;
+        font-style: normal;
+        src: url("../../node_modules/@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2")
+          format("woff2");
+        font-display: block;
+      }
+
+      :root {
+        --bg: #191e24;
+        --bg-2: #232a32;
+        --bg-bright: #313b46;
+        --line: #3a4550;
+        --line-2: #4d5b68;
+        --steel: #aeb9c4;
+        --steel-dim: #73808d;
+        --steel-panel: #99a5b1;
+        --ice: #f3f6f9;
+        --signal: #e0563d;
+        --signal-dk: #6e271c;
+        --ok: #79b89a;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body {
+        width: 1200px;
+        height: 630px;
+        overflow: hidden;
+      }
+
+      body {
+        font-family: "Chakra Petch", sans-serif;
+        color: var(--steel);
+        background: linear-gradient(178deg, #1f262d 0%, var(--bg) 38%, #161b20 100%);
+        position: relative;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .fx-grid {
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(var(--line) 1px, transparent 1px),
+          linear-gradient(90deg, var(--line) 1px, transparent 1px);
+        background-size: 60px 60px;
+        opacity: 0.18;
+        -webkit-mask-image: radial-gradient(ellipse 110% 80% at 50% 0%, #000 30%, transparent 85%);
+        mask-image: radial-gradient(ellipse 110% 80% at 50% 0%, #000 30%, transparent 85%);
+        pointer-events: none;
+      }
+
+      .fx-scan {
+        position: absolute;
+        inset: 0;
+        background: repeating-linear-gradient(
+          0deg,
+          rgba(0, 0, 0, 0.16) 0 1px,
+          transparent 1px 3px
+        );
+        opacity: 0.42;
+        pointer-events: none;
+      }
+
+      /* corner crosshairs — neomilitarism HUD detail */
+      .crosshair {
+        position: absolute;
+        width: 22px;
+        height: 22px;
+        border-color: var(--steel-dim);
+      }
+      .crosshair.tl {
+        top: 28px;
+        left: 28px;
+        border-top: 1.5px solid;
+        border-left: 1.5px solid;
+      }
+      .crosshair.tr {
+        top: 28px;
+        right: 28px;
+        border-top: 1.5px solid;
+        border-right: 1.5px solid;
+      }
+      .crosshair.bl {
+        bottom: 28px;
+        left: 28px;
+        border-bottom: 1.5px solid;
+        border-left: 1.5px solid;
+      }
+      .crosshair.br {
+        bottom: 28px;
+        right: 28px;
+        border-bottom: 1.5px solid;
+        border-right: 1.5px solid;
+      }
+
+      .wrap {
+        position: relative;
+        z-index: 2;
+        padding: 52px 76px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .bootline {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 16px;
+        color: var(--steel-dim);
+        letter-spacing: 0.07em;
+        margin-bottom: 26px;
+      }
+      .bootline .ok {
+        color: var(--ok);
+      }
+
+      h1 {
+        font-family: "Chakra Petch", sans-serif;
+        font-weight: 700;
+        color: var(--ice);
+        font-size: 124px;
+        line-height: 0.92;
+        letter-spacing: -0.025em;
+        text-transform: uppercase;
+      }
+      h1 .dim {
+        color: var(--steel-dim);
+      }
+
+      .role {
+        font-family: "JetBrains Mono", monospace;
+        color: var(--steel);
+        font-size: 17px;
+        line-height: 1.55;
+        letter-spacing: 0.04em;
+        max-width: 760px;
+        margin-top: 20px;
+      }
+      .role .slash {
+        color: var(--signal);
+      }
+
+      .row-bottom {
+        margin-top: auto;
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 24px;
+      }
+
+      .mail-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 14px;
+        border: 1px solid var(--line-2);
+        background: var(--bg-bright);
+        color: var(--ice);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 18px;
+        letter-spacing: 0.03em;
+        padding: 14px 22px;
+      }
+      .mail-btn .arrow {
+        color: var(--signal);
+        font-weight: 700;
+      }
+
+      .url-tag {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        color: var(--steel-panel);
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        text-align: right;
+        line-height: 1.6;
+      }
+      .url-tag .small {
+        display: block;
+        color: var(--steel-dim);
+        font-size: 11px;
+        margin-top: 2px;
+      }
+
+      .spec-grid {
+        margin-top: 28px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        border: 1px solid var(--line-2);
+        background: var(--bg-bright);
+      }
+      .spec-cell {
+        padding: 14px 20px;
+        border-right: 1px solid var(--line);
+      }
+      .spec-cell:last-child {
+        border-right: 0;
+      }
+      .spec-cell .k {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        color: var(--steel-panel);
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+      }
+      .spec-cell .v {
+        font-family: "Chakra Petch", sans-serif;
+        color: var(--ice);
+        font-size: 16px;
+        font-weight: 500;
+      }
+      .spec-cell .aside {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: var(--steel-panel);
+        letter-spacing: 0.04em;
+        margin-top: 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="fx-grid"></div>
+    <div class="fx-scan"></div>
+    <div class="crosshair tl"></div>
+    <div class="crosshair tr"></div>
+    <div class="crosshair bl"></div>
+    <div class="crosshair br"></div>
+
+    <div class="wrap">
+      <div class="bootline">
+        &gt; bohdanmoroz.com — sofia, bulgaria — <span class="ok">available for work</span>
+      </div>
+
+      <h1>Bohdan<br /><span class="dim">Moroz</span></h1>
+
+      <p class="role">
+        Software Engineer <span class="slash">//</span> Applied AI. Four years shipping production
+        web &amp; mobile systems for US logistics, HR &amp; fintech operators.
+      </p>
+
+      <dl class="spec-grid">
+        <div class="spec-cell">
+          <div class="k">Experience</div>
+          <div class="v">4 years</div>
+          <div class="aside">agentic AI · end-to-end delivery</div>
+        </div>
+        <div class="spec-cell">
+          <div class="k">Domains</div>
+          <div class="v">Logistics · HR · Fintech</div>
+          <div class="aside">TMS · onboarding · payments</div>
+        </div>
+        <div class="spec-cell">
+          <div class="k">Core stack</div>
+          <div class="v">TypeScript</div>
+          <div class="aside">React · Next · NestJS · RN (Expo)</div>
+        </div>
+      </dl>
+
+      <div class="row-bottom">
+        <div class="mail-btn"><span class="arrow">▸</span> contact@bohdanmoroz.com</div>
+        <div class="url-tag">
+          BOHDANMOROZ.COM
+          <span class="small">— no corporate affiliation</span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
