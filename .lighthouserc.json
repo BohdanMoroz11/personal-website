@@ -7,7 +7,7 @@
         "http://localhost/ru/index.html",
         "http://localhost/uk/index.html"
       ],
-      "numberOfRuns": 1,
+      "numberOfRuns": 3,
       "settings": {
         "preset": "desktop",
         "chromeFlags": "--no-sandbox --headless=new"
