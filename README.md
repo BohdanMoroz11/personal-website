@@ -71,6 +71,44 @@ npm run test:all       # lint + format:check + typecheck + unit + e2e + lhci, in
 - New page or new locale → add a route case to `tests/e2e/routes.spec.ts` and a URL to `.lighthouserc.json`.
 - New interactive bit → add a Playwright spec under `tests/e2e/`.
 
+## Deployment
+
+The site runs in a Docker container on a small VPS, behind an existing reverse-proxy network (`web`). The image is published to GHCR as `ghcr.io/bohdanmoroz11/personal-website:latest`, and the server runs it via `docker-compose.yml`.
+
+### Automated (default)
+
+On every push to `main`, `.github/workflows/ci.yml` runs tests, then `.github/workflows/deploy.yml` builds the image, pushes it to GHCR, SSHes to the server, and runs `docker compose pull && up -d`. No action needed.
+
+### Manual deploy (Actions down / hotfix)
+
+When GitHub Actions is degraded (it happens — check [githubstatus.com](https://www.githubstatus.com)) or you need to ship without going through CI, use the local script. It does the same three things the Actions pipeline does, just from your laptop.
+
+```bash
+# one-time setup
+docker login ghcr.io -u bohdanmoroz11   # PAT with write:packages scope
+
+# every deploy
+DEPLOY_HOST=<ssh-alias-or-host> ./scripts/deploy.sh
+# or:  ./scripts/deploy.sh --host <ssh-alias-or-host>
+```
+
+`DEPLOY_HOST` is whatever you use after `ssh` — a `~/.ssh/config` alias (`bro`, `prod`, …) or a full `user@host`. The script never assumes a particular alias; set it in your shell rc if you want a default:
+
+```bash
+# ~/.zshrc or similar
+export DEPLOY_HOST=bro
+```
+
+Other knobs (all optional):
+
+| Var / flag                       | Default                                         | Why you'd change it                                                          |
+| -------------------------------- | ----------------------------------------------- | ---------------------------------------------------------------------------- |
+| `DEPLOY_IMAGE` / `--image`       | `ghcr.io/bohdanmoroz11/personal-website:latest` | Pushing to a different tag or registry                                       |
+| `DEPLOY_PLATFORM` / `--platform` | `linux/amd64`                                   | Server is ARM (e.g. Ampere / Graviton)                                       |
+| `SKIP_BUILD=1` / `--skip-build`  | off                                             | Re-deploy the existing remote image without rebuilding (rolls the container) |
+
+The remote half of the deploy is intentionally tiny and lives inline in the script — `git pull --ff-only && docker compose pull && docker compose up -d && docker image prune -f`. If you ever need to deploy without your laptop's Docker, you can SSH in and run those four lines by hand.
+
 ## Tooling
 
 - **Prettier** + `prettier-plugin-astro` + `prettier-plugin-tailwindcss` (auto-sorts Tailwind classes).
