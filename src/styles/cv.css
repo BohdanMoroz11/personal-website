@@ -1,0 +1,466 @@
+/* ---------------------------------------------------------------------------
+   CV — light "print edition" stylesheet.
+
+   Standalone from global.css (which paints a dark body + scanline overlays).
+   Keeps the tactical-terminal identity — signal-orange accent, JetBrains Mono
+   micro-labels, § section numbering — on a print-safe near-white sheet.
+
+   Designed to flow into A4 pages: the on-screen view mimics an A4 sheet; the
+   @page rules + Playwright `printBackground` produce the downloadable PDF.
+   --------------------------------------------------------------------------- */
+
+:root {
+  --cv-paper: #fcfbf9;
+  --cv-paper-2: #f4f2ee;
+  --cv-ink: #16191d;
+  --cv-ink-soft: #3a424b;
+  --cv-muted: #6c7681;
+  --cv-line: #dcdfe3;
+  --cv-line-2: #c4c9cf;
+  --cv-signal: #c83f25;
+  --cv-signal-soft: #e0563d;
+
+  --cv-font-display: "Chakra Petch", ui-sans-serif, system-ui, sans-serif;
+  --cv-font-mono:
+    "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* A4 content width minus page margins (≈ 210mm − 2×14mm). */
+  --cv-sheet-w: 182mm;
+  --cv-pad: 14mm;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body.cv-body {
+  margin: 0;
+  background: var(--cv-paper-2);
+  color: var(--cv-ink);
+  font-family: var(--cv-font-display);
+  font-size: 13px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.cv-sheet {
+  width: var(--cv-sheet-w);
+  max-width: 100%;
+  margin: 24px auto;
+  padding: var(--cv-pad);
+  background: var(--cv-paper);
+  border: 1px solid var(--cv-line-2);
+  box-shadow: 0 14px 40px -18px rgba(20, 25, 30, 0.28);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* --- Mono helpers ---------------------------------------------------------- */
+.cv-mono {
+  font-family: var(--cv-font-mono);
+}
+
+.cv-label {
+  font-family: var(--cv-font-mono);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--cv-muted);
+}
+
+/* --- Header ---------------------------------------------------------------- */
+.cv-bootline {
+  font-family: var(--cv-font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.07em;
+  color: var(--cv-muted);
+  border-bottom: 2px solid var(--cv-signal);
+  padding-bottom: 9px;
+  margin-bottom: 16px;
+}
+
+.cv-bootline .ok {
+  color: #1f8a5b;
+}
+
+.cv-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  margin-bottom: 14px;
+}
+
+.cv-name {
+  font-family: var(--cv-font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  font-size: 38px;
+  line-height: 0.95;
+  margin: 0;
+}
+
+.cv-role {
+  font-family: var(--cv-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: var(--cv-ink-soft);
+  margin-top: 6px;
+}
+
+.cv-role .sep {
+  color: var(--cv-signal);
+  font-weight: 700;
+}
+
+.cv-contacts {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.cv-contact {
+  font-family: var(--cv-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.02em;
+  color: var(--cv-ink-soft);
+  white-space: nowrap;
+}
+
+.cv-contact .k {
+  color: var(--cv-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 8.5px;
+  margin-right: 6px;
+}
+
+.cv-contact a {
+  border-bottom: 1px solid var(--cv-line-2);
+}
+
+/* --- Section heads --------------------------------------------------------- */
+.cv-section {
+  margin-top: 13px;
+}
+
+.cv-section:first-of-type {
+  margin-top: 6px;
+}
+
+.cv-sec-head {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin-bottom: 10px;
+}
+
+.cv-sec-num {
+  font-family: var(--cv-font-mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: var(--cv-signal);
+  border: 1px solid var(--cv-signal);
+  padding: 2px 7px;
+  flex-shrink: 0;
+}
+
+.cv-sec-title {
+  font-family: var(--cv-font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  font-size: 15px;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.cv-sec-rule {
+  height: 1px;
+  flex: 1;
+  background: var(--cv-line-2);
+}
+
+/* --- Profile --------------------------------------------------------------- */
+.cv-summary {
+  color: var(--cv-ink-soft);
+  font-size: 12.5px;
+  line-height: 1.55;
+  margin: 0;
+  max-width: 175mm;
+}
+
+/* --- Skills ---------------------------------------------------------------- */
+.cv-skills {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--cv-line);
+  border-bottom: 0;
+}
+
+.cv-skill-cell {
+  padding: 7px 12px;
+  border-right: 1px solid var(--cv-line);
+  border-bottom: 1px solid var(--cv-line);
+}
+
+.cv-skill-cell:nth-child(3n) {
+  border-right: 0;
+}
+
+.cv-skill-label {
+  font-family: var(--cv-font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cv-signal);
+  margin-bottom: 6px;
+}
+
+.cv-skill-items {
+  font-size: 11px;
+  line-height: 1.65;
+  color: var(--cv-ink-soft);
+}
+
+/* --- Experience ------------------------------------------------------------ */
+.cv-job {
+  margin-top: 12px;
+  padding-left: 13px;
+  border-left: 2px solid var(--cv-signal);
+  break-inside: avoid;
+}
+
+.cv-job:first-child {
+  margin-top: 2px;
+}
+
+.cv-job-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 14px;
+}
+
+.cv-job-co {
+  font-family: var(--cv-font-display);
+  font-weight: 700;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+}
+
+.cv-job-period {
+  font-family: var(--cv-font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.04em;
+  color: var(--cv-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.cv-job-meta {
+  font-family: var(--cv-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.02em;
+  color: var(--cv-signal);
+  margin-top: 3px;
+}
+
+.cv-job-meta .loc {
+  color: var(--cv-muted);
+}
+
+.cv-job-lead {
+  font-size: 11.5px;
+  color: var(--cv-ink-soft);
+  margin: 5px 0 0;
+  font-style: italic;
+}
+
+.cv-bullets {
+  list-style: none;
+  margin: 7px 0 0;
+  padding: 0;
+}
+
+.cv-bullets li {
+  position: relative;
+  padding-left: 15px;
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--cv-ink);
+  margin-bottom: 3px;
+}
+
+.cv-bullets li::before {
+  content: "▸";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--cv-signal);
+  font-size: 9px;
+}
+
+.cv-bullets b {
+  color: var(--cv-ink);
+  font-weight: 700;
+}
+
+.cv-stack {
+  margin-top: 7px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 6px;
+}
+
+.cv-stack-tag {
+  font-family: var(--cv-font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.02em;
+  color: var(--cv-ink-soft);
+  background: var(--cv-paper-2);
+  border: 1px solid var(--cv-line);
+  padding: 2px 6px;
+}
+
+/* --- Coda — languages + availability strip --------------------------------- */
+.cv-coda {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 11px;
+  padding-top: 9px;
+  border-top: 1px solid var(--cv-line-2);
+}
+
+.cv-coda-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cv-coda-k {
+  font-family: var(--cv-font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--cv-signal);
+}
+
+.cv-coda-v {
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--cv-ink-soft);
+}
+
+.cv-coda-v .dot {
+  color: #1f8a5b;
+}
+
+.cv-sign {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--cv-line);
+  font-family: var(--cv-font-mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cv-muted);
+  display: flex;
+  justify-content: space-between;
+}
+
+/* --- Screen-only download bar (hidden in print/PDF) ------------------------ */
+.cv-actions {
+  width: var(--cv-sheet-w);
+  max-width: 100%;
+  margin: 24px auto 0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.cv-dl {
+  font-family: var(--cv-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--cv-ink);
+  background: var(--cv-paper);
+  border: 1px solid var(--cv-line-2);
+  padding: 9px 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition:
+    border-color 0.18s,
+    color 0.18s;
+}
+
+.cv-dl:hover {
+  border-color: var(--cv-signal);
+  color: var(--cv-signal);
+}
+
+.cv-dl .arr {
+  color: var(--cv-signal);
+  font-weight: 700;
+}
+
+/* --- Responsive (screen) --------------------------------------------------- */
+@media (max-width: 620px) {
+  .cv-skills {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .cv-head {
+    flex-direction: column;
+  }
+  .cv-contacts {
+    text-align: left;
+  }
+  .cv-coda {
+    grid-template-columns: 1fr;
+  }
+  .cv-sheet,
+  .cv-actions {
+    width: 100%;
+  }
+}
+
+/* --- Print / PDF ----------------------------------------------------------- */
+@page {
+  size: A4;
+  margin: 9mm 14mm;
+}
+
+@media print {
+  body.cv-body {
+    background: #fff;
+  }
+  .cv-sheet {
+    width: auto;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    box-shadow: none;
+  }
+  .cv-actions {
+    display: none;
+  }
+  .cv-job,
+  .cv-section {
+    break-inside: avoid;
+  }
+}

@@ -1,0 +1,126 @@
+---
+import CvLayout from "../layouts/CvLayout.astro";
+import { cv } from "../cv/data";
+
+const today = new Date();
+const stamp = `${today.getFullYear()}.${String(today.getMonth() + 1).padStart(2, "0")}`;
+const pageTitle = `${cv.name} — CV · ${cv.roleGeneral}, ${cv.roleDomain}`;
+const pageDesc = `Curriculum vitae of ${cv.name}, ${cv.roleGeneral} (${cv.roleDomain}) — ${cv.location}. Download as PDF.`;
+---
+
+<CvLayout title={pageTitle} description={pageDesc}>
+  <article class="cv-sheet">
+    <div class="cv-bootline">
+      &gt; cv — {cv.name.toLowerCase()} — {cv.location.toLowerCase()} —
+      <span class="ok">available for work</span>
+    </div>
+
+    <header class="cv-head">
+      <div>
+        <h1 class="cv-name">{cv.name}</h1>
+        <div class="cv-role">
+          {cv.roleGeneral}<span class="sep"> // </span>{cv.roleDomain}
+        </div>
+      </div>
+      <div class="cv-contacts">
+        {
+          cv.contacts.map((c) => (
+            <span class="cv-contact">
+              <span class="k">{c.label}</span>
+              <a href={c.href}>{c.value}</a>
+            </span>
+          ))
+        }
+      </div>
+    </header>
+
+    <!-- § 01 — Profile -->
+    <section class="cv-section">
+      <div class="cv-sec-head">
+        <span class="cv-sec-num">§ 01</span>
+        <h2 class="cv-sec-title">Profile</h2>
+        <span class="cv-sec-rule" aria-hidden="true"></span>
+      </div>
+      <p class="cv-summary">{cv.summary}</p>
+    </section>
+
+    <!-- § 02 — Skills -->
+    <section class="cv-section">
+      <div class="cv-sec-head">
+        <span class="cv-sec-num">§ 02</span>
+        <h2 class="cv-sec-title">Skills</h2>
+        <span class="cv-sec-rule" aria-hidden="true"></span>
+      </div>
+      <div class="cv-skills">
+        {
+          cv.skills.map((group) => (
+            <div class="cv-skill-cell">
+              <div class="cv-skill-label">{group.label}</div>
+              <div class="cv-skill-items">{group.items.join(" · ")}</div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- § 03 — Experience -->
+    <section class="cv-section">
+      <div class="cv-sec-head">
+        <span class="cv-sec-num">§ 03</span>
+        <h2 class="cv-sec-title">Experience</h2>
+        <span class="cv-sec-rule" aria-hidden="true"></span>
+      </div>
+      {
+        cv.experience.map((job) => (
+          <div class="cv-job">
+            <div class="cv-job-head">
+              <span class="cv-job-co">
+                {job.companyUrl ? <a href={job.companyUrl}>{job.company}</a> : job.company}
+              </span>
+              <span class="cv-job-period">{job.period}</span>
+            </div>
+            <div class="cv-job-meta">
+              {job.role} <span class="loc">· {job.location}</span>
+            </div>
+            <p class="cv-job-lead">{job.lead}</p>
+            <ul class="cv-bullets">
+              {job.bullets.map((b) => (
+                <li>{b}</li>
+              ))}
+            </ul>
+            <div class="cv-stack">
+              {job.stack.map((tag) => (
+                <span class="cv-stack-tag">{tag}</span>
+              ))}
+            </div>
+          </div>
+        ))
+      }
+    </section>
+
+    <!-- Coda — languages + availability strip -->
+    <div class="cv-coda">
+      <div class="cv-coda-col">
+        <span class="cv-coda-k">Languages</span>
+        <span class="cv-coda-v">
+          {cv.languages.map((l) => `${l.name} — ${l.level.toLowerCase()}`).join("  ·  ")}
+        </span>
+      </div>
+      <div class="cv-coda-col">
+        <span class="cv-coda-k">Availability</span>
+        <span class="cv-coda-v"><span class="dot">●</span> {cv.availability}</span>
+      </div>
+    </div>
+
+    <div class="cv-sign">
+      <span>BM // BOHDANMOROZ.COM</span>
+      <span>REV {stamp} — NO CORPORATE AFFILIATION</span>
+    </div>
+  </article>
+
+  <div class="cv-actions">
+    <a class="cv-dl" href="/cv.pdf" download="Bohdan-Moroz-CV.pdf">
+      <span class="arr" aria-hidden="true">▸</span> Download PDF
+    </a>
+  </div>
+</CvLayout>
