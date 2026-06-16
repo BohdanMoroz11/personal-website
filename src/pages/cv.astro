@@ -100,13 +100,26 @@ const pageDesc = `Curriculum vitae of ${cv.name}, ${cv.roleGeneral} (${cv.roleDo
 
     <!-- Coda — languages + availability strip -->
     <div class="cv-coda">
-      <div class="cv-coda-col">
+      <div class="cv-coda-row">
+        <span class="cv-coda-k">Education</span>
+        <span class="cv-coda-v">
+          {cv.education.degree} ·{" "}
+          {
+            cv.education.schoolUrl ? (
+              <a href={cv.education.schoolUrl}>{cv.education.school}</a>
+            ) : (
+              cv.education.school
+            )
+          }, {cv.education.location} · {cv.education.period}
+        </span>
+      </div>
+      <div class="cv-coda-row">
         <span class="cv-coda-k">Languages</span>
         <span class="cv-coda-v">
           {cv.languages.map((l) => `${l.name} — ${l.level.toLowerCase()}`).join("  ·  ")}
         </span>
       </div>
-      <div class="cv-coda-col">
+      <div class="cv-coda-row">
         <span class="cv-coda-k">Availability</span>
         <span class="cv-coda-v"><span class="dot">●</span> {cv.availability}</span>
       </div>
@@ -114,7 +127,7 @@ const pageDesc = `Curriculum vitae of ${cv.name}, ${cv.roleGeneral} (${cv.roleDo
 
     <div class="cv-sign">
       <span>BM // BOHDANMOROZ.COM</span>
-      <span>REV {stamp} — NO CORPORATE AFFILIATION</span>
+      <span>REV {stamp}</span>
     </div>
   </article>
 

@@ -33,6 +33,14 @@ export interface CvLanguageEntry {
   level: string;
 }
 
+export interface CvEducationEntry {
+  degree: string;
+  school: string;
+  schoolUrl?: string;
+  location: string;
+  period: string;
+}
+
 export const cv = {
   name: siteConfig.person.name,
   roleGeneral: "Software Engineer",
@@ -149,6 +157,14 @@ export const cv = {
       stack: ["Vue", "Nuxt", "JavaScript", "React Native"],
     },
   ] satisfies CvExperienceEntry[],
+
+  education: {
+    degree: "BSc Computer Science",
+    school: "State University of Trade and Economics",
+    schoolUrl: "https://sute.edu.ua/en",
+    location: "Ukraine",
+    period: "Expected 2028",
+  } satisfies CvEducationEntry,
 
   languages: [
     { name: "English", level: "Fluent — daily, US clients" },
