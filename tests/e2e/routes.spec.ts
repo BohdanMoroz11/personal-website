@@ -111,6 +111,35 @@ for (const locale of LOCALES) {
   });
 }
 
+test.describe("/cv", () => {
+  test("renders the CV with the name heading and a CV title", async ({ page }) => {
+    await page.goto("/cv");
+    await expect(page.locator("html")).toHaveAttribute("lang", "en");
+    await expect(page.locator("h1.cv-name")).toHaveText(/Bohdan\s+Moroz/);
+    await expect(page).toHaveTitle(/Bohdan Moroz.*CV/);
+  });
+
+  test("has a canonical link and a real description", async ({ page }) => {
+    await page.goto("/cv");
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+      "href",
+      /https:\/\/bohdanmoroz\.com\/cv\/?$/,
+    );
+    await expect(page.locator('meta[name="description"]')).toHaveAttribute("content", /.{40,}/);
+  });
+
+  test("links to a downloadable PDF that is actually served", async ({ page, request }) => {
+    await page.goto("/cv");
+    const dl = page.getByRole("link", { name: /download pdf/i });
+    await expect(dl).toHaveAttribute("href", "/cv.pdf");
+    await expect(dl).toHaveAttribute("download", /\.pdf$/);
+
+    const res = await request.get("/cv.pdf");
+    expect(res.status()).toBe(200);
+    expect(res.headers()["content-type"]).toContain("pdf");
+  });
+});
+
 test("static assets are served", async ({ request }) => {
   for (const path of ["/favicon.svg", "/robots.txt", "/sitemap-index.xml", "/og-image.png"]) {
     const res = await request.get(path);

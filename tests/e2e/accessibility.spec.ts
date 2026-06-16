@@ -40,6 +40,35 @@ for (const path of ROUTES) {
   });
 }
 
+test("/cv has no detectable WCAG 2.1 a11y violations", async ({ page }) => {
+  await page.goto("/cv", { waitUntil: "load" });
+  // The CV uses its own light "print edition" palette — tuned for AA but
+  // never run through the dark-site axe pass, so it gets its own check.
+  await page.evaluate(() => document.fonts.ready);
+
+  const results = await new AxeBuilder({ page })
+    .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
+    .analyze();
+
+  if (results.violations.length) {
+    console.error(
+      "axe violations on /cv:",
+      JSON.stringify(
+        results.violations.map((v) => ({
+          id: v.id,
+          impact: v.impact,
+          help: v.help,
+          nodes: v.nodes.map((n) => n.target),
+        })),
+        null,
+        2,
+      ),
+    );
+  }
+
+  expect(results.violations).toEqual([]);
+});
+
 /* V1 dark-mode axe pass via theme toggle — restore when light theme returns
 test("axe passes in dark mode too", async ({ page }) => {
   await page.goto("/");
