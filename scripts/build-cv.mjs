@@ -11,10 +11,12 @@
  */
 import { spawn } from "node:child_process";
 import { once } from "node:events";
+import { writeFileSync } from "node:fs";
 import { setTimeout as sleep } from "node:timers/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 import { chromium } from "@playwright/test";
+import { computeCvSourceHash, CV_HASH_FILE } from "./cv-sources.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, "..");
@@ -75,7 +77,11 @@ try {
   });
   await browser.close();
 
+  // Fingerprint the sources so CI (`npm run cv:check`) can flag a stale PDF.
+  writeFileSync(CV_HASH_FILE, computeCvSourceHash() + "\n");
+
   console.log(`✓ wrote ${OUT}`);
+  console.log(`✓ wrote ${CV_HASH_FILE}`);
 } finally {
   if (preview && !preview.killed) {
     preview.kill("SIGTERM");
