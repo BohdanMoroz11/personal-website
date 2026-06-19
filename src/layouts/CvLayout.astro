@@ -1,0 +1,34 @@
+---
+import "@fontsource/chakra-petch/latin-400.css";
+import "@fontsource/chakra-petch/latin-500.css";
+import "@fontsource/chakra-petch/latin-600.css";
+import "@fontsource/chakra-petch/latin-700.css";
+import "@fontsource-variable/jetbrains-mono/wght.css";
+import "../styles/cv.css";
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+const canonicalUrl = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="author" content="Bohdan Moroz" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#fcfbf9" />
+    <title>{title}</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+  </head>
+  <body class="cv-body">
+    <slot />
+  </body>
+</html>

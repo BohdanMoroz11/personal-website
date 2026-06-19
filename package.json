@@ -8,6 +8,8 @@
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "cv:pdf": "node scripts/build-cv.mjs",
+    "cv:check": "node scripts/check-cv-fresh.mjs",
     "astro": "astro",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -21,7 +23,7 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:lhci": "npm run build && lhci autorun",
-    "test:all": "npm run lint && npm run format:check && npm run typecheck && npm run test:unit && npm run test:e2e && npm run test:lhci",
+    "test:all": "npm run lint && npm run format:check && npm run typecheck && npm run cv:check && npm run test:unit && npm run test:e2e && npm run test:lhci",
     "prepare": "husky"
   },
   "lint-staged": {

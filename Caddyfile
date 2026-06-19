@@ -8,6 +8,11 @@
 	@html path *.html /
 	header @html Cache-Control "no-cache"
 
+	# Force the CV to download rather than preview inline. The <a download>
+	# attribute is only advisory for PDFs; this header is authoritative.
+	@cvpdf path /cv.pdf
+	header @cvpdf Content-Disposition "attachment; filename=\"Bohdan-Moroz-CV.pdf\""
+
 	file_server
 
 	handle_errors {

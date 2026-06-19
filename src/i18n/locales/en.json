@@ -267,6 +267,8 @@
     "pitchBefore": "I read everything that lands in my inbox and ",
     "pitchBold": "reply within a day",
     "pitchAfter": ". Tell me a bit about the project — stack, timeline, what you're trying to ship — and we'll go from there.",
+    "viewCv": "View CV",
+    "downloadCv": "Download CV",
     "fields": [
       {
         "key": "Location",

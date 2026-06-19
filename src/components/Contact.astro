@@ -23,10 +23,31 @@ const { contact } = Astro.props;
           <strong class="text-ice font-semibold">{contact.pitchBold}</strong>
           {contact.pitchAfter}
         </p>
-        <a href={mailtoContact} class="mail-btn">
-          <span class="mail-btn-arrow" aria-hidden="true">▸</span>
-          {contactEmail}
-        </a>
+        <div class="flex flex-wrap items-center gap-3">
+          <a href={mailtoContact} class="mail-btn">
+            <span class="mail-btn-arrow" aria-hidden="true">▸</span>
+            {contactEmail}
+          </a>
+          <div
+            class="border-line hover:border-signal inline-flex items-stretch border font-mono text-sm tracking-wide transition-colors duration-200"
+          >
+            <a
+              href="/cv"
+              class="text-steel hover:text-signal inline-flex items-center gap-2.5 px-5 py-3.75 transition-colors duration-200"
+            >
+              <span class="text-signal font-bold" aria-hidden="true">▸</span>
+              {contact.viewCv}
+            </a>
+            <a
+              href="/cv.pdf"
+              download="Bohdan-Moroz-CV.pdf"
+              class="border-line text-steel hover:text-signal inline-flex items-center gap-2 border-l px-4 py-3.75 transition-colors duration-200"
+            >
+              <span class="text-signal font-bold" aria-hidden="true">↓</span>
+              PDF<span class="sr-only"> ({contact.downloadCv})</span>
+            </a>
+          </div>
+        </div>
       </div>
 
       <dl
