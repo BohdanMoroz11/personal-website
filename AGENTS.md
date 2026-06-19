@@ -1,85 +1,98 @@
 # Personal website — bohdanmoroz.com
 
-Single-page personal site for Bohdan Moroz, a full-stack TypeScript engineer (Sofia, Bulgaria) advertising freelance availability to US SMBs in logistics, HR, and fintech.
+> `CLAUDE.md` is a symlink to this file — edit `AGENTS.md` and both stay in sync.
+> Keep this lean: it describes the general, stable state of the project for agents.
+> It is not a changelog or a place for in-progress notes.
 
-## V2 redesign (in progress)
-
-Visual V2 is being built on branch **`v2`**. V1 on `main` is the shipped editorial/paper design; V2 is a dark tactical-terminal redesign ported from a pure HTML mockup.
-
-- **About doc:** [`docs/V2.md`](docs/V2.md) — goals, V1→V2 mapping, port phases, open decisions, acceptance criteria
-- **Reference mockup:** [`V2_REFRENCE.html`](V2_REFRENCE.html) — source of truth for layout, copy, CSS, and interaction until ported
-- **Workflow:** all V2 commits on `v2`; no separate PRs until ready to merge to `main`
+Single-page personal site for Bohdan Moroz, a full-stack TypeScript engineer (Sofia,
+Bulgaria) advertising freelance availability to US SMBs in logistics, HR, and fintech.
+Dark tactical-terminal aesthetic; Chakra Petch (display) + JetBrains Mono (chrome/labels).
 
 ## Stack
 
-- **Astro 6** (static, no SSR adapter configured)
+- **Astro 6** — static build, no SSR adapter
 - **Tailwind CSS 4** via `@tailwindcss/vite`
-- TypeScript (Astro defaults)
-- No JS framework integration — plain `.astro` components
+- TypeScript (Astro defaults); no JS framework integration — plain `.astro` components
 
 ## Layout
 
-- `src/pages/index.astro` — the entire site. Hero, role/domains/stack table, "Selected work" projects, "How I work" principles, footer. All copy is pulled from the i18n dictionary; markup is purely presentational.
-- `src/i18n/index.ts` — `languages`, `defaultLang`, `getLangFromUrl(url)`, `useTranslations(lang)`, `Dictionary` type.
-- `src/i18n/locales/<lang>.json` — translation dictionaries. `en.json` is the source of truth (currently the only locale).
-- `src/styles/global.css` — design tokens (CSS vars like `--color-paper`, `--color-ink`) and utility classes (`.serif`, `.mono`, `.label`, `.row`, `.section-divider`, `.dot-divider`, `.subtle`, `.highlight-underline`).
-- `public/favicon.svg`
-- `astro.config.mjs` — `site: "https://bohdanmoroz.com"`, Astro built-in `i18n` (default `en`, `prefixDefaultLocale: false`), Tailwind Vite plugin.
+- `src/pages/` — one route per locale (`index.astro`, `ru/index.astro`, `uk/index.astro`),
+  plus `cv.astro` and `404.astro`. The locale pages are thin wrappers that render
+  `HomePage.astro`.
+- `src/components/` — the home page is composed from section components (`Topbar`, `Hero`,
+  `Protocol`, `Dossier`, `Contact`, `Footer`, …). `HomePage.astro` assembles them;
+  `SiteClient.astro` holds the client-side scripts (live clock, bootline typewriter,
+  heading decrypt, dossier accordion, scroll reveals).
+- `src/layouts/Base.astro` — `<head>`, meta, hreflang, OG tags, JSON-LD, fonts.
+  `CvLayout.astro` is the print-oriented layout for `/cv`.
+- `src/i18n/index.ts` — `languages`, `defaultLang`, `getLangFromUrl(url)`,
+  `useTranslations(lang)`, and the `Lang` / `Dictionary` types.
+- `src/i18n/locales/<lang>.json` — translation dictionaries; `en.json` is the source of truth.
+- `src/cv/data.ts` — structured CV content.
+- `src/styles/` — `global.css` (design tokens + utility classes), `cv.css` (the CV page).
+- `astro.config.mjs` — `site: "https://bohdanmoroz.com"`, built-in i18n (default `en`,
+  `prefixDefaultLocale: false`, locales `en` / `ru` / `uk`), Tailwind Vite plugin, sitemap.
 
 ## i18n
 
-- Uses Astro's built-in i18n routing + a hand-rolled JSON dictionary (lean approach, no library deps).
-- English is the default locale and served unprefixed (`/`). Additional locales live under `src/pages/<lang>/` and get URL prefixes (e.g. `/de/`).
-- To add a language: add it to `languages` in `src/i18n/index.ts`, add `src/i18n/locales/<lang>.json` with the same shape as `en.json`, add it to the `locales` array in `astro.config.mjs`, and create `src/pages/<lang>/index.astro` (can import from the existing page or duplicate).
-- Edit copy in the JSON files, not in `index.astro`.
+- Astro's built-in i18n routing + a hand-rolled JSON dictionary (no library deps).
+- English is the default locale, served unprefixed (`/`); `ru` and `uk` are prefixed
+  (`/ru/`, `/uk/`).
+- To add a locale: add it to `languages` in `src/i18n/index.ts`, add
+  `src/i18n/locales/<lang>.json` with the same shape as `en.json`, add it to `locales` in
+  `astro.config.mjs`, and create `src/pages/<lang>/index.astro`.
+- Edit copy in the JSON files, not in components. The dictionary-parity test forces every
+  locale to carry `en.json`'s full key shape.
 
-## Design
+## CV
 
-Editorial / paper-letter aesthetic: warm paper background, serif (Newsreader) headings, Inter body, JetBrains Mono labels. Single max-w-[760px] article card with section dividers. Avoid generic SaaS look.
+- `/cv` renders from `src/cv/data.ts` via `CvLayout.astro` + `src/styles/cv.css`.
+- `public/cv.pdf` is a **committed artifact** — the Alpine deploy image has no Chromium to
+  render it. After changing any CV source, run `npm run cv:pdf` and commit the regenerated
+  `public/cv.pdf` plus `scripts/cv-pdf.hash`. `npm run cv:check` guards against shipping a
+  stale PDF and runs in `test:all` and CI.
 
 ## Scripts
 
-- `npm run dev` — Astro dev server
-- `npm run build` — static build to `dist/`
-- `npm run preview`
-- `npm run format` / `npm run format:check` — Prettier write / check
-- `npm run lint` / `npm run lint:fix` — ESLint
+- `npm run dev` / `build` / `preview` — Astro dev server / static build to `dist/` / serve the build
+- `npm run format` / `format:check` — Prettier write / check
+- `npm run lint` / `lint:fix` — ESLint
 - `npm run typecheck` — `astro check` (TS + `.astro` diagnostics)
-- `npm run test:unit` — Vitest (i18n + dictionary parity)
-- `npm run test:e2e` — Playwright (routes, theme/lang switcher, axe a11y); auto-builds and serves via `astro preview`
-- `npm run test:lhci` — Lighthouse CI against the built `dist/`
-- `npm run test:all` — lint + format:check + typecheck + unit + e2e + lhci, in order
+- `npm run cv:pdf` / `cv:check` — regenerate / verify `public/cv.pdf`
+- `npm run test:unit` — Vitest (i18n helpers + dictionary parity)
+- `npm run test:e2e` — Playwright (routes, language switcher, axe a11y); auto-builds and previews
+- `npm run test:lhci` — Lighthouse CI against the build
+- `npm run test:all` — lint + format:check + typecheck + cv:check + unit + e2e + lhci, in order
 
 ## Testing
 
 Tests live under `tests/`:
 
-- `tests/unit/i18n.test.ts` — pure-function tests for `getLangFromUrl` and `useTranslations`.
-- `tests/unit/dictionary-parity.test.ts` — asserts every locale JSON has the same key shape as `en.json` (the source of truth). Add a new locale → this test forces you to fill in every key. The shape check normalizes string leaves to a type marker, so we compare structure, not values.
-- `tests/e2e/routes.spec.ts` — per-locale rendering, meta tags (canonical, og:image, description), hreflang completeness, JSON-LD validity, static assets, 404. Runs against the built site through `astro preview`.
-- `tests/e2e/theme-and-lang.spec.ts` — theme toggle persistence and language switcher (including the localStorage-driven redirect from `/`).
-- `tests/e2e/accessibility.spec.ts` — `@axe-core/playwright` against every route plus dark mode. Light + dark muted colors are tuned for WCAG AA — if you change them in `src/styles/global.css`, re-run these.
+- `tests/unit/` — pure-function tests for the i18n helpers, and a parity test asserting every
+  locale JSON has the same key shape as `en.json` (structure, not values).
+- `tests/e2e/` — per-locale rendering, meta tags (canonical, og:image, description),
+  hreflang, JSON-LD validity, `/cv`, 404, the language switcher, the dossier accordion and
+  other interactions, and `@axe-core/playwright` accessibility on every route.
+- Playwright (`playwright.config.ts`) runs desktop Chromium + Pixel 7; its `webServer`
+  builds and previews on port 4321, reusing a running preview in local dev.
+- Lighthouse CI (`.lighthouserc.json`) asserts hard floors: perf ≥ 0.95, a11y = 1.0,
+  best-practices ≥ 0.95, SEO = 1.0 across `/`, `/ru/`, `/uk/`. If a budget fails,
+  investigate the page, not the threshold.
+- CI (`.github/workflows/ci.yml`): three parallel jobs — `static`, `e2e`, `lighthouse`.
 
-Playwright is configured (`playwright.config.ts`) with two projects: desktop Chromium and Pixel 7 mobile emulation. The `webServer` block runs `npm run build && npm run preview` on port 4321; in local dev it reuses an already-running preview if you have one.
-
-Lighthouse CI config is `.lighthouserc.json`. It asserts hard floors: perf ≥ 0.95, a11y = 1.0, best-practices ≥ 0.95, SEO = 1.0 across `/`, `/ru/`, `/uk/`. Reports upload to Lighthouse temporary public storage and the URLs print at the end of the run. If a budget fails, **investigate the page**, not the threshold — the budgets are what they are because the current page meets them.
-
-CI workflow is `.github/workflows/ci.yml`: three parallel jobs (`static`, `e2e`, `lighthouse`). Playwright HTML report uploads as an artifact on failure.
-
-### When tests fail
-
-Treat failures as real until proven otherwise.
-
-If you change muted colors, theme colors, the redirect script, or add/remove a locale, expect the relevant test to scream. That's the point.
+Treat test failures as real until proven otherwise. Muted colors are tuned for WCAG AA; if
+you change them in `src/styles/global.css`, expect the accessibility tests to scream — that's
+the point.
 
 ## Tooling
 
-- **Prettier** — config in `.prettierrc.json`, uses `prettier-plugin-astro` and `prettier-plugin-tailwindcss` (auto-sorts Tailwind classes). Ignored paths in `.prettierignore`.
-- **ESLint** — flat config in `eslint.config.js` (`@eslint/js` + `typescript-eslint` + `eslint-plugin-astro`).
-- **Husky + lint-staged** — pre-commit hook at `.husky/pre-commit` runs `npx lint-staged`. Staged `*.{js,ts,astro}` are auto-fixed by ESLint then Prettier; `*.{json,md,css}` are Prettier-only. `lint-staged` config lives in `package.json`. Husky installs via the `prepare` script on `npm install`.
+- **Prettier** — `.prettierrc.json`, with `prettier-plugin-astro` + `prettier-plugin-tailwindcss`.
+- **ESLint** — flat config in `eslint.config.js`.
+- **Husky + lint-staged** — pre-commit hook runs `lint-staged`: staged `*.{js,ts,astro}` are
+  ESLint-fixed then Prettier-formatted; `*.{json,md,css}` are Prettier-only.
 
 ## Conventions
 
-- Edit content in the data arrays in `index.astro` rather than hardcoding in markup where possible.
-- Reuse existing CSS utility classes / tokens from `global.css` before adding new styles.
-- Keep it a single page unless explicitly asked to add routes.
+- Edit content in `src/i18n/locales/*.json` and `src/cv/data.ts`, not in markup.
+- Reuse existing CSS tokens / utility classes from `global.css` before adding new styles.
+- Keep the site to its existing routes unless explicitly asked to add more.

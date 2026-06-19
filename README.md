@@ -1,8 +1,8 @@
 # bohdanmoroz.com
 
-Personal site — single-page, static, served as plain HTML/CSS with a sprinkle of vanilla TS for the theme toggle and language switcher.
+Personal site — one static page per locale plus a printable CV route. Served as plain HTML/CSS with a sprinkle of vanilla TS for the terminal-style touches (live clock, typewriter bootline, scroll reveals) and the language switcher.
 
-Built with **Astro 6** + **Tailwind CSS 4**. No SSR, no framework integration, no client-side router.
+Built with **Astro 6** + **Tailwind CSS 4**, in a dark tactical-terminal aesthetic (Chakra Petch + JetBrains Mono). No SSR, no framework integration, no client-side router.
 
 ## Quick start
 
@@ -21,29 +21,38 @@ src/
     index.astro      # English (default, unprefixed)
     ru/index.astro   # Russian
     uk/index.astro   # Ukrainian
+    cv.astro         # printable CV (also rendered to public/cv.pdf)
     404.astro
-  layouts/Base.astro # <head>, meta tags, JSON-LD, theme + lang bootstrap scripts
-  components/        # Hero, FactsTable, Work, HowIWork, Contact, Footer, ThemeToggle, LangSwitch
+  layouts/
+    Base.astro       # <head>, meta, hreflang, JSON-LD, fonts
+    CvLayout.astro   # print-oriented layout for /cv
+  components/        # Topbar, Hero, Protocol, Dossier, Contact, Footer,
+                     #   HomePage (composes them), SiteClient (client scripts), …
   i18n/
     index.ts         # getLangFromUrl, useTranslations, Lang type
     locales/*.json   # en.json is the source of truth; ru/uk mirror its key shape
-  styles/global.css  # design tokens (CSS vars) + utility classes
-public/              # favicon, og-image, robots.txt, llms.txt
+  cv/data.ts         # structured CV content
+  styles/            # global.css (tokens + utilities), cv.css
+public/              # cv.pdf, favicon, og-image, fonts, robots.txt, llms.txt
 ```
 
 To edit copy, change the JSON dictionaries in `src/i18n/locales/`. To add a locale, see the i18n section in [AGENTS.md](AGENTS.md).
+
+## CV
+
+`/cv` is generated from `src/cv/data.ts`. The PDF at `public/cv.pdf` is committed to the repo (the deploy image has no browser to render it), so after editing any CV source, run `npm run cv:pdf` and commit the result alongside `scripts/cv-pdf.hash`. `npm run cv:check` — part of CI and `test:all` — fails the build if the committed PDF has drifted from its sources.
 
 ## Testing
 
 The site is small but the test suite is deliberately comprehensive.
 
-| Layer             | Tool                                      | What it covers                                                                                 |
-| ----------------- | ----------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| Unit              | **Vitest**                                | i18n helpers, dictionary key-shape parity across locales                                       |
-| End-to-end        | **Playwright** (Chromium + mobile)        | rendering per locale, meta tags, hreflang, JSON-LD validity, 404, theme/lang toggles           |
-| Accessibility     | **axe-core** (via Playwright)             | WCAG 2.1 A + AA on every route, in light _and_ dark mode                                       |
-| Perf / SEO / a11y | **Lighthouse CI**                         | Hard budgets: perf ≥ 95, a11y = 100, best-practices ≥ 95, SEO = 100 — across all three locales |
-| Static analysis   | **astro check**, **ESLint**, **Prettier** | TS + `.astro` type errors, lint, formatting                                                    |
+| Layer             | Tool                                      | What it covers                                                                                                |
+| ----------------- | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| Unit              | **Vitest**                                | i18n helpers, dictionary key-shape parity across locales                                                      |
+| End-to-end        | **Playwright** (Chromium + mobile)        | rendering per locale, meta tags, hreflang, JSON-LD validity, `/cv`, 404, language switcher, page interactions |
+| Accessibility     | **axe-core** (via Playwright)             | WCAG 2.1 A + AA on every route                                                                                |
+| Perf / SEO / a11y | **Lighthouse CI**                         | Hard budgets: perf ≥ 95, a11y = 100, best-practices ≥ 95, SEO = 100 — across all three locales                |
+| Static analysis   | **astro check**, **ESLint**, **Prettier** | TS + `.astro` type errors, lint, formatting                                                                   |
 
 ### Commands
 
@@ -53,7 +62,7 @@ npm run test:e2e       # Playwright (auto-builds and previews on port 4321)
 npm run test:lhci      # Lighthouse CI (builds first)
 npm run typecheck      # astro check
 
-npm run test:all       # lint + format:check + typecheck + unit + e2e + lhci, in order
+npm run test:all       # lint + format:check + typecheck + cv:check + unit + e2e + lhci, in order
 ```
 
 ### CI
