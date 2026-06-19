@@ -36,8 +36,6 @@ src/
 public/              # cv.pdf, favicon, og-image, fonts, robots.txt, llms.txt
 ```
 
-To edit copy, change the JSON dictionaries in `src/i18n/locales/`. To add a locale, see the i18n section in [AGENTS.md](AGENTS.md).
-
 ## CV
 
 `/cv` is generated from `src/cv/data.ts`. The PDF at `public/cv.pdf` is committed to the repo (the deploy image has no browser to render it), so after editing any CV source, run `npm run cv:pdf` and commit the result alongside `scripts/cv-pdf.hash`. `npm run cv:check` — part of CI and `test:all` — fails the build if the committed PDF has drifted from its sources.
@@ -123,7 +121,3 @@ The remote half of the deploy is intentionally tiny and lives inline in the scri
 - **Prettier** + `prettier-plugin-astro` + `prettier-plugin-tailwindcss` (auto-sorts Tailwind classes).
 - **ESLint** flat config (`@eslint/js` + `typescript-eslint` + `eslint-plugin-astro`).
 - **Husky + lint-staged** — pre-commit hook auto-fixes staged `.js/.ts/.astro` files with ESLint + Prettier, and `.json/.md/.css` with Prettier.
-
-## License
-
-Source code in this repository is not currently licensed for reuse. Copy in `src/i18n/locales/` and the visual design are © Bohdan Moroz.
