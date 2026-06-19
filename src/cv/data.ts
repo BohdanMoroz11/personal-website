@@ -73,7 +73,7 @@ export const cv = {
         "Tailwind",
         "MUI · Ant Design · Radix",
         "TanStack Query / Router",
-        "Zustand · Redux Toolkit · MobX",
+        "Zustand · Redux Toolkit",
       ],
     },
     {
@@ -94,7 +94,7 @@ export const cv = {
         "Cursor · OpenClaw",
         "Self-hosted inference",
         "Ollama · vLLM · LiteLLM",
-        "Gateways & routing",
+        "Gateways & Routing",
       ],
     },
     {
@@ -117,8 +117,8 @@ export const cv = {
       lead: "Lead / sole developer across a suite of products for US freight carriers and dispatchers.",
       bullets: [
         "ClaraHR — AI-powered driver onboarding system which contacts, onboards and files US truck drivers in the carrier's system with minimal HR involvement. Lead the project end-to-end, including infra and B2B communication. Onboarded 800+ drivers across 8 enterprise clients.",
-        "CargoHub — public freight marketplace where shippers and brokers browse carriers' trucks, post loads and book capacity, with an in-product AI assistant handling routine dispatch. Sole developer. Handles ~2,500 trucks across 9 carriers.",
-        "CargoFinance — accounting & light-fintech tooling for a logistics back-office: invoicing, transfer tracking and bank-rail payouts (AP/AR, reconciliation). Sole developer.",
+        "CargoHub — freight marketplace where shippers & brokers browse trucks, post loads and book capacity, with an AI assistant handling routine dispatch. Sole dev. Handles ~2,500 trucks across 9 carriers.",
+        "CargoFinance — accounting & light-fintech tooling for a logistics back-office: invoicing, transfer tracking and bank-rail payouts (AP/AR, reconciliation). Sole dev.",
         "CargoETL — closed TMS; built and maintain both the Next.js dispatcher dashboard and the React Native (Expo) driver app — order flow, live tracking, documents and dispatch comms.",
       ],
       stack: [
