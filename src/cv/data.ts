@@ -3,10 +3,6 @@ import { siteConfig } from "../config";
 /**
  * CV content — English only, standalone from the i18n dictionary.
  *
- * Kept out of `src/i18n/locales/*` on purpose: the CV is a single English
- * artifact (US clients / recruiters), and folding it into the dictionary would
- * trip the locale-parity test and force ru/uk translations nobody asked for.
- *
  * This module is the source of truth for both the `/cv` web page and the
  * generated `public/cv.pdf` (see `scripts/build-cv.mjs`).
  */
@@ -46,7 +42,7 @@ export const cv = {
   roleGeneral: "Software Engineer",
   roleDomain: "Applied AI",
   location: "Sofia, Bulgaria",
-  availability: "Open to freelance & full-time — remote (US hours) or on-site in Sofia",
+  availability: "Open to freelance & full-time — remote (all timezones) or on-site in Sofia",
 
   contacts: [
     { label: "Email", value: siteConfig.contactEmail, href: `mailto:${siteConfig.contactEmail}` },
@@ -60,7 +56,7 @@ export const cv = {
   ],
 
   summary:
-    "Full-stack TypeScript engineer with four years shipping production web & mobile systems for US logistics, HR and fintech operators. Comfortable owning a feature end-to-end — frontend, backend, infrastructure and deploy — with agentic AI woven into the day-to-day: I build the tooling, run self-hosted inference, and let agents handle the typing while I drive architecture, review and integration.",
+    "Full-stack TypeScript engineer with four years shipping production web & mobile systems for US logistics, HR and fintech operators. Comfortable owning a feature end-to-end — frontend, backend, infrastructure and deploy — with agentic AI woven into the day-to-day: I build the tooling, run self-hosted inference, and agents handle the typing while I drive architecture, review and integration.",
 
   skills: [
     {
@@ -95,7 +91,7 @@ export const cv = {
       label: "Applied AI",
       items: [
         "Agentic LLM workflows",
-        "OpenAI · DeepSeek",
+        "Cursor · OpenClaw",
         "Self-hosted inference",
         "Ollama · vLLM · LiteLLM",
         "Gateways & routing",
@@ -120,8 +116,8 @@ export const cv = {
       period: "May 2024 — Present",
       lead: "Lead / sole developer across a suite of products for US freight carriers and dispatchers.",
       bullets: [
-        "ClaraHR — driver onboarding system where a chatbot interviews US truck drivers on their channel of choice and files them in the carrier's system. Lead the server side. 635 drivers across 8 carriers.",
-        "CargoHub — public freight marketplace where shippers and brokers browse carriers' trucks, post loads and book capacity, with an in-product AI assistant handling routine dispatch. Sole developer. ~2,500 trucks across 9 carriers.",
+        "ClaraHR — AI-powered driver onboarding system which contacts, onboards and files US truck drivers in the carrier's system with minimal HR involvement. Lead the project end-to-end, including infra and B2B communication. Onboarded 800+ drivers across 8 enterprise clients.",
+        "CargoHub — public freight marketplace where shippers and brokers browse carriers' trucks, post loads and book capacity, with an in-product AI assistant handling routine dispatch. Sole developer. Handles ~2,500 trucks across 9 carriers.",
         "CargoFinance — accounting & light-fintech tooling for a logistics back-office: invoicing, transfer tracking and bank-rail payouts (AP/AR, reconciliation). Sole developer.",
         "CargoETL — closed TMS; built and maintain both the Next.js dispatcher dashboard and the React Native (Expo) driver app — order flow, live tracking, documents and dispatch comms.",
       ],
@@ -167,7 +163,7 @@ export const cv = {
   } satisfies CvEducationEntry,
 
   languages: [
-    { name: "English", level: "Fluent — daily, US clients" },
+    { name: "English", level: "Fluent" },
     { name: "Ukrainian", level: "Native" },
     { name: "Russian", level: "Native" },
   ] satisfies CvLanguageEntry[],
