@@ -12,13 +12,13 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-      issues: write
       id-token: write
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
+          token: ${{ secrets.GHCR_PAT }}
       - uses: actions/setup-node@v4
         with:
           node-version: 24
@@ -26,26 +26,27 @@ jobs:
       - uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ secrets.GHCR_PAT }}
           claude_args: |
-            --model opus
-            --max-turns 40
+            --model sonnet
+            --max-turns 25
             --permission-mode acceptEdits
-            --allowedTools "Edit,MultiEdit,Write,Read,Glob,Grep,LS,Bash(git:*),Bash(npm:*),Bash(gh pr comment:*),Bash(gh pr view:*),Bash(gh pr diff:*)"
+            --allowedTools "Edit,MultiEdit,Write,Read,Glob,Grep,LS,Bash(git:*),Bash(npm run typecheck),Bash(gh pr comment:*),Bash(gh pr view:*),Bash(gh pr diff:*)"
           prompt: |
-            This PR is a MAJOR dependency bump, possibly with breaking changes.
+            This PR is a MAJOR dependency bump. You are the AUTHOR, not the
+            validator — CI runs the full test suite (incl. e2e), so do NOT
+            run build/unit/e2e yourself.
 
-            FIRST: if the only changed files are under .github/workflows/, you
-            CANNOT edit those — post a comment saying so and stating the exact
-            one-line change needed (e.g. "bump actions/upload-artifact@v4 to @v7
-            in ci.yml"), then stop.
-
-            Otherwise:
-            1. Identify the dependency and version change from the diff/release notes.
-            2. Read the changelog / migration guide for the new major.
-            3. Apply the code changes this repo needs. Follow CLAUDE.md / AGENTS.md.
-            4. Run: npm run lint, typecheck, build, and the tests.
-            5. If green: commit to this PR's branch.
-            6. ALWAYS finish by posting a summary with:
+            1. Identify the dependency and version change from the diff + release notes.
+            2. Read the actual changelog / migration guide for the new major.
+            3. Decide if this repo needs ANY code changes. Many majors need none —
+               if so, say so plainly and DO NOT invent changes.
+            4. If changes are needed: make them (follow CLAUDE.md / AGENTS.md),
+               then run ONLY `npm run typecheck` as a sanity check and fix breakage.
+            5. Commit any changes to this PR's branch.
+            6. ALWAYS post a summary via:
                gh pr comment ${{ github.event.pull_request.number }} --body "..."
-               Do not rely on automatic comment posting.
+               The summary MUST include, for every breaking change you mention,
+               a direct link to the changelog/release-notes URL you read it from,
+               so I can verify it. State clearly whether code changes were needed.
             7. If it needs human judgment, comment what's blocking instead of guessing.
