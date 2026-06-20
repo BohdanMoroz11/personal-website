@@ -2,17 +2,12 @@ name: claude-major-agent
 on:
   pull_request:
     types: [opened, labeled]
-  issue_comment:
-    types: [created]
 
 jobs:
   agent:
     if: >
-      (github.event_name == 'pull_request' &&
-       contains(github.event.pull_request.labels.*.name, 'dep:major-review')) ||
-      (github.event_name == 'issue_comment' &&
-       github.event.issue.pull_request &&
-       contains(github.event.comment.body, '@claude'))
+      github.actor != 'claude[bot]' &&
+      contains(github.event.pull_request.labels.*.name, 'dep:major-review')
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -20,17 +15,37 @@ jobs:
       issues: write
       id-token: write
     steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci
       - uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           claude_args: |
             --model opus
             --max-turns 40
+            --permission-mode acceptEdits
+            --allowedTools "Edit,MultiEdit,Write,Read,Glob,Grep,LS,Bash(git:*),Bash(npm:*),Bash(gh pr comment:*),Bash(gh pr view:*),Bash(gh pr diff:*)"
           prompt: |
-            This PR is a MAJOR version bump that may contain breaking changes.
+            This PR is a MAJOR dependency bump, possibly with breaking changes.
+
+            FIRST: if the only changed files are under .github/workflows/, you
+            CANNOT edit those — post a comment saying so and stating the exact
+            one-line change needed (e.g. "bump actions/upload-artifact@v4 to @v7
+            in ci.yml"), then stop.
+
+            Otherwise:
             1. Identify the dependency and version change from the diff/release notes.
-            2. Find and read the changelog / migration guide for that major version.
-            3. Apply the code changes this repo needs (only if there is a need). Follow CLAUDE.md / AGENTS.md.
-            4. Run lint, typecheck, build, and tests (see package.json scripts).
-            5. If green: commit to this PR's branch (if any changes are needed) and/or comment a summary.
-            6. If it needs human judgment: DO NOT guess — comment what's blocking.
+            2. Read the changelog / migration guide for the new major.
+            3. Apply the code changes this repo needs. Follow CLAUDE.md / AGENTS.md.
+            4. Run: npm run lint, typecheck, build, and the tests.
+            5. If green: commit to this PR's branch.
+            6. ALWAYS finish by posting a summary with:
+               gh pr comment ${{ github.event.pull_request.number }} --body "..."
+               Do not rely on automatic comment posting.
+            7. If it needs human judgment, comment what's blocking instead of guessing.
