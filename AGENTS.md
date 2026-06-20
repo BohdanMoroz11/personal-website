@@ -84,6 +84,25 @@ Treat test failures as real until proven otherwise. Muted colors are tuned for W
 you change them in `src/styles/global.css`, expect the accessibility tests to scream — that's
 the point.
 
+## Dependency updates
+
+Two layers keep dependencies current:
+
+- **Renovate** (`renovate.json`) groups all non-major updates (`patch`, `minor`, `pin`,
+  `digest`) into one PR and auto-merges it when CI passes. Runs weekly. No agent involvement.
+- **Claude Code** handles majors. Renovate opens one PR per major, holds it (no automerge),
+  and adds the `dep:major-review` label. That label fires
+  `.github/workflows/major-dep-agent.yml`, which runs an agent on the PR branch.
+
+If you are that agent: you are the PR **author**, not the validator — CI runs the full suite
+(incl. e2e), so don't run build/unit/e2e yourself. Identify the dep and version from the diff,
+read the upstream changelog/migration guide for the new major, and decide whether this repo
+actually needs changes — many majors need none, so say so plainly rather than inventing work.
+If changes are needed, make them per these conventions, run `npm run typecheck` as a sanity
+check, and commit to the PR branch. Always post a summary comment via `gh pr comment`, linking
+the release notes for every breaking change you cite. The human reviews and merges; majors are
+never auto-merged.
+
 ## Tooling
 
 - **Prettier** — `.prettierrc.json`, with `prettier-plugin-astro` + `prettier-plugin-tailwindcss`.

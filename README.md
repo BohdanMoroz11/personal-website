@@ -116,6 +116,26 @@ Other knobs (all optional):
 
 The remote half of the deploy is intentionally tiny and lives inline in the script — `git pull --ff-only && docker compose pull && docker compose up -d && docker image prune -f`. If you ever need to deploy without your laptop's Docker, you can SSH in and run those four lines by hand.
 
+## Dependency updates
+
+Dependencies are kept current automatically, in two layers:
+
+1. **Renovate — patches & minors.** [`renovate.json`](renovate.json) bundles every
+   non-major update (`patch`, `minor`, `pin`, `digest`) into a single grouped PR and
+   **auto-merges it once CI is green**. Runs weekly (before 6am Monday, Europe/Sofia).
+   Nothing to do — if the tests pass, it lands on its own.
+
+2. **Claude Code — majors.** Major bumps are riskier, so Renovate opens a **separate PR per
+   major**, leaves it un-merged, and labels it `dep:major-review`. That label triggers
+   [`.github/workflows/major-dep-agent.yml`](.github/workflows/major-dep-agent.yml), which runs
+   Claude Code on the PR branch. The agent reads the diff and the upstream changelog/migration
+   guide, makes any code changes the new major requires (or plainly states none are needed),
+   typechecks them, commits to the PR branch, and posts a **summary comment** — with links to
+   the release notes it relied on — for you to read.
+
+   You review the PR and the agent's comment, and merge it yourself if it looks good. Majors
+   are never auto-merged.
+
 ## Tooling
 
 - **Prettier** + `prettier-plugin-astro` + `prettier-plugin-tailwindcss` (auto-sorts Tailwind classes).
