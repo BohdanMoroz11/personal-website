@@ -4,21 +4,17 @@
   "timezone": "Europe/Sofia",
   "schedule": ["before 6am on monday"],
   "rangeStrategy": "bump",
-  "prHourlyLimit": 0,
+  "prConcurrentLimit": 5,
+  "platformAutomerge": true,
   "packageRules": [
     {
-      "description": "Auto-merge patch + minor once CI is green",
-      "matchUpdateTypes": ["patch", "minor"],
+      "description": "Bundle ALL non-major updates into one auto-merging PR",
+      "matchUpdateTypes": ["patch", "minor", "pin", "digest"],
+      "groupName": "non-major dependencies",
       "automerge": true
     },
     {
-      "description": "Group devDependency minor/patch into one PR",
-      "matchDepTypes": ["devDependencies"],
-      "matchUpdateTypes": ["patch", "minor"],
-      "groupName": "devDependencies"
-    },
-    {
-      "description": "Hold majors for review + label for the agent",
+      "description": "Majors: separate PRs, held for review, labeled for the agent",
       "matchUpdateTypes": ["major"],
       "automerge": false,
       "addLabels": ["dep:major-review"]
