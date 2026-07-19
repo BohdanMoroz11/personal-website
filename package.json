@@ -37,14 +37,14 @@
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",
-    "@fontsource-variable/jetbrains-mono": "^5.2.8",
-    "@fontsource/chakra-petch": "^5.2.7",
-    "@tailwindcss/vite": "~4.3.2",
+    "@fontsource-variable/jetbrains-mono": "^5.3.0",
+    "@fontsource/chakra-petch": "^5.3.0",
+    "@tailwindcss/vite": "~4.3.3",
     "astro": "^6.4.8",
-    "tailwindcss": "^4.3.2"
+    "tailwindcss": "^4.3.3"
   },
   "overrides": {
-    "vite": "^8.1.4"
+    "vite": "^8.1.5"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
@@ -56,12 +56,12 @@
     "eslint": "^10.7.0",
     "eslint-plugin-astro": "^1.7.0",
     "husky": "^9.1.7",
-    "lint-staged": "^17.0.8",
+    "lint-staged": "^17.1.0",
     "prettier": "^3.9.5",
     "prettier-plugin-astro": "^0.14.1",
-    "prettier-plugin-tailwindcss": "^0.8.0",
+    "prettier-plugin-tailwindcss": "^0.8.1",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.63.0",
+    "typescript-eslint": "^8.64.0",
     "vitest": "^4.1.10"
   }
 }
