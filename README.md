@@ -128,13 +128,26 @@ Dependencies are kept current automatically, in two layers:
 2. **Claude Code — majors.** Major bumps are riskier, so Renovate opens a **separate PR per
    major**, leaves it un-merged, and labels it `dep:major-review`. That label triggers
    [`.github/workflows/major-dep-agent.yml`](.github/workflows/major-dep-agent.yml), which runs
-   Claude Code on the PR branch. The agent reads the diff and the upstream changelog/migration
-   guide, makes any code changes the new major requires (or plainly states none are needed),
-   typechecks them, commits to the PR branch, and posts a **summary comment** — with links to
-   the release notes it relied on — for you to read.
-
-   You review the PR and the agent's comment, and merge it yourself if it looks good. Majors
-   are never auto-merged.
+   Claude Code on the PR branch. The agent reads the diff and **fetches the upstream
+   changelog/migration guide over the web** (the excerpt Renovate embeds in the PR body isn't
+   enough for a framework major), makes any code changes the new major requires (or plainly
+   states none are needed), typechecks them, commits to the PR branch, and posts a **summary
+   comment** — with links to the release notes it actually read — for you to review and merge.
+   Majors are never auto-merged.
+   - **CI-failure retry loop.** If the agent's changes break CI, that isn't the end of the road.
+     [`.github/workflows/major-dep-agent-ci-retry.yml`](.github/workflows/major-dep-agent-ci-retry.yml)
+     watches for a failed **CI** run on a `renovate/` branch, reads the failing logs, diagnoses
+     the regression (consulting the changelog again), pushes a fix, and comments what it changed —
+     re-running CI automatically. It backs off after **3 attempts** so a genuinely hard break
+     can't burn cost in a loop.
+   - **Dormancy watchdog.** Two failure modes are otherwise silent: a PR that falls into **merge
+     conflict** stops firing the workflows (and Renovate won't rebase over the agent's own
+     commits), and a **crashed/timed-out** agent run pushes nothing so CI never re-runs.
+     [`.github/workflows/major-dep-watchdog.yml`](.github/workflows/major-dep-watchdog.yml) runs
+     on every push to `main` plus a 6-hour cron, and the agent workflows carry `if: failure()`
+     steps — together they **@-mention you** on a stuck PR (conflict, exhausted retries, or a
+     crashed run), keyed to the head commit so you get exactly one ping per bad state. Nothing
+     stalls quietly with red CI.
 
 ## Tooling
 
