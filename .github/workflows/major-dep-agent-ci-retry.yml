@@ -1,0 +1,92 @@
+name: claude-major-agent-ci-retry
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+
+jobs:
+  retry:
+    if: >
+      github.event.workflow_run.conclusion == 'failure' &&
+      startsWith(github.event.workflow_run.head_branch, 'renovate/')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: read
+      id-token: write
+    steps:
+      - name: Find PR and check label / attempt cap
+        id: check
+        env:
+          GH_TOKEN: ${{ secrets.GHCR_PAT }}
+        run: |
+          PR_NUMBER=$(gh api "repos/${{ github.repository }}/commits/${{ github.event.workflow_run.head_sha }}/pulls" --jq '.[0].number')
+          if [ -z "$PR_NUMBER" ] || [ "$PR_NUMBER" == "null" ]; then
+            echo "No open PR for this commit — skipping."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          LABELS=$(gh pr view "$PR_NUMBER" --json labels --jq '.labels[].name')
+          if ! echo "$LABELS" | grep -qx "dep:major-review"; then
+            echo "Not a major-review PR — skipping."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          ATTEMPTS=$(gh pr view "$PR_NUMBER" --json comments --jq '[.comments[].body | select(contains("<!-- ci-retry-attempt -->"))] | length')
+          if [ "$ATTEMPTS" -ge 3 ]; then
+            gh pr comment "$PR_NUMBER" --body "<!-- ci-retry-attempt --> CI failed again after $ATTEMPTS automated fix attempts. Stopping here — this needs a human look."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+          echo "pr_number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
+          echo "attempt=$((ATTEMPTS + 1))" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@v7
+        if: steps.check.outputs.skip != 'true'
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+          fetch-depth: 0
+          token: ${{ secrets.GHCR_PAT }}
+      - uses: actions/setup-node@v6
+        if: steps.check.outputs.skip != 'true'
+        with:
+          node-version: 24.18.0
+      - run: npm ci
+        if: steps.check.outputs.skip != 'true'
+      - uses: anthropics/claude-code-action@v1
+        if: steps.check.outputs.skip != 'true'
+        with:
+          allowed_bots: "renovate[bot]"
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ secrets.GHCR_PAT }}
+          claude_args: |
+            --model sonnet
+            --max-turns 25
+            --permission-mode acceptEdits
+            --allowedTools "Edit,MultiEdit,Write,Read,Glob,Grep,LS,Bash(git:*),Bash(npm run typecheck),Bash(gh run view:*),Bash(gh pr comment:*),Bash(gh pr view:*),Bash(gh pr diff:*)"
+          prompt: |
+            CI just failed (automated fix attempt ${{ steps.check.outputs.attempt }} of 3) on
+            PR #${{ steps.check.outputs.pr_number }}, a major dependency bump PR that you (or a
+            prior run) already committed to.
+
+            1. Run `gh run view ${{ github.event.workflow_run.id }} --log-failed` to see exactly
+               what failed.
+            2. Diagnose the root cause — treat this as a real regression from the dependency bump,
+               not a flake, unless the log clearly shows otherwise (e.g. a timing/network blip).
+            3. Fix it. Follow CLAUDE.md / AGENTS.md conventions. Do NOT run the full test suite
+               yourself — CI will re-run automatically once you push.
+            4. Run ONLY `npm run typecheck` as a sanity check, then commit and push to this PR's
+               branch.
+            5. ALWAYS post a comment via:
+               gh pr comment ${{ steps.check.outputs.pr_number }} --body "<!-- ci-retry-attempt --> ..."
+               explaining what broke and what you changed. The `<!-- ci-retry-attempt -->` marker
+               MUST be the first thing in the comment body — it's how attempts get counted.
+            6. If you cannot identify a fix (e.g. it needs a design decision only a human can make),
+               say so plainly in the comment (still with the marker) instead of guessing, and do
+               not push a speculative change.
