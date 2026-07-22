@@ -67,9 +67,9 @@ jobs:
           github_token: ${{ secrets.GHCR_PAT }}
           claude_args: |
             --model sonnet
-            --max-turns 25
+            --max-turns 50
             --permission-mode acceptEdits
-            --allowedTools "Edit,MultiEdit,Write,Read,Glob,Grep,LS,WebSearch,WebFetch,Bash(git:*),Bash(npm run typecheck),Bash(gh run view:*),Bash(gh pr comment:*),Bash(gh pr view:*),Bash(gh pr diff:*)"
+            --allowedTools "Edit,MultiEdit,Write,Read,Glob,Grep,LS,WebSearch,WebFetch,Bash(git:*),Bash(grep:*),Bash(head:*),Bash(tail:*),Bash(npm run typecheck),Bash(gh run view:*),Bash(gh pr comment:*),Bash(gh pr view:*),Bash(gh pr diff:*)"
           prompt: |
             CI just failed (automated fix attempt ${{ steps.check.outputs.attempt }} of 3) on
             PR #${{ steps.check.outputs.pr_number }}, a major dependency bump PR that you (or a
