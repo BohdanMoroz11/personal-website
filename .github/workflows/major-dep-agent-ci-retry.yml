@@ -69,7 +69,7 @@ jobs:
             --model sonnet
             --max-turns 25
             --permission-mode acceptEdits
-            --allowedTools "Edit,MultiEdit,Write,Read,Glob,Grep,LS,Bash(git:*),Bash(npm run typecheck),Bash(gh run view:*),Bash(gh pr comment:*),Bash(gh pr view:*),Bash(gh pr diff:*)"
+            --allowedTools "Edit,MultiEdit,Write,Read,Glob,Grep,LS,WebSearch,WebFetch,Bash(git:*),Bash(npm run typecheck),Bash(gh run view:*),Bash(gh pr comment:*),Bash(gh pr view:*),Bash(gh pr diff:*)"
           prompt: |
             CI just failed (automated fix attempt ${{ steps.check.outputs.attempt }} of 3) on
             PR #${{ steps.check.outputs.pr_number }}, a major dependency bump PR that you (or a
@@ -79,6 +79,8 @@ jobs:
                what failed.
             2. Diagnose the root cause — treat this as a real regression from the dependency bump,
                not a flake, unless the log clearly shows otherwise (e.g. a timing/network blip).
+               Use WebFetch / WebSearch to consult the dependency's changelog or migration guide
+               when the failure relates to the bump — do not rely on memory of the new major.
             3. Fix it. Follow CLAUDE.md / AGENTS.md conventions. Do NOT run the full test suite
                yourself — CI will re-run automatically once you push.
             4. Run ONLY `npm run typecheck` as a sanity check, then commit and push to this PR's
