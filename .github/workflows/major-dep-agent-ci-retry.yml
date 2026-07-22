@@ -29,16 +29,16 @@ jobs:
             exit 0
           fi
 
-          LABELS=$(gh pr view "$PR_NUMBER" --json labels --jq '.labels[].name')
+          LABELS=$(gh pr view "$PR_NUMBER" --repo "${{ github.repository }}" --json labels --jq '.labels[].name')
           if ! echo "$LABELS" | grep -qx "dep:major-review"; then
             echo "Not a major-review PR — skipping."
             echo "skip=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
-          ATTEMPTS=$(gh pr view "$PR_NUMBER" --json comments --jq '[.comments[].body | select(contains("<!-- ci-retry-attempt -->"))] | length')
+          ATTEMPTS=$(gh pr view "$PR_NUMBER" --repo "${{ github.repository }}" --json comments --jq '[.comments[].body | select(contains("<!-- ci-retry-attempt -->"))] | length')
           if [ "$ATTEMPTS" -ge 3 ]; then
-            gh pr comment "$PR_NUMBER" --body "<!-- ci-retry-attempt --> CI failed again after $ATTEMPTS automated fix attempts. Stopping here — this needs a human look."
+            gh pr comment "$PR_NUMBER" --repo "${{ github.repository }}" --body "<!-- ci-retry-attempt --> CI failed again after $ATTEMPTS automated fix attempts. Stopping here — this needs a human look."
             echo "skip=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
