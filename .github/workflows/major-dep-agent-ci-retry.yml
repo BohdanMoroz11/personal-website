@@ -92,3 +92,14 @@ jobs:
             6. If you cannot identify a fix (e.g. it needs a design decision only a human can make),
                say so plainly in the comment (still with the marker) instead of guessing, and do
                not push a speculative change.
+
+      # If the agent step itself crashed / timed out it posts nothing, and since it
+      # pushed no commit CI won't re-run — the loop goes silently dormant with red CI.
+      # This backstop pings a human. The marker counts it toward the 3-attempt cap so a
+      # push-then-crash can't loop forever.
+      - name: Flag crashed fix attempt
+        if: failure() && steps.check.outputs.skip != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GHCR_PAT }}
+        run: |
+          gh pr comment "${{ steps.check.outputs.pr_number }}" --repo "${{ github.repository }}" --body "$(printf '%s\n⚠️ @BohdanMoroz11 — the automated CI-fix agent **crashed or timed out** on attempt %s (see the [failed run](%s)). CI is still red and no fix was pushed — this one needs a human look.' '<!-- ci-retry-attempt -->' '${{ steps.check.outputs.attempt }}' '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}')"

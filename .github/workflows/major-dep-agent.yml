@@ -58,3 +58,13 @@ jobs:
                a direct link to the changelog/release-notes URL you read it from,
                so I can verify it. State clearly whether code changes were needed.
             7. If it needs human judgment, comment what's blocking instead of guessing.
+
+      # If the review agent crashes / times out it posts no review at all, leaving the PR
+      # looking un-reviewed with no signal. Ping a human. (Concurrency-cancelled duplicate
+      # runs are 'cancelled', not 'failure', so this won't fire for the dedup.)
+      - name: Flag crashed review attempt
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GHCR_PAT }}
+        run: |
+          gh pr comment "${{ github.event.pull_request.number }}" --repo "${{ github.repository }}" --body "$(printf '⚠️ @BohdanMoroz11 — the automated major-dependency review agent **crashed or timed out** on this PR (see the [failed run](%s)). No review was posted — worth a manual look before merging.' '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}')"

@@ -1,0 +1,91 @@
+name: major-dep-watchdog
+
+# Backstop for the silent-dormancy failure modes the agent/retry workflows can't self-report:
+#   - a major PR that goes into MERGE CONFLICT stops firing pull_request workflows entirely,
+#     and Renovate won't auto-rebase a branch that carries the agent's own commits;
+#   - CI stays red after the retry loop exhausts its 3 attempts (or a retry crashed).
+# In all of these nothing pings a human. This scans open major-review PRs and flags stuck
+# ones with an @-mention, keyed to the head commit so you get exactly one ping per bad state.
+
+on:
+  push:
+    branches: [main] # a merge here is what tips sibling PRs into conflict — check immediately
+  schedule:
+    - cron: "0 */6 * * *" # periodic backstop for anything the push check missed
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+  actions: read
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GHCR_PAT }}
+      REPO: ${{ github.repository }}
+    steps:
+      - name: Scan major-review PRs and flag stuck ones
+        run: |
+          set -euo pipefail
+
+          PRS=$(gh pr list --repo "$REPO" --state open --label "dep:major-review" \
+            --json number,headRefOid,mergeable --jq '.[] | @base64')
+          if [ -z "$PRS" ]; then
+            echo "No open major-review PRs — nothing to watch."
+            exit 0
+          fi
+
+          for row in $PRS; do
+            _jq() { echo "$row" | base64 --decode | jq -r "$1"; }
+            PR=$(_jq '.number')
+            SHA=$(_jq '.headRefOid')
+            MERGEABLE=$(_jq '.mergeable')
+
+            REASON=""
+            if [ "$MERGEABLE" = "CONFLICTING" ]; then
+              REASON="has a **merge conflict**. Renovate won't auto-rebase because the branch carries the agent's own commits, so it's stranded until someone ticks Renovate's rebase box or resolves it by hand."
+            else
+              # Latest CI run for this exact commit (filter by SHA rather than relying on
+              # a --commit flag, for portability across gh versions).
+              CI=$(gh run list --repo "$REPO" --workflow ci.yml --limit 30 \
+                --json headSha,status,conclusion \
+                --jq "[.[] | select(.headSha==\"$SHA\")][0] // {}")
+              CI_STATUS=$(echo "$CI" | jq -r '.status // ""')
+              CI_CONCL=$(echo "$CI" | jq -r '.conclusion // ""')
+
+              if [ "$CI_STATUS" = "completed" ] && [ "$CI_CONCL" = "failure" ]; then
+                RETRY_ACTIVE=$(gh run list --repo "$REPO" \
+                  --workflow major-dep-agent-ci-retry.yml --limit 15 \
+                  --json status,headSha \
+                  --jq "[.[] | select(.headSha==\"$SHA\" and (.status==\"in_progress\" or .status==\"queued\"))] | length")
+                ATTEMPTS=$(gh pr view "$PR" --repo "$REPO" --json comments \
+                  --jq '[.comments[].body | select(contains("<!-- ci-retry-attempt -->"))] | length')
+
+                if [ "$RETRY_ACTIVE" -gt 0 ]; then
+                  echo "PR #$PR: CI red but a fixer is running — leaving it."
+                elif [ "$ATTEMPTS" -ge 3 ]; then
+                  REASON="has **red CI after 3 automated fix attempts** — the retry loop has given up."
+                else
+                  REASON="has **red CI and no fixer is running** — the retry agent likely crashed before pushing a fix."
+                fi
+              fi
+            fi
+
+            [ -z "$REASON" ] && { echo "PR #$PR: healthy or in progress."; continue; }
+
+            # One ping per commit: skip if this exact SHA was already flagged.
+            MARKER="<!-- watchdog:$SHA -->"
+            ALREADY=$(gh pr view "$PR" --repo "$REPO" --json comments \
+              --jq "[.comments[].body | select(contains(\"$MARKER\"))] | length")
+            if [ "$ALREADY" -gt 0 ]; then
+              echo "PR #$PR: already flagged for $SHA — skipping."
+              continue
+            fi
+
+            BODY=$(printf '%s\n⚠️ @BohdanMoroz11 — major-dependency PR #%s %s\n\n_(automated watchdog — one ping per commit)_' \
+              "$MARKER" "$PR" "$REASON")
+            gh pr comment "$PR" --repo "$REPO" --body "$BODY"
+            echo "PR #$PR: flagged ($REASON)"
+          done
