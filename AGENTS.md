@@ -99,9 +99,41 @@ If you are that agent: you are the PR **author**, not the validator — CI runs 
 read the upstream changelog/migration guide for the new major, and decide whether this repo
 actually needs changes — many majors need none, so say so plainly rather than inventing work.
 If changes are needed, make them per these conventions, run `npm run typecheck` as a sanity
-check, and commit to the PR branch. Always post a summary comment via `gh pr comment`, linking
-the release notes for every breaking change you cite. The human reviews and merges; majors are
-never auto-merged.
+check, and commit to the PR branch. The human reviews and merges; majors are never auto-merged.
+
+**Your deliverable is a verdict, not a migration.** Code changes are one possible consequence
+of a verdict, never the goal. Finishing without posting one is a failure regardless of what
+else you did. Pick exactly one and post it via `gh pr comment`:
+
+| Verdict       | Meaning                                                                                         |
+| ------------- | ----------------------------------------------------------------------------------------------- |
+| `CLEAN`       | Adoptable, no repo changes needed — CI will prove it.                                           |
+| `MIGRATED`    | Adoptable; changes made and pushed. Say what and why.                                           |
+| `BLOCKED`     | Not adoptable yet. Name the upstream constraint and what must ship first. Make no code changes. |
+| `NEEDS-HUMAN` | A real judgement call. Say what's blocking; push nothing speculative.                           |
+
+The comment must **begin** with `<!-- dep-verdict:<VERDICT>:<head-sha> -->` — the workflows key
+off that marker to tell "reviewed" from "crashed", so get it exactly right. Link the
+changelog/release-notes URL you actually read for every breaking change you cite.
+
+Two rules make `BLOCKED` reliable rather than a shrug:
+
+- **Check adoptability mechanically, not from memory.** For each direct dependent of the
+  bumped package, run `npm view <dependent>@latest peerDependencies`. If the _latest published_
+  version of a dependent still excludes the new major, the ecosystem hasn't caught up — that's
+  `BLOCKED`, and it's an upstream fact, not a repo problem.
+- **Never force a bump past an unsatisfiable peer range.** No `overrides`, no
+  `--legacy-peer-deps`, no `--force`. That ships a toolchain which can't build or typecheck
+  this repo while CI may still look green.
+
+On `BLOCKED`, also add the `dep:blocked` label (`gh pr edit <pr> --add-label "dep:blocked"`).
+It halts the CI-retry loop — red CI is the _expected_ state for an unadoptable bump, so fix
+attempts are waste — and silences the dormancy watchdog. Leave the PR **open**: the watchdog
+clears the label automatically once the branch moves, so the bump re-adjudicates itself when
+upstream catches up.
+
+Note that `npm ci` is deliberately **non-fatal** in these workflows. An uninstallable branch
+(Renovate couldn't resolve a lockfile) is your primary evidence, not a reason to stop.
 
 ## Tooling
 

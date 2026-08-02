@@ -130,24 +130,49 @@ Dependencies are kept current automatically, in two layers:
    [`.github/workflows/major-dep-agent.yml`](.github/workflows/major-dep-agent.yml), which runs
    Claude Code on the PR branch. The agent reads the diff and **fetches the upstream
    changelog/migration guide over the web** (the excerpt Renovate embeds in the PR body isn't
-   enough for a framework major), makes any code changes the new major requires (or plainly
-   states none are needed), typechecks them, commits to the PR branch, and posts a **summary
-   comment** — with links to the release notes it actually read — for you to review and merge.
-   Majors are never auto-merged.
+   enough for a framework major), then posts a **verdict comment** for you to act on. Majors
+   are never auto-merged.
+
+   The agent's deliverable is the verdict, not the migration — exactly one of:
+
+   | Verdict       | Meaning                                                                        |
+   | ------------- | ------------------------------------------------------------------------------ |
+   | `CLEAN`       | Adoptable, no repo changes needed — CI proves it                               |
+   | `MIGRATED`    | Adoptable; changes made, typechecked and pushed to the PR branch               |
+   | `BLOCKED`     | **Not adoptable yet** — names the upstream constraint and what must ship first |
+   | `NEEDS-HUMAN` | A genuine judgement call, escalated rather than guessed at                     |
+
+   Every verdict cites the release-notes URLs it was read from, so you can verify it without
+   re-doing the research.
+
+   - **"Not adoptable" is a first-class answer.** The most common way a major gets stuck is a
+     peer-dependency conflict that stops Renovate resolving a lockfile at all — which used to
+     leave the branch uninstallable and kill the agent job at `npm ci`, before it could say
+     anything. Install is now **non-fatal evidence** rather than a precondition, and the agent
+     checks adoptability mechanically (`npm view <dependent>@latest peerDependencies` for each
+     direct dependent) instead of from memory. Forcing a bump through with `overrides` or
+     `--legacy-peer-deps` is prohibited — that only buys green CI on a toolchain that can't
+     build the repo.
+   - **`BLOCKED` PRs go quiet, then wake up.** A `BLOCKED` verdict adds the `dep:blocked` label,
+     which halts the retry loop (red CI is _expected_ there) and silences the watchdog. The PR
+     stays **open**; when upstream finally catches up, Renovate rebases, and the moved head
+     commit makes the watchdog clear the label and re-run the agent. Blocked state expires on
+     its own — nothing to track by hand.
    - **CI-failure retry loop.** If the agent's changes break CI, that isn't the end of the road.
      [`.github/workflows/major-dep-agent-ci-retry.yml`](.github/workflows/major-dep-agent-ci-retry.yml)
      watches for a failed **CI** run on a `renovate/` branch, reads the failing logs, diagnoses
      the regression (consulting the changelog again), pushes a fix, and comments what it changed —
      re-running CI automatically. It backs off after **3 attempts** so a genuinely hard break
-     can't burn cost in a loop.
-   - **Dormancy watchdog.** Two failure modes are otherwise silent: a PR that falls into **merge
-     conflict** stops firing the workflows (and Renovate won't rebase over the agent's own
-     commits), and a **crashed/timed-out** agent run pushes nothing so CI never re-runs.
+     can't burn cost in a loop, and skips `dep:blocked` PRs entirely.
+   - **Dormancy watchdog.** Several failure modes are otherwise silent: a PR that falls into
+     **merge conflict** stops firing the workflows (and Renovate won't rebase over the agent's
+     own commits), and a **crashed/timed-out** agent run pushes nothing so CI never re-runs.
      [`.github/workflows/major-dep-watchdog.yml`](.github/workflows/major-dep-watchdog.yml) runs
-     on every push to `main` plus a 6-hour cron, and the agent workflows carry `if: failure()`
-     steps — together they **@-mention you** on a stuck PR (conflict, exhausted retries, or a
-     crashed run), keyed to the head commit so you get exactly one ping per bad state. Nothing
-     stalls quietly with red CI.
+     on every push to `main` plus a 6-hour cron. The agent workflows additionally verify their
+     own **outcome** — they check that a verdict for the head commit actually landed, which
+     catches a run that exits cleanly having posted nothing (turn exhaustion) as well as one
+     that crashed. Together they **@-mention you** on any stuck PR, keyed to the head commit so
+     you get exactly one ping per bad state. Nothing stalls quietly with red CI.
 
 ## Tooling
 

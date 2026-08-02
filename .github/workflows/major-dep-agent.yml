@@ -2,31 +2,79 @@ name: claude-major-agent
 on:
   pull_request:
     types: [opened, labeled]
+  # The watchdog re-dispatches this when a `dep:blocked` PR's branch moves — see
+  # major-dep-watchdog.yml. Deliberately NOT `pull_request: synchronize`: the agent pushes
+  # with GHCR_PAT, so `github.actor` is the token owner rather than a bot, and the actor
+  # guard below would not break the resulting self-trigger loop.
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: PR number to adjudicate
+        required: true
 
 concurrency:
-  group: claude-major-agent-${{ github.event.pull_request.number }}
+  group: claude-major-agent-${{ github.event.pull_request.number || inputs.pr_number }}
   cancel-in-progress: true
 
 jobs:
   agent:
     if: >
-      github.actor != 'claude[bot]' &&
-      contains(github.event.pull_request.labels.*.name, 'dep:major-review')
+      github.event_name == 'workflow_dispatch' ||
+      (github.actor != 'claude[bot]' &&
+       contains(github.event.pull_request.labels.*.name, 'dep:major-review'))
     runs-on: ubuntu-latest
     permissions:
       contents: write
       pull-requests: write
       id-token: write
     steps:
+      # Resolve PR context once so the rest of the job is event-shape agnostic.
+      - name: Resolve PR context
+        id: pr
+        env:
+          GH_TOKEN: ${{ secrets.GHCR_PAT }}
+        run: |
+          set -euo pipefail
+          PR="${{ github.event.pull_request.number || inputs.pr_number }}"
+          DATA=$(gh pr view "$PR" --repo "${{ github.repository }}" \
+            --json headRefName,headRefOid,labels)
+          {
+            echo "number=$PR"
+            echo "head_ref=$(echo "$DATA" | jq -r .headRefName)"
+            echo "head_sha=$(echo "$DATA" | jq -r .headRefOid)"
+          } >> "$GITHUB_OUTPUT"
+
       - uses: actions/checkout@v7
         with:
-          ref: ${{ github.event.pull_request.head.ref }}
+          ref: ${{ steps.pr.outputs.head_ref }}
           fetch-depth: 0
           token: ${{ secrets.GHCR_PAT }}
       - uses: actions/setup-node@v7
         with:
           node-version: 24.18.1
-      - run: npm ci
+
+      # NON-FATAL, and that is the whole point. A major bump that Renovate could not resolve
+      # a lockfile for leaves the branch uninstallable — which is exactly the case where the
+      # agent's judgement is most needed. Gating the agent behind a green install made the
+      # automation fail closed precisely when it mattered. The install result is evidence now,
+      # not a precondition.
+      - name: Install dependencies (evidence, non-fatal)
+        id: install
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          npm ci 2>&1 | tee /tmp/install.log
+
+      - name: Capture install log
+        if: always()
+        id: installlog
+        run: |
+          {
+            echo 'log<<INSTALL_LOG_EOF'
+            tail -n 120 /tmp/install.log 2>/dev/null || echo '(no install log produced)'
+            echo 'INSTALL_LOG_EOF'
+          } >> "$GITHUB_OUTPUT"
+
       - uses: anthropics/claude-code-action@v1
         with:
           allowed_bots: "renovate[bot]"
@@ -36,35 +84,102 @@ jobs:
             --model sonnet
             --max-turns 50
             --permission-mode acceptEdits
-            --allowedTools "Edit,MultiEdit,Write,Read,Glob,Grep,LS,WebSearch,WebFetch,Bash(git:*),Bash(grep:*),Bash(head:*),Bash(tail:*),Bash(npm run typecheck),Bash(gh pr comment:*),Bash(gh pr view:*),Bash(gh pr diff:*)"
+            --allowedTools "Edit,MultiEdit,Write,Read,Glob,Grep,LS,WebSearch,WebFetch,Bash(git:*),Bash(grep:*),Bash(head:*),Bash(tail:*),Bash(npm run typecheck),Bash(npm view:*),Bash(npm ls:*),Bash(gh pr comment:*),Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh pr edit:*)"
           prompt: |
-            This PR is a MAJOR dependency bump. You are the AUTHOR, not the
-            validator — CI runs the full test suite (incl. e2e), so do NOT
-            run build/unit/e2e yourself.
+            This PR (#${{ steps.pr.outputs.number }}) is a MAJOR dependency bump. You are the
+            AUTHOR, not the validator — CI runs the full test suite (incl. e2e), so do NOT run
+            build/unit/e2e yourself.
+
+            YOUR DELIVERABLE IS A VERDICT. Code changes are one possible consequence of a
+            verdict, never the goal. Finishing without posting a verdict comment is a failure,
+            no matter what else you did.
+
+            ## Dependency install status: ${{ steps.install.outcome }}
+
+            `npm ci` output (last 120 lines):
+            ```
+            ${{ steps.installlog.outputs.log }}
+            ```
+
+            If the install FAILED, that is not an obstacle to your work — it is your primary
+            evidence. A lockfile that is out of sync with package.json almost always means
+            Renovate hit a peer-dependency conflict and pushed the bump anyway; check the PR
+            comments (`gh pr view ${{ steps.pr.outputs.number }} --comments`) for Renovate's
+            own "Artifact update problem" report.
+
+            ## Steps
 
             1. Identify the dependency and version change from the diff + release notes.
-            2. Read the actual changelog / migration guide for the new major using
-               WebFetch (and WebSearch to locate it if needed). The release-notes
-               excerpt Renovate embeds in the PR body is NOT sufficient — it can be
-               truncated, and it omits migration guides. Only cite URLs you fetched.
-            3. Decide if this repo needs ANY code changes. Many majors need none —
-               if so, say so plainly and DO NOT invent changes.
-            4. If changes are needed: make them (follow CLAUDE.md / AGENTS.md),
-               then run ONLY `npm run typecheck` as a sanity check and fix breakage.
-            5. Commit any changes to this PR's branch.
-            6. ALWAYS post a summary via:
-               gh pr comment ${{ github.event.pull_request.number }} --body "..."
-               The summary MUST include, for every breaking change you mention,
-               a direct link to the changelog/release-notes URL you read it from,
-               so I can verify it. State clearly whether code changes were needed.
-            7. If it needs human judgment, comment what's blocking instead of guessing.
+            2. Read the actual changelog / migration guide for the new major using WebFetch
+               (and WebSearch to locate it if needed). The release-notes excerpt Renovate
+               embeds in the PR body is NOT sufficient — it can be truncated, and it omits
+               migration guides. Only cite URLs you fetched.
+            3. Determine whether the bump is even ADOPTABLE. Do this mechanically, not from
+               memory: for each direct dependent of the bumped package, run
+               `npm view <dependent>@latest peerDependencies`. If the LATEST PUBLISHED version
+               of a dependent still excludes the new major, the ecosystem has not caught up and
+               the verdict is BLOCKED — name the dependent, its latest version, its peer range,
+               and what would have to ship to unblock it.
+            4. POLICY — never force a bump past an unsatisfiable peer range. No `overrides`, no
+               `--legacy-peer-deps`, no `--force`. Doing so ships a toolchain that cannot build
+               or check this repo while CI may still look green. An unsatisfiable peer on the
+               dependent's latest release is BLOCKED, full stop.
+            5. If it IS adoptable: decide whether this repo needs any code changes. Many majors
+               need none — if so, say so plainly and DO NOT invent changes. If changes are
+               needed, make them (follow CLAUDE.md / AGENTS.md), run ONLY `npm run typecheck`
+               as a sanity check, and commit to this PR's branch.
 
-      # If the review agent crashes / times out it posts no review at all, leaving the PR
-      # looking un-reviewed with no signal. Ping a human. (Concurrency-cancelled duplicate
-      # runs are 'cancelled', not 'failure', so this won't fire for the dedup.)
-      - name: Flag crashed review attempt
-        if: failure()
+            ## Verdict (mandatory)
+
+            Pick EXACTLY ONE:
+
+            - CLEAN       — adoptable, no repo changes needed; CI will prove it.
+            - MIGRATED    — adoptable; changes made and pushed. Say what and why.
+            - BLOCKED     — not adoptable yet. Name the exact upstream constraint and what must
+                            ship first. Make no code changes.
+            - NEEDS-HUMAN — a real judgement call (API redesign, behaviour tradeoff). Say what
+                            is blocking instead of guessing; push nothing speculative.
+
+            ALWAYS post it, as the LAST thing you do:
+
+              gh pr comment ${{ steps.pr.outputs.number }} --body "..."
+
+            The comment body MUST BEGIN with exactly this marker line, verbatim except for
+            substituting your chosen verdict for <VERDICT>:
+
+              <!-- dep-verdict:<VERDICT>:${{ steps.pr.outputs.head_sha }} -->
+
+            e.g. `<!-- dep-verdict:BLOCKED:${{ steps.pr.outputs.head_sha }} -->`. This marker is
+            how the automation knows you reported; get it exactly right. Follow it with a
+            human-readable heading and the detail. For every breaking change you mention,
+            include a direct link to the changelog/release-notes URL you read it from.
+
+            If and ONLY if your verdict is BLOCKED, also run:
+
+              gh pr edit ${{ steps.pr.outputs.number }} --add-label "dep:blocked"
+
+            That label stops the CI-retry loop from burning attempts on a bump that cannot
+            work, and silences the dormancy watchdog. It is cleared automatically when the
+            branch moves, so a blocked PR re-adjudicates itself once upstream catches up.
+
+      # The old backstop only fired on `if: failure()`, which cannot catch the agent exiting 0
+      # without posting anything (turn exhaustion, or it simply decided not to). Check the
+      # OUTCOME instead of the exit code: a verdict for this exact commit either exists or it
+      # does not. One check covers crash / timeout / turn-exhaustion / silent-success alike.
+      - name: Verify a verdict was posted
+        if: always()
         env:
           GH_TOKEN: ${{ secrets.GHCR_PAT }}
+          PR: ${{ steps.pr.outputs.number }}
+          SHA: ${{ steps.pr.outputs.head_sha }}
         run: |
-          gh pr comment "${{ github.event.pull_request.number }}" --repo "${{ github.repository }}" --body "$(printf '⚠️ @BohdanMoroz11 — the automated major-dependency review agent **crashed or timed out** on this PR (see the [failed run](%s)). No review was posted — worth a manual look before merging.' '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}')"
+          set -euo pipefail
+          FOUND=$(gh pr view "$PR" --repo "${{ github.repository }}" --json comments \
+            --jq "[.comments[].body | select(contains(\"dep-verdict:\") and contains(\"$SHA\"))] | length")
+          if [ "$FOUND" -gt 0 ]; then
+            echo "Verdict posted for $SHA — OK."
+            exit 0
+          fi
+          gh pr comment "$PR" --repo "${{ github.repository }}" --body "$(printf '%s\n⚠️ @BohdanMoroz11 — the major-dependency review agent **produced no verdict** for commit `%s` (see the [run](%s)). It crashed, timed out, or ran out of turns. Nothing was reviewed — this PR needs a manual look.\n\n_(automated — one ping per commit)_' \
+            "<!-- watchdog:$SHA -->" "$SHA" '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}')"
+          exit 1
