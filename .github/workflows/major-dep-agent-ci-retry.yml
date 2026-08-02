@@ -36,6 +36,15 @@ jobs:
             exit 0
           fi
 
+          # The review agent already adjudicated this bump as not adoptable. Red CI is the
+          # EXPECTED state, not a regression to chase — burning fix attempts on it is pure
+          # waste, and a fix would have to violate the no-forcing policy to go green.
+          if echo "$LABELS" | grep -qx "dep:blocked"; then
+            echo "PR #$PR_NUMBER is labelled dep:blocked — CI failure is expected. Skipping."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
           ATTEMPTS=$(gh pr view "$PR_NUMBER" --repo "${{ github.repository }}" --json comments --jq '[.comments[].body | select(contains("<!-- ci-retry-attempt -->"))] | length')
           if [ "$ATTEMPTS" -ge 3 ]; then
             gh pr comment "$PR_NUMBER" --repo "${{ github.repository }}" --body "<!-- ci-retry-attempt --> CI failed again after $ATTEMPTS automated fix attempts. Stopping here — this needs a human look."
@@ -57,8 +66,27 @@ jobs:
         if: steps.check.outputs.skip != 'true'
         with:
           node-version: 24.18.1
-      - run: npm ci
+
+      # Non-fatal for the same reason as in major-dep-agent.yml: an uninstallable branch is a
+      # finding to report, not a reason to abandon the run before the agent ever starts.
+      - name: Install dependencies (evidence, non-fatal)
+        id: install
         if: steps.check.outputs.skip != 'true'
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          npm ci 2>&1 | tee /tmp/install.log
+
+      - name: Capture install log
+        if: always() && steps.check.outputs.skip != 'true'
+        id: installlog
+        run: |
+          {
+            echo 'log<<INSTALL_LOG_EOF'
+            tail -n 120 /tmp/install.log 2>/dev/null || echo '(no install log produced)'
+            echo 'INSTALL_LOG_EOF'
+          } >> "$GITHUB_OUTPUT"
+
       - uses: anthropics/claude-code-action@v1
         if: steps.check.outputs.skip != 'true'
         with:
@@ -69,11 +97,24 @@ jobs:
             --model sonnet
             --max-turns 50
             --permission-mode acceptEdits
-            --allowedTools "Edit,MultiEdit,Write,Read,Glob,Grep,LS,WebSearch,WebFetch,Bash(git:*),Bash(grep:*),Bash(head:*),Bash(tail:*),Bash(npm run typecheck),Bash(gh run view:*),Bash(gh pr comment:*),Bash(gh pr view:*),Bash(gh pr diff:*)"
+            --allowedTools "Edit,MultiEdit,Write,Read,Glob,Grep,LS,WebSearch,WebFetch,Bash(git:*),Bash(grep:*),Bash(head:*),Bash(tail:*),Bash(npm run typecheck),Bash(npm view:*),Bash(npm ls:*),Bash(gh run view:*),Bash(gh pr comment:*),Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh pr edit:*)"
           prompt: |
             CI just failed (automated fix attempt ${{ steps.check.outputs.attempt }} of 3) on
             PR #${{ steps.check.outputs.pr_number }}, a major dependency bump PR that you (or a
             prior run) already committed to.
+
+            ## Dependency install status: ${{ steps.install.outcome }}
+
+            `npm ci` output (last 120 lines):
+            ```
+            ${{ steps.installlog.outputs.log }}
+            ```
+
+            If the install itself FAILED, do not treat that as an environment problem — it is
+            the most likely explanation for the CI failure, and it usually means the lockfile
+            could not be resolved because of a peer-dependency conflict.
+
+            ## Steps
 
             1. Run `gh run view ${{ github.event.workflow_run.id }} --log-failed` to see exactly
                what failed.
@@ -81,25 +122,55 @@ jobs:
                not a flake, unless the log clearly shows otherwise (e.g. a timing/network blip).
                Use WebFetch / WebSearch to consult the dependency's changelog or migration guide
                when the failure relates to the bump — do not rely on memory of the new major.
-            3. Fix it. Follow CLAUDE.md / AGENTS.md conventions. Do NOT run the full test suite
-               yourself — CI will re-run automatically once you push.
-            4. Run ONLY `npm run typecheck` as a sanity check, then commit and push to this PR's
-               branch.
-            5. ALWAYS post a comment via:
-               gh pr comment ${{ steps.check.outputs.pr_number }} --body "<!-- ci-retry-attempt --> ..."
-               explaining what broke and what you changed. The `<!-- ci-retry-attempt -->` marker
-               MUST be the first thing in the comment body — it's how attempts get counted.
-            6. If you cannot identify a fix (e.g. it needs a design decision only a human can make),
-               say so plainly in the comment (still with the marker) instead of guessing, and do
-               not push a speculative change.
+            3. Before attempting a fix, sanity-check that the bump is adoptable AT ALL: for each
+               direct dependent of the bumped package, run
+               `npm view <dependent>@latest peerDependencies`. If the latest published version of
+               a dependent still excludes the new major, no fix exists — go straight to the
+               BLOCKED verdict below rather than burning attempts.
+            4. POLICY — never force a bump past an unsatisfiable peer range. No `overrides`, no
+               `--legacy-peer-deps`, no `--force`. Going green that way ships a toolchain that
+               cannot actually build or check this repo.
+            5. Otherwise: fix it, following CLAUDE.md / AGENTS.md conventions. Do NOT run the full
+               test suite yourself — CI will re-run automatically once you push. Run ONLY
+               `npm run typecheck` as a sanity check, then commit and push to this PR's branch.
 
-      # If the agent step itself crashed / timed out it posts nothing, and since it
-      # pushed no commit CI won't re-run — the loop goes silently dormant with red CI.
-      # This backstop pings a human. The marker counts it toward the 3-attempt cap so a
-      # push-then-crash can't loop forever.
-      - name: Flag crashed fix attempt
-        if: failure() && steps.check.outputs.skip != 'true'
+            ## Verdict (mandatory)
+
+            ALWAYS finish by posting a comment, whatever happened:
+
+              gh pr comment ${{ steps.check.outputs.pr_number }} --body "<!-- ci-retry-attempt --> ..."
+
+            The `<!-- ci-retry-attempt -->` marker MUST be the first thing in the comment body —
+            it is how attempts get counted. Explain what broke and what you changed.
+
+            If you concluded the bump is NOT ADOPTABLE (an upstream peer range excludes the new
+            major on the dependent's latest release), say so plainly in that comment — name the
+            dependent, its latest version and peer range — and additionally run:
+
+              gh pr edit ${{ steps.check.outputs.pr_number }} --add-label "dep:blocked"
+
+            That stops further retry attempts on a bump that cannot be fixed from this repo.
+
+            If you cannot identify a fix for some other reason (e.g. it needs a design decision
+            only a human can make), say so plainly in the comment (still with the marker) instead
+            of guessing, and do not push a speculative change.
+
+      # Outcome check, not exit-code check — see the equivalent step in major-dep-agent.yml.
+      # A run that exits 0 while posting nothing is just as dormant as one that crashed. The
+      # marker counts toward the 3-attempt cap so a push-then-crash cannot loop forever.
+      - name: Verify an attempt comment was posted
+        if: always() && steps.check.outputs.skip != 'true'
         env:
           GH_TOKEN: ${{ secrets.GHCR_PAT }}
+          PR: ${{ steps.check.outputs.pr_number }}
         run: |
-          gh pr comment "${{ steps.check.outputs.pr_number }}" --repo "${{ github.repository }}" --body "$(printf '%s\n⚠️ @BohdanMoroz11 — the automated CI-fix agent **crashed or timed out** on attempt %s (see the [failed run](%s)). CI is still red and no fix was pushed — this one needs a human look.' '<!-- ci-retry-attempt -->' '${{ steps.check.outputs.attempt }}' '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}')"
+          set -euo pipefail
+          COUNT=$(gh pr view "$PR" --repo "${{ github.repository }}" --json comments \
+            --jq '[.comments[].body | select(contains("<!-- ci-retry-attempt -->"))] | length')
+          if [ "$COUNT" -ge "${{ steps.check.outputs.attempt }}" ]; then
+            echo "Attempt ${{ steps.check.outputs.attempt }} reported — OK."
+            exit 0
+          fi
+          gh pr comment "$PR" --repo "${{ github.repository }}" --body "$(printf '%s\n⚠️ @BohdanMoroz11 — the automated CI-fix agent **reported nothing** on attempt %s (crashed, timed out, or ran out of turns — see the [run](%s)). CI is still red and no fix was pushed — this one needs a human look.' \
+            '<!-- ci-retry-attempt -->' '${{ steps.check.outputs.attempt }}' '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}')"
+          exit 1

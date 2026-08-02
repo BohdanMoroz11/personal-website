@@ -6,6 +6,11 @@ name: major-dep-watchdog
 #   - CI stays red after the retry loop exhausts its 3 attempts (or a retry crashed).
 # In all of these nothing pings a human. This scans open major-review PRs and flags stuck
 # ones with an @-mention, keyed to the head commit so you get exactly one ping per bad state.
+#
+# It also owns the lifecycle of `dep:blocked`. A PR the agent ruled not-adoptable is a settled
+# state, not a stuck one — it must not ping. But it must not be forgotten either: when upstream
+# finally catches up, Renovate rebases the branch, and the moved head commit is the signal to
+# clear the label and re-adjudicate. That makes "blocked" expire on its own.
 
 on:
   push:
@@ -17,7 +22,7 @@ on:
 permissions:
   contents: read
   pull-requests: write
-  actions: read
+  actions: write # needs to re-dispatch major-dep-agent.yml for re-adjudication
 
 jobs:
   scan:
@@ -31,7 +36,7 @@ jobs:
           set -euo pipefail
 
           PRS=$(gh pr list --repo "$REPO" --state open --label "dep:major-review" \
-            --json number,headRefOid,mergeable --jq '.[] | @base64')
+            --json number,headRefOid,mergeable,labels --jq '.[] | @base64')
           if [ -z "$PRS" ]; then
             echo "No open major-review PRs — nothing to watch."
             exit 0
@@ -42,6 +47,24 @@ jobs:
             PR=$(_jq '.number')
             SHA=$(_jq '.headRefOid')
             MERGEABLE=$(_jq '.mergeable')
+            BLOCKED=$(_jq '[.labels[].name] | index("dep:blocked") // "" | tostring')
+
+            # --- Settled: the agent ruled this bump not adoptable ---------------------------
+            if [ -n "$BLOCKED" ]; then
+              # Which commit was that verdict about?
+              VERDICT_SHA=$(gh pr view "$PR" --repo "$REPO" --json comments \
+                --jq '[.comments[].body | capture("dep-verdict:[A-Z-]+:(?<sha>[0-9a-f]{7,40})").sha] | last // ""')
+
+              if [ -n "$VERDICT_SHA" ] && [ "$VERDICT_SHA" != "$SHA" ]; then
+                echo "PR #$PR: blocked verdict was for $VERDICT_SHA but head is now $SHA — re-adjudicating."
+                gh pr edit "$PR" --repo "$REPO" --remove-label "dep:blocked"
+                gh pr comment "$PR" --repo "$REPO" --body "$(printf '🔄 The branch has moved since this bump was ruled **BLOCKED** (`%s` → `%s`) — clearing `dep:blocked` and re-running the review agent to see whether upstream has caught up.\n\n_(automated watchdog)_' "$VERDICT_SHA" "$SHA")"
+                gh workflow run major-dep-agent.yml --repo "$REPO" -f pr_number="$PR"
+              else
+                echo "PR #$PR: blocked at $SHA — settled, staying quiet."
+              fi
+              continue
+            fi
 
             REASON=""
             if [ "$MERGEABLE" = "CONFLICTING" ]; then
@@ -75,7 +98,9 @@ jobs:
 
             [ -z "$REASON" ] && { echo "PR #$PR: healthy or in progress."; continue; }
 
-            # One ping per commit: skip if this exact SHA was already flagged.
+            # One ping per commit: skip if this exact SHA was already flagged. The agent
+            # workflows post their no-verdict warnings under the same marker, so a crashed
+            # run that already pinged won't get double-reported here.
             MARKER="<!-- watchdog:$SHA -->"
             ALREADY=$(gh pr view "$PR" --repo "$REPO" --json comments \
               --jq "[.comments[].body | select(contains(\"$MARKER\"))] | length")
