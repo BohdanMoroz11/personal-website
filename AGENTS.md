@@ -126,7 +126,9 @@ Two rules make `BLOCKED` reliable rather than a shrug:
   `--legacy-peer-deps`, no `--force`. That ships a toolchain which can't build or typecheck
   this repo while CI may still look green.
 
-On `BLOCKED`, also add the `dep:blocked` label (`gh pr edit <pr> --add-label "dep:blocked"`).
+On `BLOCKED`, also add the `dep:blocked` label, via REST rather than `gh pr edit --add-label`
+(that path resolves labels over GraphQL and fails without org-read scope):
+`gh api -X POST "repos/<owner>/<repo>/issues/<pr>/labels" -f "labels[]=dep:blocked"`.
 It halts the CI-retry loop — red CI is the _expected_ state for an unadoptable bump, so fix
 attempts are waste — and silences the dormancy watchdog. Leave the PR **open**: the watchdog
 clears the label automatically once the branch moves, so the bump re-adjudicates itself when
