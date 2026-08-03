@@ -84,7 +84,7 @@ jobs:
             --model sonnet
             --max-turns 50
             --permission-mode acceptEdits
-            --allowedTools "Edit,MultiEdit,Write,Read,Glob,Grep,LS,WebSearch,WebFetch,Bash(git:*),Bash(grep:*),Bash(head:*),Bash(tail:*),Bash(npm run typecheck),Bash(npm view:*),Bash(npm ls:*),Bash(gh pr comment:*),Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh pr edit:*)"
+            --allowedTools "Edit,MultiEdit,Write,Read,Glob,Grep,LS,WebSearch,WebFetch,Bash(git:*),Bash(grep:*),Bash(head:*),Bash(tail:*),Bash(npm run typecheck),Bash(npm view:*),Bash(npm ls:*),Bash(gh pr comment:*),Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh api:*)"
           prompt: |
             This PR (#${{ steps.pr.outputs.number }}) is a MAJOR dependency bump. You are the
             AUTHOR, not the validator — CI runs the full test suite (incl. e2e), so do NOT run
@@ -156,7 +156,10 @@ jobs:
 
             If and ONLY if your verdict is BLOCKED, also run:
 
-              gh pr edit ${{ steps.pr.outputs.number }} --add-label "dep:blocked"
+              gh api -X POST "repos/${{ github.repository }}/issues/${{ steps.pr.outputs.number }}/labels" -f "labels[]=dep:blocked"
+
+            (Use that REST call, NOT `gh pr edit --add-label` — the latter resolves labels
+            over GraphQL and fails on this token for lack of org-read scope.)
 
             That label stops the CI-retry loop from burning attempts on a bump that cannot
             work, and silences the dormancy watchdog. It is cleared automatically when the

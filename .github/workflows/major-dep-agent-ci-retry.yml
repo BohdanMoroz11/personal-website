@@ -97,7 +97,7 @@ jobs:
             --model sonnet
             --max-turns 50
             --permission-mode acceptEdits
-            --allowedTools "Edit,MultiEdit,Write,Read,Glob,Grep,LS,WebSearch,WebFetch,Bash(git:*),Bash(grep:*),Bash(head:*),Bash(tail:*),Bash(npm run typecheck),Bash(npm view:*),Bash(npm ls:*),Bash(gh run view:*),Bash(gh pr comment:*),Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh pr edit:*)"
+            --allowedTools "Edit,MultiEdit,Write,Read,Glob,Grep,LS,WebSearch,WebFetch,Bash(git:*),Bash(grep:*),Bash(head:*),Bash(tail:*),Bash(npm run typecheck),Bash(npm view:*),Bash(npm ls:*),Bash(gh run view:*),Bash(gh pr comment:*),Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh api:*)"
           prompt: |
             CI just failed (automated fix attempt ${{ steps.check.outputs.attempt }} of 3) on
             PR #${{ steps.check.outputs.pr_number }}, a major dependency bump PR that you (or a
@@ -147,7 +147,10 @@ jobs:
             major on the dependent's latest release), say so plainly in that comment — name the
             dependent, its latest version and peer range — and additionally run:
 
-              gh pr edit ${{ steps.check.outputs.pr_number }} --add-label "dep:blocked"
+              gh api -X POST "repos/${{ github.repository }}/issues/${{ steps.check.outputs.pr_number }}/labels" -f "labels[]=dep:blocked"
+
+            (Use that REST call, NOT `gh pr edit --add-label` — the latter resolves labels
+            over GraphQL and fails on this token for lack of org-read scope.)
 
             That stops further retry attempts on a bump that cannot be fixed from this repo.
 

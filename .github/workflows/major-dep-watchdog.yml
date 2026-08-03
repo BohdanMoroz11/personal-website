@@ -57,7 +57,9 @@ jobs:
 
               if [ -n "$VERDICT_SHA" ] && [ "$VERDICT_SHA" != "$SHA" ]; then
                 echo "PR #$PR: blocked verdict was for $VERDICT_SHA but head is now $SHA — re-adjudicating."
-                gh pr edit "$PR" --repo "$REPO" --remove-label "dep:blocked"
+                # REST rather than `gh pr edit --remove-label`: that resolves labels over
+                # GraphQL and needs org-read scope this token doesn't carry.
+                gh api -X DELETE "repos/$REPO/issues/$PR/labels/dep:blocked" >/dev/null
                 gh pr comment "$PR" --repo "$REPO" --body "$(printf '🔄 The branch has moved since this bump was ruled **BLOCKED** (`%s` → `%s`) — clearing `dep:blocked` and re-running the review agent to see whether upstream has caught up.\n\n_(automated watchdog)_' "$VERDICT_SHA" "$SHA")"
                 gh workflow run major-dep-agent.yml --repo "$REPO" -f pr_number="$PR"
               else
