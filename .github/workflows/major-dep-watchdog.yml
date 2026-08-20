@@ -9,8 +9,9 @@ name: major-dep-watchdog
 #
 # It also owns the lifecycle of `dep:blocked`. A PR the agent ruled not-adoptable is a settled
 # state, not a stuck one — it must not ping. But it must not be forgotten either: when upstream
-# finally catches up, Renovate rebases the branch, and the moved head commit is the signal to
-# clear the label and re-adjudicate. That makes "blocked" expire on its own.
+# actually catches up (the bumped version specifier changes, or the lockfile starts resolving
+# that bump), the label is cleared and the agent re-runs. A rebase onto main that only moves
+# the SHA is not that signal — that's weekly noise, not ecosystem progress.
 
 on:
   push:
@@ -35,6 +36,106 @@ jobs:
         run: |
           set -euo pipefail
 
+          file_at() {
+            local path="$1" ref="$2"
+            gh api "repos/${REPO}/contents/${path}?ref=${ref}" \
+              -H "Accept: application/vnd.github.raw" 2>/dev/null || true
+          }
+
+          deps_json() {
+            local src="$1"
+            if [ -z "$src" ]; then
+              echo '{}'
+              return
+            fi
+            echo "$src" | jq -cS '(.dependencies // {}) + (.devDependencies // {}) + (.optionalDependencies // {})'
+          }
+
+          lock_ver() {
+            local lock="$1" name="$2"
+            if [ -z "$lock" ]; then
+              echo ""
+              return
+            fi
+            echo "$lock" | jq -r --arg n "$name" '.packages["node_modules/" + $n].version // empty'
+          }
+
+          spec_matches_locked() {
+            local spec="$1" locked="$2"
+            if [ -z "$spec" ] || [ -z "$locked" ]; then
+              return 1
+            fi
+            case "$spec" in
+              ^*)
+                local want="${spec:1}"
+                [ "${want%%.*}" = "${locked%%.*}" ]
+                ;;
+              ~*)
+                local want="${spec:1}"
+                [ "${want%.*}" = "${locked%.*}" ]
+                ;;
+              *)
+                local want="${spec#=}"
+                [ "$want" = "$locked" ]
+                ;;
+            esac
+          }
+
+          # Prints a reason and returns 0 when the bump itself changed, not merely the SHA.
+          # Wake-ups: package.json specifiers moved since the verdict, or the lockfile now
+          # resolves a package this PR bumps relative to main.
+          bump_changed_reason() {
+            local verdict_sha="$1" head_sha="$2"
+            local head_pkg verdict_pkg main_pkg head_lock
+            head_pkg=$(file_at package.json "$head_sha")
+            verdict_pkg=$(file_at package.json "$verdict_sha")
+            main_pkg=$(file_at package.json main)
+            head_lock=$(file_at package-lock.json "$head_sha")
+
+            local head_deps verdict_deps main_deps
+            head_deps=$(deps_json "$head_pkg")
+            verdict_deps=$(deps_json "$verdict_pkg")
+            main_deps=$(deps_json "$main_pkg")
+
+            # Packages this PR still disagrees with main about — ignores unrelated
+            # specifiers that only moved because the branch was rebased onto main.
+            local bumped
+            bumped=$(jq -n --argjson head "$head_deps" --argjson main "$main_deps" -r '
+              ($head + $main | keys[]) as $k
+              | select(($head[$k] // "") != ($main[$k] // ""))
+              | $k
+            ')
+
+            local name spec locked verdict_spec
+            if [ -n "$verdict_pkg" ]; then
+              while IFS= read -r name; do
+                [ -z "$name" ] && continue
+                spec=$(jq -r --arg n "$name" '.[$n] // empty' <<<"$head_deps")
+                verdict_spec=$(jq -r --arg n "$name" '.[$n] // empty' <<<"$verdict_deps")
+                if [ "$spec" != "$verdict_spec" ]; then
+                  echo "package.json specifier for $name changed ($verdict_spec → $spec)"
+                  return 0
+                fi
+              done <<<"$bumped"
+            fi
+
+            local resolved=()
+            while IFS= read -r name; do
+              [ -z "$name" ] && continue
+              spec=$(jq -r --arg n "$name" '.[$n] // empty' <<<"$head_deps")
+              locked=$(lock_ver "$head_lock" "$name")
+              if spec_matches_locked "$spec" "$locked"; then
+                resolved+=("$name@$locked")
+              fi
+            done <<<"$bumped"
+
+            if [ "${#resolved[@]}" -gt 0 ]; then
+              echo "lockfile now resolves ${resolved[*]}"
+              return 0
+            fi
+            return 1
+          }
+
           PRS=$(gh pr list --repo "$REPO" --state open --label "dep:major-review" \
             --json number,headRefOid,mergeable,labels --jq '.[] | @base64')
           if [ -z "$PRS" ]; then
@@ -51,19 +152,24 @@ jobs:
 
             # --- Settled: the agent ruled this bump not adoptable ---------------------------
             if [ -n "$BLOCKED" ]; then
-              # Which commit was that verdict about?
               VERDICT_SHA=$(gh pr view "$PR" --repo "$REPO" --json comments \
                 --jq '[.comments[].body | capture("dep-verdict:[A-Z-]+:(?<sha>[0-9a-f]{7,40})").sha] | last // ""')
 
-              if [ -n "$VERDICT_SHA" ] && [ "$VERDICT_SHA" != "$SHA" ]; then
-                echo "PR #$PR: blocked verdict was for $VERDICT_SHA but head is now $SHA — re-adjudicating."
+              if [ -z "$VERDICT_SHA" ] || [ "$VERDICT_SHA" = "$SHA" ]; then
+                echo "PR #$PR: blocked at $SHA — settled, staying quiet."
+                continue
+              fi
+
+              CHANGE_REASON=""
+              if CHANGE_REASON=$(bump_changed_reason "$VERDICT_SHA" "$SHA"); then
+                echo "PR #$PR: blocked verdict was for $VERDICT_SHA but the bump changed ($CHANGE_REASON) — re-adjudicating."
                 # REST rather than `gh pr edit --remove-label`: that resolves labels over
                 # GraphQL and needs org-read scope this token doesn't carry.
                 gh api -X DELETE "repos/$REPO/issues/$PR/labels/dep:blocked" >/dev/null
-                gh pr comment "$PR" --repo "$REPO" --body "$(printf '🔄 The branch has moved since this bump was ruled **BLOCKED** (`%s` → `%s`) — clearing `dep:blocked` and re-running the review agent to see whether upstream has caught up.\n\n_(automated watchdog)_' "$VERDICT_SHA" "$SHA")"
+                gh pr comment "$PR" --repo "$REPO" --body "$(printf '🔄 The bump has changed since this was ruled **BLOCKED** (`%s` → `%s`): %s. Clearing `dep:blocked` and re-running the review agent.\n\n_(automated watchdog)_' "$VERDICT_SHA" "$SHA" "$CHANGE_REASON")"
                 gh workflow run major-dep-agent.yml --repo "$REPO" -f pr_number="$PR"
               else
-                echo "PR #$PR: blocked at $SHA — settled, staying quiet."
+                echo "PR #$PR: blocked verdict was for $VERDICT_SHA, head is now $SHA, but the bump is unchanged (rebase onto main) — staying quiet."
               fi
               continue
             fi

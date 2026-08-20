@@ -144,7 +144,6 @@ Dependencies are kept current automatically, in two layers:
 
    Every verdict cites the release-notes URLs it was read from, so you can verify it without
    re-doing the research.
-
    - **"Not adoptable" is a first-class answer.** The most common way a major gets stuck is a
      peer-dependency conflict that stops Renovate resolving a lockfile at all — which used to
      leave the branch uninstallable and kill the agent job at `npm ci`, before it could say
@@ -155,9 +154,10 @@ Dependencies are kept current automatically, in two layers:
      build the repo.
    - **`BLOCKED` PRs go quiet, then wake up.** A `BLOCKED` verdict adds the `dep:blocked` label,
      which halts the retry loop (red CI is _expected_ there) and silences the watchdog. The PR
-     stays **open**; when upstream finally catches up, Renovate rebases, and the moved head
-     commit makes the watchdog clear the label and re-run the agent. Blocked state expires on
-     its own — nothing to track by hand.
+     stays **open**; when upstream actually catches up (the bumped version specifier changes,
+     or the lockfile starts resolving that bump), the watchdog clears the label and re-runs
+     the agent. A rebase onto main that only moves the SHA is ignored. Blocked state expires
+     on its own — nothing to track by hand.
    - **CI-failure retry loop.** If the agent's changes break CI, that isn't the end of the road.
      [`.github/workflows/major-dep-agent-ci-retry.yml`](.github/workflows/major-dep-agent-ci-retry.yml)
      watches for a failed **CI** run on a `renovate/` branch, reads the failing logs, diagnoses

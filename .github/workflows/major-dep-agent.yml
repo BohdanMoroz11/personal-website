@@ -2,10 +2,13 @@ name: claude-major-agent
 on:
   pull_request:
     types: [opened, labeled]
-  # The watchdog re-dispatches this when a `dep:blocked` PR's branch moves — see
+  # The watchdog re-dispatches this when a blocked bump actually changes — see
   # major-dep-watchdog.yml. Deliberately NOT `pull_request: synchronize`: the agent pushes
   # with GHCR_PAT, so `github.actor` is the token owner rather than a bot, and the actor
   # guard below would not break the resulting self-trigger loop.
+  # `labeled` is restricted to `dep:major-review` for the same reason: applying
+  # `dep:blocked` is also a labeled event from the PAT owner, and would otherwise
+  # cancel the in-flight run and start a duplicate adjudication.
   workflow_dispatch:
     inputs:
       pr_number:
@@ -20,8 +23,14 @@ jobs:
   agent:
     if: >
       github.event_name == 'workflow_dispatch' ||
-      (github.actor != 'claude[bot]' &&
-       contains(github.event.pull_request.labels.*.name, 'dep:major-review'))
+      (github.event_name == 'pull_request' &&
+       github.actor != 'claude[bot]' &&
+       (
+         (github.event.action == 'opened' &&
+          contains(github.event.pull_request.labels.*.name, 'dep:major-review')) ||
+         (github.event.action == 'labeled' &&
+          github.event.label.name == 'dep:major-review')
+       ))
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -163,7 +172,9 @@ jobs:
 
             That label stops the CI-retry loop from burning attempts on a bump that cannot
             work, and silences the dormancy watchdog. It is cleared automatically when the
-            branch moves, so a blocked PR re-adjudicates itself once upstream catches up.
+            bumped version specifier or its lockfile entry actually changes — not merely
+            when the branch is rebased onto main — so a blocked PR re-adjudicates itself
+            once upstream catches up.
 
       # The old backstop only fired on `if: failure()`, which cannot catch the agent exiting 0
       # without posting anything (turn exhaustion, or it simply decided not to). Check the

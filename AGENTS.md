@@ -131,7 +131,8 @@ On `BLOCKED`, also add the `dep:blocked` label, via REST rather than `gh pr edit
 `gh api -X POST "repos/<owner>/<repo>/issues/<pr>/labels" -f "labels[]=dep:blocked"`.
 It halts the CI-retry loop — red CI is the _expected_ state for an unadoptable bump, so fix
 attempts are waste — and silences the dormancy watchdog. Leave the PR **open**: the watchdog
-clears the label automatically once the branch moves, so the bump re-adjudicates itself when
+clears the label when the bumped version specifier or its lockfile entry actually changes
+(not merely when the branch is rebased onto main), so the bump re-adjudicates itself when
 upstream catches up.
 
 Note that `npm ci` is deliberately **non-fatal** in these workflows. An uninstallable branch
