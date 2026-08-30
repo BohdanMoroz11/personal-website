@@ -65,7 +65,7 @@ jobs:
       - uses: actions/setup-node@v7
         if: steps.check.outputs.skip != 'true'
         with:
-          node-version: 24.19.0
+          node-version: 24.20.0
 
       # Non-fatal for the same reason as in major-dep-agent.yml: an uninstallable branch is a
       # finding to report, not a reason to abandon the run before the agent ever starts.
