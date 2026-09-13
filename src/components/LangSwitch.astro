@@ -21,26 +21,24 @@ const longLabel: Record<Lang, string> = {
 ---
 
 <nav class="flex gap-1.5 font-mono text-[11px]" aria-label="Language">
-  {
-    items.map(({ code, href, label }) => (
-      <a
-        href={href}
-        class:list={[
-          "border-line border px-2.5 py-1.25 tracking-[0.1em] transition-colors duration-200",
-          code === current
-            ? "border-signal-dk text-ice"
-            : "text-steel-dim hover:border-signal-dk hover:text-ice",
-        ]}
-        hreflang={code}
-        lang={code}
-        aria-current={code === current ? "true" : undefined}
-        data-lang={code}
-        title={longLabel[code]}
-      >
-        {label}
-      </a>
-    ))
-  }
+  {items.map(({ code, href, label }) => (
+    <a
+      href={href}
+      class:list={[
+        "border-line border px-2.5 py-1.25 tracking-[0.1em] transition-colors duration-200",
+        code === current
+          ? "border-signal-dk text-ice"
+          : "text-steel-dim hover:border-signal-dk hover:text-ice",
+      ]}
+      hreflang={code}
+      lang={code}
+      aria-current={code === current ? "true" : undefined}
+      data-lang={code}
+      title={longLabel[code]}
+    >
+      {label}
+    </a>
+  ))}
 </nav>
 
 <script>

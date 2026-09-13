@@ -44,7 +44,9 @@ Concretely, the structure in `Work.astro` becomes:
   {/* project list — unchanged except for the meta wrapper below */}
   ...
   <div class="mono hidden group-open/stacks:block ...">
-    {p.meta.map((m) => <div>{m}</div>)}
+    {p.meta.map((m) => (
+      <div>{m}</div>
+    ))}
   </div>
   ...
 </details>

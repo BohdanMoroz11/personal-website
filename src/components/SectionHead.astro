@@ -10,9 +10,7 @@ const { num, title, subtitle, decrypt = true } = Astro.props;
 ---
 
 <div class="signal-lock mb-3 flex items-center gap-[18px] max-sm:mb-2.5 max-sm:gap-[11px]">
-  <span
-    class="border-signal-dk text-signal shrink-0 border px-[11px] py-1.5 font-mono text-xs tracking-[0.08em] max-sm:px-2 max-sm:py-1.5 max-sm:text-[11px]"
-  >
+  <span class="border-signal-dk text-signal shrink-0 border px-[11px] py-1.5 font-mono text-xs tracking-[0.08em] max-sm:px-2 max-sm:py-1.5 max-sm:text-[11px]">
     {num}
   </span>
   <h2
@@ -23,8 +21,6 @@ const { num, title, subtitle, decrypt = true } = Astro.props;
   </h2>
   <span class="section-rule max-[380px]:hidden" aria-hidden="true"></span>
 </div>
-<p
-  class="signal-lock label-mono label-mono-dim mb-[38px] ml-16 max-sm:mb-[26px] max-sm:ml-0 max-sm:text-[10px] max-sm:tracking-[0.1em]"
->
+<p class="signal-lock label-mono label-mono-dim mb-[38px] ml-16 max-sm:mb-[26px] max-sm:ml-0 max-sm:text-[10px] max-sm:tracking-[0.1em]">
   {subtitle}
 </p>
