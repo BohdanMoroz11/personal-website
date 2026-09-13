@@ -14,22 +14,20 @@ const { protocol } = Astro.props;
     <SectionHead num={protocol.num} title={protocol.title} subtitle={protocol.subtitle} />
 
     <div class="proto-grid signal-lock signal-edge border-line border">
-      {
-        protocol.items.map((item) => (
-          <div class="proto-cell">
-            <div class="mb-3.25 flex items-center gap-3">
-              <span class="border-signal-dk text-signal grid h-[26px] w-[26px] place-items-center border font-mono text-[13px] font-bold">
-                {item.letter}
-              </span>
-              <span class="label-mono tracking-[0.15em]">{item.name}</span>
-            </div>
-            <p class="text-steel text-[14.5px] leading-normal">
-              <strong class="text-ice font-semibold">{item.lead}</strong>
-              {item.rest}
-            </p>
+      {protocol.items.map((item) => (
+        <div class="proto-cell">
+          <div class="mb-3.25 flex items-center gap-3">
+            <span class="border-signal-dk text-signal grid h-[26px] w-[26px] place-items-center border font-mono text-[13px] font-bold">
+              {item.letter}
+            </span>
+            <span class="label-mono tracking-[0.15em]">{item.name}</span>
           </div>
-        ))
-      }
+          <p class="text-steel text-[14.5px] leading-normal">
+            <strong class="text-ice font-semibold">{item.lead}</strong>
+            {item.rest}
+          </p>
+        </div>
+      ))}
     </div>
   </div>
 </section>

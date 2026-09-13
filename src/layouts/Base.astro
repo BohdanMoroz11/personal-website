@@ -216,7 +216,6 @@ const gaInitScript = siteConfig.googleAnalyticsId
         }
       })();
     </script>
-
     <meta property="og:type" content="profile" />
     <meta property="og:site_name" content="Bohdan Moroz" />
     <meta
@@ -238,19 +237,16 @@ const gaInitScript = siteConfig.googleAnalyticsId
     <meta name="twitter:image" content={ogImageUrl} />
     <meta name="twitter:image:alt" content="Bohdan Moroz — Software Engineer, Applied AI" />
 
-    <script type="application/ld+json" is:inline set:html={JSON.stringify(structuredData)} />
-
-    {
-      siteConfig.googleAnalyticsId && (
-        <>
-          <script
-            async
-            src={`https://www.googletagmanager.com/gtag/js?id=${siteConfig.googleAnalyticsId}`}
-          />
-          {gaInitScript && <script is:inline set:html={gaInitScript} />}
-        </>
-      )
-    }
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(structuredData)}></script>
+    {siteConfig.googleAnalyticsId && (
+      <>
+        <script
+          async
+          src={`https://www.googletagmanager.com/gtag/js?id=${siteConfig.googleAnalyticsId}`}
+        ></script>
+        {gaInitScript && <script is:inline set:html={gaInitScript}></script>}
+      </>
+    )}
   </head>
 
   <body>

@@ -19,18 +19,18 @@ const pageDesc = `Curriculum vitae of ${cv.name}, ${cv.roleGeneral} (${cv.roleDo
       <div>
         <h1 class="cv-name">{cv.name}</h1>
         <div class="cv-role">
-          {cv.roleGeneral}<span class="sep"> // </span>{cv.roleDomain}
+          {cv.roleGeneral}
+          <span class="sep"> // </span>
+          {cv.roleDomain}
         </div>
       </div>
       <div class="cv-contacts">
-        {
-          cv.contacts.map((c) => (
-            <span class="cv-contact">
-              <span class="k">{c.label}</span>
-              <a href={c.href}>{c.value}</a>
-            </span>
-          ))
-        }
+        {cv.contacts.map((c) => (
+          <span class="cv-contact">
+            <span class="k">{c.label}</span>
+            <a href={c.href}>{c.value}</a>
+          </span>
+        ))}
       </div>
     </header>
 
@@ -52,14 +52,12 @@ const pageDesc = `Curriculum vitae of ${cv.name}, ${cv.roleGeneral} (${cv.roleDo
         <span class="cv-sec-rule" aria-hidden="true"></span>
       </div>
       <div class="cv-skills">
-        {
-          cv.skills.map((group) => (
-            <div class="cv-skill-cell">
-              <div class="cv-skill-label">{group.label}</div>
-              <div class="cv-skill-items">{group.items.join(" · ")}</div>
-            </div>
-          ))
-        }
+        {cv.skills.map((group) => (
+          <div class="cv-skill-cell">
+            <div class="cv-skill-label">{group.label}</div>
+            <div class="cv-skill-items">{group.items.join(" · ")}</div>
+          </div>
+        ))}
       </div>
     </section>
 
@@ -70,32 +68,30 @@ const pageDesc = `Curriculum vitae of ${cv.name}, ${cv.roleGeneral} (${cv.roleDo
         <h2 class="cv-sec-title">Experience</h2>
         <span class="cv-sec-rule" aria-hidden="true"></span>
       </div>
-      {
-        cv.experience.map((job) => (
-          <div class="cv-job">
-            <div class="cv-job-head">
-              <span class="cv-job-co">
-                {job.companyUrl ? <a href={job.companyUrl}>{job.company}</a> : job.company}
-              </span>
-              <span class="cv-job-period">{job.period}</span>
-            </div>
-            <div class="cv-job-meta">
-              {job.role} <span class="loc">· {job.location}</span>
-            </div>
-            <p class="cv-job-lead">{job.lead}</p>
-            <ul class="cv-bullets">
-              {job.bullets.map((b) => (
-                <li>{b}</li>
-              ))}
-            </ul>
-            <div class="cv-stack">
-              {job.stack.map((tag) => (
-                <span class="cv-stack-tag">{tag}</span>
-              ))}
-            </div>
+      {cv.experience.map((job) => (
+        <div class="cv-job">
+          <div class="cv-job-head">
+            <span class="cv-job-co">
+              {job.companyUrl ? <a href={job.companyUrl}>{job.company}</a> : job.company}
+            </span>
+            <span class="cv-job-period">{job.period}</span>
           </div>
-        ))
-      }
+          <div class="cv-job-meta">
+            {job.role} <span class="loc">· {job.location}</span>
+          </div>
+          <p class="cv-job-lead">{job.lead}</p>
+          <ul class="cv-bullets">
+            {job.bullets.map((b) => (
+              <li>{b}</li>
+            ))}
+          </ul>
+          <div class="cv-stack">
+            {job.stack.map((tag) => (
+              <span class="cv-stack-tag">{tag}</span>
+            ))}
+          </div>
+        </div>
+      ))}
     </section>
 
     <!-- Coda — languages + availability strip -->
@@ -104,13 +100,12 @@ const pageDesc = `Curriculum vitae of ${cv.name}, ${cv.roleGeneral} (${cv.roleDo
         <span class="cv-coda-k">Education</span>
         <span class="cv-coda-v">
           {cv.education.degree} ·{" "}
-          {
-            cv.education.schoolUrl ? (
-              <a href={cv.education.schoolUrl}>{cv.education.school}</a>
-            ) : (
-              cv.education.school
-            )
-          }, {cv.education.location} · {cv.education.period}
+          {cv.education.schoolUrl ? (
+            <a href={cv.education.schoolUrl}>{cv.education.school}</a>
+          ) : (
+            cv.education.school
+          )}
+          , {cv.education.location} · {cv.education.period}
         </span>
       </div>
       <div class="cv-coda-row">
@@ -121,7 +116,9 @@ const pageDesc = `Curriculum vitae of ${cv.name}, ${cv.roleGeneral} (${cv.roleDo
       </div>
       <div class="cv-coda-row">
         <span class="cv-coda-k">Availability</span>
-        <span class="cv-coda-v"><span class="dot">●</span> {cv.availability}</span>
+        <span class="cv-coda-v">
+          <span class="dot">●</span> {cv.availability}
+        </span>
       </div>
     </div>
 
@@ -133,7 +130,10 @@ const pageDesc = `Curriculum vitae of ${cv.name}, ${cv.roleGeneral} (${cv.roleDo
 
   <div class="cv-actions">
     <a class="cv-dl" href="/cv.pdf" download="Bohdan-Moroz-CV.pdf">
-      <span class="arr" aria-hidden="true">▸</span> Download PDF
+      <span class="arr" aria-hidden="true">
+        ▸
+      </span>{" "}
+      Download PDF
     </a>
   </div>
 </CvLayout>
