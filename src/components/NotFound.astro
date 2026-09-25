@@ -27,7 +27,8 @@ const { notFound, homeHref } = Astro.props;
       data-status-class="text-signal"
     >
       <noscript>
-        {notFound.bootline.prefix}<span class="text-signal">{notFound.bootline.status}</span>
+        {notFound.bootline.prefix}
+        <span class="text-signal">{notFound.bootline.status}</span>
       </noscript>
     </div>
 
@@ -41,7 +42,9 @@ const { notFound, homeHref } = Astro.props;
       <h1 class="heading-display mt-6 text-[clamp(36px,7vw,72px)] leading-[0.95]" data-i18n="title">
         {notFound.title}
       </h1>
-      <p class="label-mono mt-4 tracking-[0.13em]" data-i18n="subtitle">{notFound.subtitle}</p>
+      <p class="label-mono mt-4 tracking-[0.13em]" data-i18n="subtitle">
+        {notFound.subtitle}
+      </p>
     </div>
 
     <div class="not-found-panel signal-edge on panel mt-10 max-w-[520px]">
@@ -49,11 +52,13 @@ const { notFound, homeHref } = Astro.props;
         {notFound.body}
       </p>
       <a href={homeHref} class="mail-btn mt-7" data-back-link>
-        <span class="mail-btn-arrow" aria-hidden="true">▸</span>
+        <span class="mail-btn-arrow" aria-hidden="true">
+          ▸
+        </span>
         <span data-i18n="back">{notFound.back}</span>
         <span class="text-steel-panel">
-          — <span data-i18n="backHint">{notFound.backHint}</span></span
-        >
+          — <span data-i18n="backHint">{notFound.backHint}</span>
+        </span>
       </a>
     </div>
   </div>
