@@ -191,8 +191,13 @@ jobs:
                   --workflow major-dep-agent-ci-retry.yml --limit 15 \
                   --json status,headSha \
                   --jq "[.[] | select(.headSha==\"$SHA\" and (.status==\"in_progress\" or .status==\"queued\"))] | length")
-                ATTEMPTS=$(gh pr view "$PR" --repo "$REPO" --json comments \
-                  --jq '[.comments[].body | select(contains("<!-- ci-retry-attempt -->"))] | length')
+                # Count attempts since the latest initial verdict. A later review starts
+                # a new retry budget, even when it happens on the same long-lived PR.
+                ATTEMPTS=$(gh pr view "$PR" --repo "$REPO" --json comments --jq '
+                  [.comments[].body] as $b
+                  | ([$b | to_entries[] | select(.value | startswith("<!-- dep-verdict:")) | .key] | last // -1) as $verdict
+                  | [range($verdict + 1; $b | length) as $i
+                     | select($b[$i] | startswith("<!-- ci-retry-attempt -->"))] | length')
 
                 if [ "$RETRY_ACTIVE" -gt 0 ]; then
                   echo "PR #$PR: CI red but a fixer is running — leaving it."
