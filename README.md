@@ -153,11 +153,12 @@ Dependencies are kept current automatically, in two layers:
      `--legacy-peer-deps` is prohibited — that only buys green CI on a toolchain that can't
      build the repo.
    - **`BLOCKED` PRs go quiet, then wake up.** A `BLOCKED` verdict adds the `dep:blocked` label,
-     which halts the retry loop (red CI is _expected_ there) and silences the watchdog. The PR
-     stays **open**; when upstream actually catches up (the bumped version specifier changes,
-     or the lockfile starts resolving that bump), the watchdog clears the label and re-runs
-     the agent. A rebase onto main that only moves the SHA is ignored. Blocked state expires
-     on its own — nothing to track by hand.
+     which halts the retry loop (red CI is _expected_ there) and silences the watchdog. A
+     versioned PR comment records the actual major target and the latest direct dependents
+     whose peer ranges exclude it, regardless of which agent found the blocker. The PR stays
+     **open**; the watchdog checks those blockers against current npm metadata and re-runs the
+     review when all become compatible, the target specifier changes, or its lockfile entry
+     resolves the target. Changes to unrelated packages and routine rebases stay quiet.
    - **CI-failure retry loop.** If the agent's changes break CI, that isn't the end of the road.
      [`.github/workflows/major-dep-agent-ci-retry.yml`](.github/workflows/major-dep-agent-ci-retry.yml)
      watches for a failed **CI** run on a `renovate/` branch. It waits for a `CLEAN` or `MIGRATED`

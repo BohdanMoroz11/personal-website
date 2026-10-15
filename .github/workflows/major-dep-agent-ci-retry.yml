@@ -147,7 +147,10 @@ jobs:
 
             If you concluded the bump is NOT ADOPTABLE (an upstream peer range excludes the new
             major on the dependent's latest release), say so plainly in that comment — name the
-            dependent, its latest version and peer range — and additionally run:
+            dependent, its latest version and peer range. Also post a second comment beginning
+            `<!-- dep-verdict:BLOCKED:<FINAL_HEAD_SHA> -->` with the same explanation. This is
+            the durable verdict the watchdog uses, regardless of which agent discovered the
+            blocker. Then run:
 
               gh api -X POST "repos/${{ github.repository }}/issues/${{ steps.check.outputs.pr_number }}/labels" -f "labels[]=dep:blocked"
 
@@ -162,6 +165,7 @@ jobs:
 
       # A crash or turn-exhausted run still consumes its attempt and gets a human ping.
       - name: Verify an attempt comment was posted
+        id: verify
         if: always() && steps.head.outcome == 'success'
         env:
           GH_TOKEN: ${{ secrets.GHCR_PAT }}
@@ -171,7 +175,7 @@ jobs:
           ATTEMPT: ${{ steps.check.outputs.attempt }}
         run: |
           set -euo pipefail
-          DATA=$(gh pr view "$PR" --repo "${{ github.repository }}" --json headRefOid,comments)
+          DATA=$(gh pr view "$PR" --repo "${{ github.repository }}" --json headRefOid,labels,comments)
           REMOTE_SHA=$(jq -r .headRefOid <<<"$DATA")
           LOCAL_SHA=$(git rev-parse HEAD)
           MARKER="<!-- ci-retry-state:$RUN_ID:$REMOTE_SHA -->"
@@ -179,6 +183,22 @@ jobs:
             '[.comments[] | select(.author.login == $owner and (.body | startswith("<!-- ci-retry-attempt -->\n" + $marker)))] | length' <<<"$DATA")
           if [ "$LOCAL_SHA" = "$REMOTE_SHA" ] && [ "$FOUND" -gt 0 ]; then
             echo "Attempt $ATTEMPT reported for $REMOTE_SHA — OK."
+            BLOCKED_MARKER="<!-- dep-verdict:BLOCKED:$REMOTE_SHA -->"
+            BLOCKED_VERDICT=$(jq --arg marker "$BLOCKED_MARKER" --arg attempt "$MARKER" --arg owner "${{ github.repository_owner }}" '
+              ([.comments | to_entries[] | select(.value.author.login == $owner and (.value.body | startswith("<!-- ci-retry-attempt -->\n" + $attempt))) | .key] | last) as $attemptIndex
+              | [.comments | to_entries[] | select(.key > $attemptIndex and .value.author.login == $owner and (.value.body | startswith($marker)))] | length' <<<"$DATA")
+            BLOCKED_LABEL=$(jq '[.labels[].name | select(. == "dep:blocked")] | length' <<<"$DATA")
+            if [ "$BLOCKED_VERDICT" -gt 0 ] || [ "$BLOCKED_LABEL" -gt 0 ]; then
+              if [ "$BLOCKED_VERDICT" -eq 0 ]; then
+                gh pr comment "$PR" --repo "${{ github.repository }}" --body "$BLOCKED_MARKER
+          Retry agent marked this major update as blocked. See its attempt comment above for the upstream peer constraint."
+              fi
+              if [ "$BLOCKED_LABEL" -eq 0 ]; then
+                gh api -X POST "repos/${{ github.repository }}/issues/$PR/labels" -f "labels[]=dep:blocked" >/dev/null
+              fi
+              echo "blocked=true" >> "$GITHUB_OUTPUT"
+              echo "head_sha=$REMOTE_SHA" >> "$GITHUB_OUTPUT"
+            fi
             exit 0
           fi
           REPORT_SHA="$EXPECTED_SHA"
@@ -186,3 +206,18 @@ jobs:
           gh pr comment "$PR" --repo "${{ github.repository }}" --body "$(printf '<!-- ci-retry-attempt -->\n<!-- ci-retry-state:%s:%s -->\n⚠️ @BohdanMoroz11 — automated CI-fix attempt %s reported no result for commit `%s` (see the [run](%s)). CI is still red; this needs a manual look.' \
             "$RUN_ID" "$REPORT_SHA" "$ATTEMPT" "$REPORT_SHA" '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}')"
           exit 1
+
+      - uses: actions/checkout@v7
+        if: steps.verify.outputs.blocked == 'true'
+        with:
+          ref: main
+          path: controller
+          persist-credentials: false
+      - name: Install blocked-state controller
+        if: steps.verify.outputs.blocked == 'true'
+        run: npm ci --prefix controller --ignore-scripts
+      - name: Record blocked dependency state
+        if: steps.verify.outputs.blocked == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GHCR_PAT }}
+        run: node controller/scripts/major-dep-blocked-controller.mjs capture "${{ steps.check.outputs.pr_number }}" "${{ steps.verify.outputs.head_sha }}"
