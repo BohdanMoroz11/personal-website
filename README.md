@@ -160,10 +160,12 @@ Dependencies are kept current automatically, in two layers:
      on its own — nothing to track by hand.
    - **CI-failure retry loop.** If the agent's changes break CI, that isn't the end of the road.
      [`.github/workflows/major-dep-agent-ci-retry.yml`](.github/workflows/major-dep-agent-ci-retry.yml)
-     watches for a failed **CI** run on a `renovate/` branch, reads the failing logs, diagnoses
-     the regression (consulting the changelog again), pushes a fix, and comments what it changed —
-     re-running CI automatically. It backs off after **3 attempts** so a genuinely hard break
-     can't burn cost in a loop, and skips `dep:blocked` PRs entirely.
+     watches for a failed **CI** run on a `renovate/` branch. It waits for a `CLEAN` or `MIGRATED`
+     verdict on that PR's current head before reading the failing logs, diagnosing the
+     regression, pushing a fix, and reporting the result. If CI finished before the reviewer,
+     the review workflow rechecks CI and dispatches the same retry gate. Stale or duplicate CI
+     events are ignored; retries stop after **3 attempts per review**. `BLOCKED` and
+     `NEEDS-HUMAN` verdicts do not enter the retry loop.
    - **Dormancy watchdog.** Several failure modes are otherwise silent: a PR that falls into
      **merge conflict** stops firing the workflows (and Renovate won't rebase over the agent's
      own commits), and a **crashed/timed-out** agent run pushes nothing so CI never re-runs.

@@ -4,12 +4,29 @@ on:
   workflow_run:
     workflows: ["CI"]
     types: [completed]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        required: true
+      head_sha:
+        required: true
+      head_branch:
+        required: true
+      ci_run_id:
+        required: true
+
+# Both CI-completed and review-completed events can request the same retry. Serialize
+# them by branch, then let the gate reject a CI run that has already been reported.
+concurrency:
+  group: claude-major-ci-retry-${{ github.event.workflow_run.head_branch || inputs.head_branch }}
+  cancel-in-progress: false
 
 jobs:
   retry:
     if: >
-      github.event.workflow_run.conclusion == 'failure' &&
-      startsWith(github.event.workflow_run.head_branch, 'renovate/')
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'failure' &&
+       startsWith(github.event.workflow_run.head_branch, 'renovate/'))
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -17,68 +34,47 @@ jobs:
       actions: read
       id-token: write
     steps:
-      - name: Find PR and check label / attempt cap
+      # workflow_run checks out main by default. Read the trusted gate before switching
+      # to the dependency PR, whose head can change while events are in flight.
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24.21.0
+
+      - name: Check retry eligibility for this CI run
         id: check
         env:
           GH_TOKEN: ${{ secrets.GHCR_PAT }}
-        run: |
-          PR_NUMBER=$(gh api "repos/${{ github.repository }}/commits/${{ github.event.workflow_run.head_sha }}/pulls" --jq '.[0].number')
-          if [ -z "$PR_NUMBER" ] || [ "$PR_NUMBER" == "null" ]; then
-            echo "No open PR for this commit — skipping."
-            echo "skip=true" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          LABELS=$(gh pr view "$PR_NUMBER" --repo "${{ github.repository }}" --json labels --jq '.labels[].name')
-          if ! echo "$LABELS" | grep -qx "dep:major-review"; then
-            echo "Not a major-review PR — skipping."
-            echo "skip=true" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          # The review agent already adjudicated this bump as not adoptable. Red CI is the
-          # EXPECTED state, not a regression to chase — burning fix attempts on it is pure
-          # waste, and a fix would have to violate the no-forcing policy to go green.
-          if echo "$LABELS" | grep -qx "dep:blocked"; then
-            echo "PR #$PR_NUMBER is labelled dep:blocked — CI failure is expected. Skipping."
-            echo "skip=true" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          ATTEMPTS=$(gh pr view "$PR_NUMBER" --repo "${{ github.repository }}" --json comments --jq '[.comments[].body | select(contains("<!-- ci-retry-attempt -->"))] | length')
-          if [ "$ATTEMPTS" -ge 3 ]; then
-            gh pr comment "$PR_NUMBER" --repo "${{ github.repository }}" --body "<!-- ci-retry-attempt --> CI failed again after $ATTEMPTS automated fix attempts. Stopping here — this needs a human look."
-            echo "skip=true" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          echo "skip=false" >> "$GITHUB_OUTPUT"
-          echo "pr_number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
-          echo "attempt=$((ATTEMPTS + 1))" >> "$GITHUB_OUTPUT"
+        run: node scripts/major-dep-retry-gate.mjs
 
       - uses: actions/checkout@v7
         if: steps.check.outputs.skip != 'true'
         with:
-          ref: ${{ github.event.workflow_run.head_branch }}
+          ref: ${{ steps.check.outputs.head_branch }}
           fetch-depth: 0
           token: ${{ secrets.GHCR_PAT }}
-      - uses: actions/setup-node@v7
+
+      - name: Verify checked-out head has not changed
+        id: head
         if: steps.check.outputs.skip != 'true'
-        with:
-          node-version: 24.21.0
+        env:
+          EXPECTED_SHA: ${{ steps.check.outputs.head_sha }}
+        run: test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
 
       # Non-fatal for the same reason as in major-dep-agent.yml: an uninstallable branch is a
       # finding to report, not a reason to abandon the run before the agent ever starts.
       - name: Install dependencies (evidence, non-fatal)
         id: install
-        if: steps.check.outputs.skip != 'true'
+        if: steps.head.outcome == 'success'
         continue-on-error: true
         run: |
           set -o pipefail
           npm ci 2>&1 | tee /tmp/install.log
 
       - name: Capture install log
-        if: always() && steps.check.outputs.skip != 'true'
+        if: always() && steps.head.outcome == 'success'
         id: installlog
         run: |
           {
@@ -88,7 +84,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       - uses: anthropics/claude-code-action@v1
-        if: steps.check.outputs.skip != 'true'
+        if: steps.head.outcome == 'success'
         with:
           allowed_bots: "renovate[bot]"
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
@@ -116,7 +112,7 @@ jobs:
 
             ## Steps
 
-            1. Run `gh run view ${{ github.event.workflow_run.id }} --log-failed` to see exactly
+            1. Run `gh run view ${{ steps.check.outputs.run_id }} --log-failed` to see exactly
                what failed.
             2. Diagnose the root cause — treat this as a real regression from the dependency bump,
                not a flake, unless the log clearly shows otherwise (e.g. a timing/network blip).
@@ -136,12 +132,18 @@ jobs:
 
             ## Verdict (mandatory)
 
-            ALWAYS finish by posting a comment, whatever happened:
+            ALWAYS finish by posting a comment, whatever happened. After any commit and
+            push, compare `git rev-parse HEAD` with the PR's remote `headRefOid`. They MUST
+            match; if someone moved the branch, stop rather than reporting on unreviewed
+            code. Start the comment with these two exact marker lines, substituting the
+            final head SHA in the second line:
 
-              gh pr comment ${{ steps.check.outputs.pr_number }} --body "<!-- ci-retry-attempt --> ..."
+              <!-- ci-retry-attempt -->
+              <!-- ci-retry-state:${{ steps.check.outputs.run_id }}:<FINAL_HEAD_SHA> -->
 
-            The `<!-- ci-retry-attempt -->` marker MUST be the first thing in the comment body —
-            it is how attempts get counted. Explain what broke and what you changed.
+            The CI run ID prevents duplicate events from spending another attempt. The
+            final SHA lets the next failed CI run continue this same bounded retry chain.
+            Explain what broke and what you changed after the markers.
 
             If you concluded the bump is NOT ADOPTABLE (an upstream peer range excludes the new
             major on the dependent's latest release), say so plainly in that comment — name the
@@ -158,22 +160,29 @@ jobs:
             only a human can make), say so plainly in the comment (still with the marker) instead
             of guessing, and do not push a speculative change.
 
-      # Outcome check, not exit-code check — see the equivalent step in major-dep-agent.yml.
-      # A run that exits 0 while posting nothing is just as dormant as one that crashed. The
-      # marker counts toward the 3-attempt cap so a push-then-crash cannot loop forever.
+      # A crash or turn-exhausted run still consumes its attempt and gets a human ping.
       - name: Verify an attempt comment was posted
-        if: always() && steps.check.outputs.skip != 'true'
+        if: always() && steps.head.outcome == 'success'
         env:
           GH_TOKEN: ${{ secrets.GHCR_PAT }}
           PR: ${{ steps.check.outputs.pr_number }}
+          RUN_ID: ${{ steps.check.outputs.run_id }}
+          EXPECTED_SHA: ${{ steps.check.outputs.head_sha }}
+          ATTEMPT: ${{ steps.check.outputs.attempt }}
         run: |
           set -euo pipefail
-          COUNT=$(gh pr view "$PR" --repo "${{ github.repository }}" --json comments \
-            --jq '[.comments[].body | select(contains("<!-- ci-retry-attempt -->"))] | length')
-          if [ "$COUNT" -ge "${{ steps.check.outputs.attempt }}" ]; then
-            echo "Attempt ${{ steps.check.outputs.attempt }} reported — OK."
+          DATA=$(gh pr view "$PR" --repo "${{ github.repository }}" --json headRefOid,comments)
+          REMOTE_SHA=$(jq -r .headRefOid <<<"$DATA")
+          LOCAL_SHA=$(git rev-parse HEAD)
+          MARKER="<!-- ci-retry-state:$RUN_ID:$REMOTE_SHA -->"
+          FOUND=$(jq --arg marker "$MARKER" --arg owner "${{ github.repository_owner }}" \
+            '[.comments[] | select(.author.login == $owner and (.body | startswith("<!-- ci-retry-attempt -->\n" + $marker)))] | length' <<<"$DATA")
+          if [ "$LOCAL_SHA" = "$REMOTE_SHA" ] && [ "$FOUND" -gt 0 ]; then
+            echo "Attempt $ATTEMPT reported for $REMOTE_SHA — OK."
             exit 0
           fi
-          gh pr comment "$PR" --repo "${{ github.repository }}" --body "$(printf '%s\n⚠️ @BohdanMoroz11 — the automated CI-fix agent **reported nothing** on attempt %s (crashed, timed out, or ran out of turns — see the [run](%s)). CI is still red and no fix was pushed — this one needs a human look.' \
-            '<!-- ci-retry-attempt -->' '${{ steps.check.outputs.attempt }}' '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}')"
+          REPORT_SHA="$EXPECTED_SHA"
+          if [ "$LOCAL_SHA" = "$REMOTE_SHA" ]; then REPORT_SHA="$REMOTE_SHA"; fi
+          gh pr comment "$PR" --repo "${{ github.repository }}" --body "$(printf '<!-- ci-retry-attempt -->\n<!-- ci-retry-state:%s:%s -->\n⚠️ @BohdanMoroz11 — automated CI-fix attempt %s reported no result for commit `%s` (see the [run](%s)). CI is still red; this needs a manual look.' \
+            "$RUN_ID" "$REPORT_SHA" "$ATTEMPT" "$REPORT_SHA" '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}')"
           exit 1

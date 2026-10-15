@@ -153,13 +153,17 @@ jobs:
 
               gh pr comment ${{ steps.pr.outputs.number }} --body "..."
 
-            The comment body MUST BEGIN with exactly this marker line, verbatim except for
-            substituting your chosen verdict for <VERDICT>:
+            After any commit and push, read the final local HEAD with `git rev-parse HEAD`
+            and the PR's remote head with `gh pr view ${{ steps.pr.outputs.number }} --json headRefOid`.
+            They MUST match. If the PR moved unexpectedly, stop rather than reporting a
+            verdict for code you did not review. Use that final SHA in the comment marker.
+            The comment body MUST BEGIN with exactly this marker line, substituting your
+            chosen verdict and the final SHA:
 
-              <!-- dep-verdict:<VERDICT>:${{ steps.pr.outputs.head_sha }} -->
+              <!-- dep-verdict:<VERDICT>:<FINAL_HEAD_SHA> -->
 
-            e.g. `<!-- dep-verdict:BLOCKED:${{ steps.pr.outputs.head_sha }} -->`. This marker is
-            how the automation knows you reported; get it exactly right. Follow it with a
+            This marker is how the automation knows you reported for the current commit;
+            get it exactly right. Follow it with a
             human-readable heading and the detail. For every breaking change you mention,
             include a direct link to the changelog/release-notes URL you read it from.
 
@@ -176,24 +180,55 @@ jobs:
             when the branch is rebased onto main — so a blocked PR re-adjudicates itself
             once upstream catches up.
 
-      # The old backstop only fired on `if: failure()`, which cannot catch the agent exiting 0
-      # without posting anything (turn exhaustion, or it simply decided not to). Check the
-      # OUTCOME instead of the exit code: a verdict for this exact commit either exists or it
-      # does not. One check covers crash / timeout / turn-exhaustion / silent-success alike.
+      # Check the outcome for the FINAL head, including any commit the agent pushed.
       - name: Verify a verdict was posted
+        id: verdict
         if: always()
         env:
           GH_TOKEN: ${{ secrets.GHCR_PAT }}
-          PR: ${{ steps.pr.outputs.number }}
-          SHA: ${{ steps.pr.outputs.head_sha }}
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
         run: |
           set -euo pipefail
-          FOUND=$(gh pr view "$PR" --repo "${{ github.repository }}" --json comments \
-            --jq "[.comments[].body | select(contains(\"dep-verdict:\") and contains(\"$SHA\"))] | length")
-          if [ "$FOUND" -gt 0 ]; then
-            echo "Verdict posted for $SHA — OK."
+          DATA=$(gh pr view "$PR_NUMBER" --repo "${{ github.repository }}" --json headRefOid,comments)
+          REMOTE_SHA=$(jq -r .headRefOid <<<"$DATA")
+          LOCAL_SHA=$(git rev-parse HEAD 2>/dev/null || true)
+          VERDICT=$(jq -r --arg sha "$REMOTE_SHA" --arg owner "${{ github.repository_owner }}" '
+            [.comments[] | select(.author.login == $owner) | .body
+             | capture("^<!-- dep-verdict:(?<verdict>CLEAN|MIGRATED|BLOCKED|NEEDS-HUMAN):" + $sha + " -->")? | .verdict]
+            | last // ""' <<<"$DATA")
+          if [ "$LOCAL_SHA" = "$REMOTE_SHA" ] && [ -n "$VERDICT" ]; then
+            echo "Verdict $VERDICT posted for final head $REMOTE_SHA."
+            {
+              echo "verdict=$VERDICT"
+              echo "head_sha=$REMOTE_SHA"
+            } >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          gh pr comment "$PR" --repo "${{ github.repository }}" --body "$(printf '%s\n⚠️ @BohdanMoroz11 — the major-dependency review agent **produced no verdict** for commit `%s` (see the [run](%s)). It crashed, timed out, or ran out of turns. Nothing was reviewed — this PR needs a manual look.\n\n_(automated — one ping per commit)_' \
-            "<!-- watchdog:$SHA -->" "$SHA" '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}')"
+          MARKER="<!-- watchdog:$REMOTE_SHA -->"
+          ALREADY=$(jq --arg marker "$MARKER" '[.comments[].body | select(contains($marker))] | length' <<<"$DATA")
+          if [ "$ALREADY" -eq 0 ]; then
+            gh pr comment "$PR_NUMBER" --repo "${{ github.repository }}" --body "$(printf '%s\n⚠️ @BohdanMoroz11 — the major-dependency review produced no verdict for its final head `%s` (or the branch moved during review). See the [run](%s). This PR needs a manual look.\n\n_(automated — one ping per commit)_' \
+              "$MARKER" "$REMOTE_SHA" '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}')"
+          fi
           exit 1
+
+      # CI may have failed while the reviewer was still working. A normal CI-completed
+      # event has already skipped because no verdict existed then; dispatch the same retry
+      # gate now. If CI is still running, its completion event will handle the retry.
+      - name: Recheck CI after an adoptable verdict
+        if: steps.verdict.outputs.verdict == 'CLEAN' || steps.verdict.outputs.verdict == 'MIGRATED'
+        env:
+          GH_TOKEN: ${{ secrets.GHCR_PAT }}
+          PR: ${{ steps.pr.outputs.number }}
+          BRANCH: ${{ steps.pr.outputs.head_ref }}
+          SHA: ${{ steps.verdict.outputs.head_sha }}
+        run: |
+          set -euo pipefail
+          CI=$(gh run list --repo "${{ github.repository }}" --workflow CI --branch "$BRANCH" \
+            --limit 30 --json databaseId,headSha,status,conclusion \
+            --jq "[.[] | select(.headSha == \"$SHA\")][0] // {}")
+          RUN_ID=$(jq -r 'select(.status == "completed" and .conclusion == "failure") | .databaseId // empty' <<<"$CI")
+          if [ -n "$RUN_ID" ]; then
+            gh workflow run major-dep-agent-ci-retry.yml --repo "${{ github.repository }}" \
+              -f pr_number="$PR" -f head_sha="$SHA" -f head_branch="$BRANCH" -f ci_run_id="$RUN_ID"
+          fi

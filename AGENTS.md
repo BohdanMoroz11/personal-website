@@ -112,9 +112,10 @@ else you did. Pick exactly one and post it via `gh pr comment`:
 | `BLOCKED`     | Not adoptable yet. Name the upstream constraint and what must ship first. Make no code changes. |
 | `NEEDS-HUMAN` | A real judgement call. Say what's blocking; push nothing speculative.                           |
 
-The comment must **begin** with `<!-- dep-verdict:<VERDICT>:<head-sha> -->` — the workflows key
-off that marker to tell "reviewed" from "crashed", so get it exactly right. Link the
-changelog/release-notes URL you actually read for every breaking change you cite.
+After any commit and push, verify the local HEAD matches the PR's remote head. The comment
+must **begin** with `<!-- dep-verdict:<VERDICT>:<final-head-sha> -->` — the workflows key
+off that marker to tell "reviewed" from "crashed" and to gate CI retries, so get it exactly
+right. Link the changelog/release-notes URL you actually read for every breaking change you cite.
 
 Two rules make `BLOCKED` reliable rather than a shrug:
 
