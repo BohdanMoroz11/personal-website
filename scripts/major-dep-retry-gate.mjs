@@ -1,9 +1,10 @@
 import { execFileSync } from "node:child_process";
 import { readFileSync, appendFileSync } from "node:fs";
 import { decideRetry } from "./major-dep-retry-state.mjs";
+import { trustedCommentAuthors, validateMajorPr } from "./major-dep-trust.mjs";
 
 const repo = process.env.GITHUB_REPOSITORY;
-const owner = repo?.split("/")[0];
+const authors = trustedCommentAuthors(repo, process.env.DEP_AGENT_APP_SLUG);
 const event = JSON.parse(readFileSync(process.env.GITHUB_EVENT_PATH, "utf8"));
 const eventName = process.env.GITHUB_EVENT_NAME;
 
@@ -71,6 +72,17 @@ if (!expectedBranch.startsWith("renovate/")) {
   process.exit(0);
 }
 
+const restPr = gh("api", `repos/${repo}/pulls/${prNumber}`);
+const trustReason = validateMajorPr(restPr, {
+  repository: repo,
+  expectedSha,
+  expectedBranch,
+});
+if (trustReason) {
+  skip(`untrusted PR: ${trustReason}`);
+  process.exit(0);
+}
+
 const pr = gh(
   "pr",
   "view",
@@ -87,7 +99,7 @@ if (pr.state !== "OPEN" || pr.headRefName !== expectedBranch) {
 
 const decision = decideRetry({
   comments: pr.comments,
-  owner,
+  owner: authors,
   labels: pr.labels.map((label) => label.name),
   currentSha: pr.headRefOid,
   eventSha: expectedSha,

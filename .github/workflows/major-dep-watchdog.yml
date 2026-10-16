@@ -22,8 +22,6 @@ on:
 
 permissions:
   contents: read
-  pull-requests: write
-  actions: write # needs to re-dispatch major-dep-agent.yml for re-adjudication
 
 jobs:
   scan:
@@ -42,25 +40,56 @@ jobs:
           node-version: 24.21.0
           cache: npm
       - run: npm ci --ignore-scripts
+      - name: Check dedicated App configuration
+        env:
+          APP_CLIENT_ID: ${{ vars.DEP_AGENT_APP_CLIENT_ID }}
+          APP_PRIVATE_KEY: ${{ secrets.DEP_AGENT_APP_PRIVATE_KEY }}
+          APP_SLUG: ${{ vars.DEP_AGENT_APP_SLUG }}
+        run: |
+          if [ -z "$APP_CLIENT_ID" ] || [ -z "$APP_PRIVATE_KEY" ] || [ -z "$APP_SLUG" ]; then
+            echo '::error::Configure DEP_AGENT_APP_CLIENT_ID, DEP_AGENT_APP_PRIVATE_KEY, and DEP_AGENT_APP_SLUG before running the dependency watchdog.'
+            exit 1
+          fi
+      - uses: actions/create-github-app-token@v3
+        id: watchdog_token
+        with:
+          client-id: ${{ vars.DEP_AGENT_APP_CLIENT_ID }}
+          private-key: ${{ secrets.DEP_AGENT_APP_PRIVATE_KEY }}
+          permission-contents: read
+          permission-pull-requests: write
+          permission-issues: write
+          permission-actions: write
       - name: Scan major-review PRs and flag stuck ones
         env:
-          GH_TOKEN: ${{ secrets.GHCR_PAT }}
+          GH_TOKEN: ${{ steps.watchdog_token.outputs.token }}
+          DEP_AGENT_APP_SLUG: ${{ vars.DEP_AGENT_APP_SLUG }}
+          ACTUAL_APP_SLUG: ${{ steps.watchdog_token.outputs.app-slug }}
         run: |
           set -euo pipefail
+          test "$ACTUAL_APP_SLUG" = "$DEP_AGENT_APP_SLUG"
+          BOT_NAME="${DEP_AGENT_APP_SLUG}[bot]"
 
           PRS=$(gh pr list --repo "$REPO" --state open --label "dep:major-review" \
-            --json number,headRefOid,mergeable,labels --jq '.[] | @base64')
+            --json number,headRefName,headRefOid,mergeable,labels --jq '.[] | @base64')
           if [ -z "$PRS" ]; then
             echo "No open major-review PRs — nothing to watch."
             exit 0
           fi
 
+          REJECTED=0
           for row in $PRS; do
             _jq() { echo "$row" | base64 --decode | jq -r "$1"; }
             PR=$(_jq '.number')
+            BRANCH=$(_jq '.headRefName')
             SHA=$(_jq '.headRefOid')
             MERGEABLE=$(_jq '.mergeable')
             BLOCKED=$(_jq '[.labels[].name] | index("dep:blocked") // "" | tostring')
+
+            if ! node scripts/major-dep-verify-head.mjs "$PR" "$SHA" "$BRANCH"; then
+              echo "::error::PR #$PR failed trusted Renovate preflight — skipping."
+              REJECTED=$((REJECTED + 1))
+              continue
+            fi
 
             # --- Settled: the agent ruled this bump not adoptable ---------------------------
             if [ -n "$BLOCKED" ]; then
@@ -87,8 +116,9 @@ jobs:
                   --jq "[.[] | select(.headSha==\"$SHA\" and (.status==\"in_progress\" or .status==\"queued\"))] | length")
                 # Count attempts since the latest initial verdict. A later review starts
                 # a new retry budget, even when it happens on the same long-lived PR.
-                ATTEMPTS=$(gh pr view "$PR" --repo "$REPO" --json comments --jq '
-                  [.comments[].body] as $b
+                ATTEMPTS=$(gh pr view "$PR" --repo "$REPO" --json comments | jq \
+                  --arg owner "${{ github.repository_owner }}" --arg bot "$BOT_NAME" '
+                  [.comments[] | select(.author.login == $owner or .author.login == $bot) | .body] as $b
                   | ([$b | to_entries[] | select(.value | startswith("<!-- dep-verdict:")) | .key] | last // -1) as $verdict
                   | [range($verdict + 1; $b | length) as $i
                      | select($b[$i] | startswith("<!-- ci-retry-attempt -->"))] | length')
@@ -109,8 +139,9 @@ jobs:
             # workflows post their no-verdict warnings under the same marker, so a crashed
             # run that already pinged won't get double-reported here.
             MARKER="<!-- watchdog:$SHA -->"
-            ALREADY=$(gh pr view "$PR" --repo "$REPO" --json comments \
-              --jq "[.comments[].body | select(contains(\"$MARKER\"))] | length")
+            ALREADY=$(gh pr view "$PR" --repo "$REPO" --json comments | jq \
+              --arg owner "${{ github.repository_owner }}" --arg bot "$BOT_NAME" --arg marker "$MARKER" \
+              '[.comments[] | select(.author.login == $owner or .author.login == $bot) | .body | select(contains($marker))] | length')
             if [ "$ALREADY" -gt 0 ]; then
               echo "PR #$PR: already flagged for $SHA — skipping."
               continue
@@ -121,3 +152,7 @@ jobs:
             gh pr comment "$PR" --repo "$REPO" --body "$BODY"
             echo "PR #$PR: flagged ($REASON)"
           done
+          if [ "$REJECTED" -gt 0 ]; then
+            echo "::error::$REJECTED major-review PR(s) failed trust checks."
+            exit 1
+          fi

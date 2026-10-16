@@ -2,9 +2,10 @@ const VERDICT = /^<!-- dep-verdict:(CLEAN|MIGRATED|BLOCKED|NEEDS-HUMAN):([0-9a-f
 const ATTEMPT = /^<!-- ci-retry-attempt -->\r?\n<!-- ci-retry-state:([0-9]+):([0-9a-f]{40}) -->/;
 
 export function latestVerdict(comments, author) {
+  const authors = Array.isArray(author) ? author : [author];
   for (let index = comments.length - 1; index >= 0; index--) {
     const comment = comments[index];
-    if (comment.author?.login !== author) continue;
+    if (!authors.includes(comment.author?.login)) continue;
     const match = VERDICT.exec(comment.body);
     if (match) return { index, verdict: match[1], sha: match[2] };
   }
@@ -12,8 +13,9 @@ export function latestVerdict(comments, author) {
 }
 
 export function attemptsAfterVerdict(comments, verdictIndex, author) {
+  const authors = Array.isArray(author) ? author : [author];
   return comments.slice(verdictIndex + 1).flatMap((comment) => {
-    if (comment.author?.login !== author) return [];
+    if (!authors.includes(comment.author?.login)) return [];
     const match = ATTEMPT.exec(comment.body);
     return match ? [{ runId: match[1], sha: match[2] }] : [];
   });
