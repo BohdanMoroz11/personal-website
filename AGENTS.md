@@ -132,9 +132,9 @@ On `BLOCKED`, also add the `dep:blocked` label, via REST rather than `gh pr edit
 `gh api -X POST "repos/<owner>/<repo>/issues/<pr>/labels" -f "labels[]=dep:blocked"`.
 It halts the CI-retry loop — red CI is the _expected_ state for an unadoptable bump, so fix
 attempts are waste — and silences the dormancy watchdog. Leave the PR **open**: the watchdog
-clears the label when the bumped version specifier or its lockfile entry actually changes
-(not merely when the branch is rebased onto main), so the bump re-adjudicates itself when
-upstream catches up.
+records the target and its latest incompatible direct peers, then clears the label only when
+the target specifier changes, its lockfile entry resolves the target, or all recorded peer
+blockers become compatible. Unrelated dependency updates and routine rebases stay quiet.
 
 Note that `npm ci` is deliberately **non-fatal** in these workflows. An uninstallable branch
 (Renovate couldn't resolve a lockfile) is your primary evidence, not a reason to stop.
