@@ -144,6 +144,24 @@ Dependencies are kept current automatically, in two layers:
 
    Every verdict cites the release-notes URLs it was read from, so you can verify it without
    re-doing the research.
+
+   **Credential setup.** The major-review, CI-retry, and watchdog workflows use a dedicated
+   GitHub App installed only on this repository. Give the App repository permissions for
+   **Contents: read/write**, **Pull requests: read/write**, **Issues: read/write**, and
+   **Actions: read/write**. Set repository variables `DEP_AGENT_APP_CLIENT_ID` and
+   `DEP_AGENT_APP_SLUG` (the App's exact slug), and repository secret
+   `DEP_AGENT_APP_PRIVATE_KEY` (the complete PEM private key). Keep
+   `CLAUDE_CODE_OAUTH_TOKEN` as the agent's model credential. The workflows fail visibly
+   when the App configuration is absent. They use the App token for commits, comments,
+   labels, and workflow dispatch; the built-in read-scoped token is used for preflight,
+   and a separate failure reporter uses `GITHUB_TOKEN` only to flag a failed run.
+   The former `GHCR_PAT` remains for deployment and is not used by dependency workflows.
+
+   Before the App token is minted, the workflows check the live PR is open, targets `main`,
+   comes from this repository and `renovate[bot]`, has the `dep:major-review` label and a
+   `renovate/` branch, and still points to the inspected commit. Checkout never persists
+   credentials. `npm ci` runs without a write token; its failure is review evidence.
+
    - **"Not adoptable" is a first-class answer.** The most common way a major gets stuck is a
      peer-dependency conflict that stops Renovate resolving a lockfile at all — which used to
      leave the branch uninstallable and kill the agent job at `npm ci`, before it could say

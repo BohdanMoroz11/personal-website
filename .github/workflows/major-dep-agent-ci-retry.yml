@@ -28,9 +28,11 @@ jobs:
       (github.event.workflow_run.conclusion == 'failure' &&
        startsWith(github.event.workflow_run.head_branch, 'renovate/'))
     runs-on: ubuntu-latest
+    outputs:
+      pr_number: ${{ steps.check.outputs.pr_number }}
     permissions:
-      contents: write
-      pull-requests: write
+      contents: read
+      pull-requests: read
       actions: read
       id-token: write
     steps:
@@ -46,22 +48,39 @@ jobs:
       - name: Check retry eligibility for this CI run
         id: check
         env:
-          GH_TOKEN: ${{ secrets.GHCR_PAT }}
+          GH_TOKEN: ${{ github.token }}
+          DEP_AGENT_APP_SLUG: ${{ vars.DEP_AGENT_APP_SLUG }}
         run: node scripts/major-dep-retry-gate.mjs
 
+      - name: Check dedicated App configuration
+        if: steps.check.outputs.skip == 'false'
+        env:
+          APP_CLIENT_ID: ${{ vars.DEP_AGENT_APP_CLIENT_ID }}
+          APP_PRIVATE_KEY: ${{ secrets.DEP_AGENT_APP_PRIVATE_KEY }}
+          APP_SLUG: ${{ vars.DEP_AGENT_APP_SLUG }}
+        run: |
+          if [ -z "$APP_CLIENT_ID" ] || [ -z "$APP_PRIVATE_KEY" ] || [ -z "$APP_SLUG" ]; then
+            echo '::error::Configure DEP_AGENT_APP_CLIENT_ID, DEP_AGENT_APP_PRIVATE_KEY, and DEP_AGENT_APP_SLUG before running dependency agents.'
+            exit 1
+          fi
+
       - uses: actions/checkout@v7
-        if: steps.check.outputs.skip != 'true'
+        if: steps.check.outputs.skip == 'false'
         with:
-          ref: ${{ steps.check.outputs.head_branch }}
+          ref: ${{ steps.check.outputs.head_sha }}
           fetch-depth: 0
-          token: ${{ secrets.GHCR_PAT }}
+          persist-credentials: false
 
       - name: Verify checked-out head has not changed
         id: head
-        if: steps.check.outputs.skip != 'true'
+        if: steps.check.outputs.skip == 'false'
         env:
+          GH_TOKEN: ${{ github.token }}
           EXPECTED_SHA: ${{ steps.check.outputs.head_sha }}
-        run: test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+          PR: ${{ steps.check.outputs.pr_number }}
+        run: |
+          test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+          test "$(gh api "repos/${{ github.repository }}/pulls/$PR" --jq .head.sha)" = "$EXPECTED_SHA"
 
       # Non-fatal for the same reason as in major-dep-agent.yml: an uninstallable branch is a
       # finding to report, not a reason to abandon the run before the agent ever starts.
@@ -83,12 +102,46 @@ jobs:
             echo 'INSTALL_LOG_EOF'
           } >> "$GITHUB_OUTPUT"
 
-      - uses: anthropics/claude-code-action@v1
+      - name: Recheck head before privileged fixer
         if: steps.head.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ steps.check.outputs.pr_number }}
+          SHA: ${{ steps.check.outputs.head_sha }}
+        run: test "$(gh api "repos/${{ github.repository }}/pulls/$PR" --jq .head.sha)" = "$SHA"
+
+      - uses: actions/create-github-app-token@v3
+        id: agent_token
+        if: steps.head.outcome == 'success'
+        with:
+          client-id: ${{ vars.DEP_AGENT_APP_CLIENT_ID }}
+          private-key: ${{ secrets.DEP_AGENT_APP_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+          permission-issues: write
+          permission-actions: read
+
+      - name: Resolve dedicated App identity
+        id: app
+        if: steps.agent_token.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ steps.agent_token.outputs.token }}
+          APP_SLUG: ${{ steps.agent_token.outputs.app-slug }}
+          EXPECTED_SLUG: ${{ vars.DEP_AGENT_APP_SLUG }}
+        run: |
+          set -euo pipefail
+          test "$APP_SLUG" = "$EXPECTED_SLUG"
+          echo "bot_name=${APP_SLUG}[bot]" >> "$GITHUB_OUTPUT"
+          echo "bot_id=$(gh api "users/${APP_SLUG}%5Bbot%5D" --jq .id)" >> "$GITHUB_OUTPUT"
+
+      - uses: anthropics/claude-code-action@v1
+        if: steps.app.outcome == 'success'
         with:
           allowed_bots: "renovate[bot]"
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          github_token: ${{ secrets.GHCR_PAT }}
+          github_token: ${{ steps.agent_token.outputs.token }}
+          bot_id: ${{ steps.app.outputs.bot_id }}
+          bot_name: ${{ steps.app.outputs.bot_name }}
           claude_args: |
             --model sonnet
             --max-turns 50
@@ -163,12 +216,23 @@ jobs:
             only a human can make), say so plainly in the comment (still with the marker) instead
             of guessing, and do not push a speculative change.
 
+      - uses: actions/create-github-app-token@v3
+        id: report_token
+        if: always() && steps.agent_token.outcome == 'success'
+        with:
+          client-id: ${{ vars.DEP_AGENT_APP_CLIENT_ID }}
+          private-key: ${{ secrets.DEP_AGENT_APP_PRIVATE_KEY }}
+          permission-contents: read
+          permission-pull-requests: write
+          permission-issues: write
+
       # A crash or turn-exhausted run still consumes its attempt and gets a human ping.
       - name: Verify an attempt comment was posted
         id: verify
-        if: always() && steps.head.outcome == 'success'
+        if: always() && steps.head.outcome == 'success' && steps.report_token.outcome == 'success'
         env:
-          GH_TOKEN: ${{ secrets.GHCR_PAT }}
+          GH_TOKEN: ${{ steps.report_token.outputs.token }}
+          BOT_NAME: ${{ steps.app.outputs.bot_name }}
           PR: ${{ steps.check.outputs.pr_number }}
           RUN_ID: ${{ steps.check.outputs.run_id }}
           EXPECTED_SHA: ${{ steps.check.outputs.head_sha }}
@@ -179,12 +243,12 @@ jobs:
           REMOTE_SHA=$(jq -r .headRefOid <<<"$DATA")
           LOCAL_SHA=$(git rev-parse HEAD)
           MARKER="<!-- ci-retry-state:$RUN_ID:$REMOTE_SHA -->"
-          FOUND=$(jq --arg marker "$MARKER" --arg owner "${{ github.repository_owner }}" \
+          FOUND=$(jq --arg marker "$MARKER" --arg owner "$BOT_NAME" \
             '[.comments[] | select(.author.login == $owner and (.body | startswith("<!-- ci-retry-attempt -->\n" + $marker)))] | length' <<<"$DATA")
           if [ "$LOCAL_SHA" = "$REMOTE_SHA" ] && [ "$FOUND" -gt 0 ]; then
             echo "Attempt $ATTEMPT reported for $REMOTE_SHA — OK."
             BLOCKED_MARKER="<!-- dep-verdict:BLOCKED:$REMOTE_SHA -->"
-            BLOCKED_VERDICT=$(jq --arg marker "$BLOCKED_MARKER" --arg attempt "$MARKER" --arg owner "${{ github.repository_owner }}" '
+            BLOCKED_VERDICT=$(jq --arg marker "$BLOCKED_MARKER" --arg attempt "$MARKER" --arg owner "$BOT_NAME" '
               ([.comments | to_entries[] | select(.value.author.login == $owner and (.value.body | startswith("<!-- ci-retry-attempt -->\n" + $attempt))) | .key] | last) as $attemptIndex
               | [.comments | to_entries[] | select(.key > $attemptIndex and .value.author.login == $owner and (.value.body | startswith($marker)))] | length' <<<"$DATA")
             BLOCKED_LABEL=$(jq '[.labels[].name | select(. == "dep:blocked")] | length' <<<"$DATA")
@@ -219,5 +283,29 @@ jobs:
       - name: Record blocked dependency state
         if: steps.verify.outputs.blocked == 'true'
         env:
-          GH_TOKEN: ${{ secrets.GHCR_PAT }}
+          GH_TOKEN: ${{ steps.report_token.outputs.token }}
+          DEP_AGENT_APP_SLUG: ${{ vars.DEP_AGENT_APP_SLUG }}
         run: node controller/scripts/major-dep-blocked-controller.mjs capture "${{ steps.check.outputs.pr_number }}" "${{ steps.verify.outputs.head_sha }}"
+
+  report-failure:
+    needs: retry
+    if: always() && needs.retry.result == 'failure'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24.21.0
+      - name: Report failed retry on trusted PR
+        if: needs.retry.outputs.pr_number != '' || inputs.pr_number != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DEP_AGENT_APP_SLUG: ${{ vars.DEP_AGENT_APP_SLUG }}
+          PR_NUMBER: ${{ needs.retry.outputs.pr_number || inputs.pr_number }}
+        run: node scripts/major-dep-report-failure.mjs "$PR_NUMBER" "${{ github.run_id }}" retry
