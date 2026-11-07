@@ -60,7 +60,8 @@ jobs:
         with:
           client-id: ${{ vars.DEP_AGENT_APP_CLIENT_ID }}
           private-key: ${{ secrets.DEP_AGENT_APP_PRIVATE_KEY }}
-          permission-contents: read
+          # The smoke check requests the agent's write permission too; normal scans only read.
+          permission-contents: ${{ inputs.credentials_only && 'write' || 'read' }}
           permission-pull-requests: write
           permission-issues: write
           permission-actions: write
