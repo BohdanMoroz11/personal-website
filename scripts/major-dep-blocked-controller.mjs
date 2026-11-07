@@ -11,11 +11,12 @@ import {
   majorTarget,
 } from "./major-dep-blocked-state.mjs";
 import { latestVerdict } from "./major-dep-retry-state.mjs";
+import { trustedCommentAuthors, validateMajorPr } from "./major-dep-trust.mjs";
 
 const run = promisify(execFile);
 const [mode, number, expectedSha] = process.argv.slice(2);
 const repo = process.env.GITHUB_REPOSITORY;
-const owner = repo?.split("/")[0];
+const authors = trustedCommentAuthors(repo, process.env.DEP_AGENT_APP_SLUG);
 if (!repo || !number || !["capture", "scan", "inspect"].includes(mode)) {
   throw new Error(
     "Usage: major-dep-blocked-controller.mjs <capture|scan|inspect> <PR> [expected-head-sha]",
@@ -80,7 +81,7 @@ async function metadataFor(names) {
 }
 
 async function capture(pr, verdict, allowEmpty) {
-  const existing = blockedRecord(pr.comments, owner, verdict);
+  const existing = blockedRecord(pr.comments, authors, verdict);
   if (existing) return existing;
 
   const [basePkg, verdictPkg, verdictLock] = await Promise.all([
@@ -113,6 +114,12 @@ async function capture(pr, verdict, allowEmpty) {
   return record;
 }
 
+const restPr = JSON.parse(await gh("api", `repos/${repo}/pulls/${number}`));
+const trustReason = validateMajorPr(restPr, { repository: repo, expectedSha });
+if (trustReason) {
+  console.error(`::error::Blocked-state controller rejected PR #${number}: ${trustReason}.`);
+  process.exit(1);
+}
 const pr = await prView();
 if (pr.state !== "OPEN" || !pr.labels.some((label) => label.name === "dep:blocked")) {
   console.log(`PR #${number} is not an open blocked PR; skipping.`);
@@ -122,8 +129,8 @@ if (expectedSha && pr.headRefOid !== expectedSha) {
   console.log(`PR #${number} moved from ${expectedSha} to ${pr.headRefOid}; skipping stale scan.`);
   process.exit(0);
 }
-const currentVerdict = latestVerdict(pr.comments, owner);
-const blocked = latestBlockedVerdict(pr.comments, owner);
+const currentVerdict = latestVerdict(pr.comments, authors);
+const blocked = latestBlockedVerdict(pr.comments, authors);
 if (!blocked || currentVerdict?.verdict !== "BLOCKED" || currentVerdict.sha !== blocked.sha) {
   throw new Error(`PR #${number} is labeled blocked without a current BLOCKED verdict record`);
 }
@@ -145,7 +152,9 @@ if (!decision.wake) {
 }
 const marker = `<!-- dep-wakeup:v1:${blocked.id}:${pr.headRefOid} -->`;
 if (
-  pr.comments.some((comment) => comment.author?.login === owner && comment.body.startsWith(marker))
+  pr.comments.some(
+    (comment) => authors.includes(comment.author?.login) && comment.body.startsWith(marker),
+  )
 ) {
   console.log(`PR #${number} was already dispatched for this verdict and head.`);
   process.exit(0);
@@ -169,7 +178,7 @@ await gh("workflow", "run", "major-dep-agent.yml", "--repo", repo, "-f", `pr_num
 await gh("api", "-X", "DELETE", `repos/${repo}/issues/${number}/labels/dep:blocked`);
 if (
   !fresh.comments.some(
-    (comment) => comment.author?.login === owner && comment.body.startsWith(marker),
+    (comment) => authors.includes(comment.author?.login) && comment.body.startsWith(marker),
   )
 ) {
   await gh(

@@ -32,9 +32,10 @@ export function lockedVersion(lock, name) {
 }
 
 export function latestBlockedVerdict(comments, owner) {
+  const authors = Array.isArray(owner) ? owner : [owner];
   for (let index = comments.length - 1; index >= 0; index--) {
     const comment = comments[index];
-    if (comment.author?.login !== owner) continue;
+    if (!authors.includes(comment.author?.login)) continue;
     const match = VERDICT.exec(comment.body);
     if (match) return { sha: match[1], id: comment.id, index };
   }
@@ -42,9 +43,10 @@ export function latestBlockedVerdict(comments, owner) {
 }
 
 export function blockedRecord(comments, owner, verdict) {
+  const authors = Array.isArray(owner) ? owner : [owner];
   for (let index = comments.length - 1; index >= 0; index--) {
     const comment = comments[index];
-    if (comment.author?.login !== owner) continue;
+    if (!authors.includes(comment.author?.login)) continue;
     const match = STATE.exec(comment.body);
     if (!match || match[1] !== verdict.sha) continue;
     try {

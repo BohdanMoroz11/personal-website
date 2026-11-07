@@ -94,4 +94,21 @@ describe("major dependency CI retry eligibility", () => {
         .reason,
     ).toBe("initial review has not finished");
   });
+
+  it("accepts dedicated App verdicts and attempts alongside legacy owner comments", () => {
+    const bot = "dep-agent[bot]";
+    const comments = [
+      verdict("CLEAN", sha("a")),
+      comment(`<!-- ci-retry-attempt -->\n<!-- ci-retry-state:101:${sha("b")} -->`, bot),
+    ];
+    expect(
+      decide({
+        comments,
+        owner: [owner, bot],
+        currentSha: sha("b"),
+        eventSha: sha("b"),
+        runId: "102",
+      }),
+    ).toEqual({ attempt: 2, reviewSha: sha("a") });
+  });
 });
