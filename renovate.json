@@ -1,23 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"],
+  "extends": ["github>BohdanMoroz11/upkeep#7147364e6698cf58716d1975e9aec4cf444e8f1a"],
   "timezone": "Europe/Sofia",
-  "schedule": ["before 6am on monday"],
-  "rangeStrategy": "bump",
-  "prConcurrentLimit": 5,
-  "platformAutomerge": true,
-  "packageRules": [
-    {
-      "description": "Bundle ALL non-major updates into one auto-merging PR",
-      "matchUpdateTypes": ["patch", "minor", "pin", "digest"],
-      "groupName": "non-major dependencies",
-      "automerge": true
-    },
-    {
-      "description": "Majors: separate PRs, held for review, labeled for the agent",
-      "matchUpdateTypes": ["major"],
-      "automerge": false,
-      "addLabels": ["dep:major-review"]
-    }
-  ]
+  "schedule": ["before 6am on monday"]
 }

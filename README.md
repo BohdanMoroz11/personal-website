@@ -118,7 +118,12 @@ The remote half of the deploy is intentionally tiny and lives inline in the scri
 
 ## Dependency updates
 
-Dependencies are kept current automatically, in two layers:
+Dependencies are kept current automatically through [Upkeep](https://github.com/BohdanMoroz11/upkeep),
+pinned to reviewed commit [`7147364`](https://github.com/BohdanMoroz11/upkeep/commit/7147364e6698cf58716d1975e9aec4cf444e8f1a)
+for both the Renovate preset and reusable workflows. This repository supplies the event triggers,
+CI, project instructions, weekly schedule, and credential mappings.
+
+There are two layers:
 
 1. **Renovate — patches & minors.** [`renovate.json`](renovate.json) bundles every
    non-major update (`patch`, `minor`, `pin`, `digest`) into a single grouped PR and
@@ -161,6 +166,19 @@ Dependencies are kept current automatically, in two layers:
    comes from this repository and `renovate[bot]`, has the `dep:major-review` label and a
    `renovate/` branch, and still points to the inspected commit. Checkout never persists
    credentials. `npm ci` runs without a write token; its failure is review evidence.
+
+   The three local workflow files are thin callers of the shared implementation. They retain
+   their existing names for dispatch compatibility, use `ci.yml` / `CI` and `npm run typecheck`,
+   and explicitly trust historical verdicts from `BohdanMoroz11`. Existing App and model
+   credentials are passed as named secrets.
+
+   To verify App authentication without scanning or changing PRs, manually run
+   `major-dep-watchdog.yml` with `credentials_only: true`. The shared job checks the App identity,
+   repository access, and requested permissions.
+
+   Local `scripts/major-dep-*` files and their regression tests are retained for the adoption
+   verification period. The workflow callers execute Upkeep's bundled controller; they do not
+   invoke those local copies. Cleanup follows live review/retry and blocked-state verification.
 
    - **"Not adoptable" is a first-class answer.** The most common way a major gets stuck is a
      peer-dependency conflict that stops Renovate resolving a lockfile at all — which used to

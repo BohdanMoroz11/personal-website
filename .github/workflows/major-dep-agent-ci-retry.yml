@@ -1,311 +1,50 @@
+# Upkeep PR #1: reviewed shared implementation pinned to 7147364e6698cf58716d1975e9aec4cf444e8f1a.
 name: claude-major-agent-ci-retry
 
 on:
   workflow_run:
-    workflows: ["CI"]
+    workflows: [CI] # The name in your CI workflow, not its filename.
     types: [completed]
   workflow_dispatch:
     inputs:
       pr_number:
         required: true
+        type: string
       head_sha:
         required: true
+        type: string
       head_branch:
         required: true
+        type: string
       ci_run_id:
         required: true
+        type: string
 
-# Both CI-completed and review-completed events can request the same retry. Serialize
-# them by branch, then let the gate reject a CI run that has already been reported.
 concurrency:
   group: claude-major-ci-retry-${{ github.event.workflow_run.head_branch || inputs.head_branch }}
   cancel-in-progress: false
 
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+  actions: read
+  id-token: write
+
 jobs:
   retry:
-    if: >
-      github.event_name == 'workflow_dispatch' ||
-      (github.event.workflow_run.conclusion == 'failure' &&
-       startsWith(github.event.workflow_run.head_branch, 'renovate/'))
-    runs-on: ubuntu-latest
-    outputs:
-      pr_number: ${{ steps.check.outputs.pr_number }}
-    permissions:
-      contents: read
-      pull-requests: read
-      actions: read
-      id-token: write
-    steps:
-      # workflow_run checks out main by default. Read the trusted gate before switching
-      # to the dependency PR, whose head can change while events are in flight.
-      - uses: actions/checkout@v7
-        with:
-          persist-credentials: false
-      - uses: actions/setup-node@v7
-        with:
-          node-version: 26.13.0
-
-      - name: Check retry eligibility for this CI run
-        id: check
-        env:
-          GH_TOKEN: ${{ github.token }}
-          DEP_AGENT_APP_SLUG: ${{ vars.DEP_AGENT_APP_SLUG }}
-        run: node scripts/major-dep-retry-gate.mjs
-
-      - name: Check dedicated App configuration
-        if: steps.check.outputs.skip == 'false'
-        env:
-          APP_CLIENT_ID: ${{ vars.DEP_AGENT_APP_CLIENT_ID }}
-          APP_PRIVATE_KEY: ${{ secrets.DEP_AGENT_APP_PRIVATE_KEY }}
-          APP_SLUG: ${{ vars.DEP_AGENT_APP_SLUG }}
-        run: |
-          if [ -z "$APP_CLIENT_ID" ] || [ -z "$APP_PRIVATE_KEY" ] || [ -z "$APP_SLUG" ]; then
-            echo '::error::Configure DEP_AGENT_APP_CLIENT_ID, DEP_AGENT_APP_PRIVATE_KEY, and DEP_AGENT_APP_SLUG before running dependency agents.'
-            exit 1
-          fi
-
-      - uses: actions/checkout@v7
-        if: steps.check.outputs.skip == 'false'
-        with:
-          ref: ${{ steps.check.outputs.head_sha }}
-          fetch-depth: 0
-          persist-credentials: false
-
-      - name: Verify checked-out head has not changed
-        id: head
-        if: steps.check.outputs.skip == 'false'
-        env:
-          GH_TOKEN: ${{ github.token }}
-          EXPECTED_SHA: ${{ steps.check.outputs.head_sha }}
-          PR: ${{ steps.check.outputs.pr_number }}
-        run: |
-          test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
-          test "$(gh api "repos/${{ github.repository }}/pulls/$PR" --jq .head.sha)" = "$EXPECTED_SHA"
-
-      # Non-fatal for the same reason as in major-dep-agent.yml: an uninstallable branch is a
-      # finding to report, not a reason to abandon the run before the agent ever starts.
-      - name: Install dependencies (evidence, non-fatal)
-        id: install
-        if: steps.head.outcome == 'success'
-        continue-on-error: true
-        run: |
-          set -o pipefail
-          npm ci 2>&1 | tee /tmp/install.log
-
-      - name: Capture install log
-        if: always() && steps.head.outcome == 'success'
-        id: installlog
-        run: |
-          {
-            echo 'log<<INSTALL_LOG_EOF'
-            tail -n 120 /tmp/install.log 2>/dev/null || echo '(no install log produced)'
-            echo 'INSTALL_LOG_EOF'
-          } >> "$GITHUB_OUTPUT"
-
-      - name: Recheck head before privileged fixer
-        if: steps.head.outcome == 'success'
-        env:
-          GH_TOKEN: ${{ github.token }}
-          PR: ${{ steps.check.outputs.pr_number }}
-          SHA: ${{ steps.check.outputs.head_sha }}
-        run: test "$(gh api "repos/${{ github.repository }}/pulls/$PR" --jq .head.sha)" = "$SHA"
-
-      - uses: actions/create-github-app-token@v3
-        id: agent_token
-        if: steps.head.outcome == 'success'
-        with:
-          client-id: ${{ vars.DEP_AGENT_APP_CLIENT_ID }}
-          private-key: ${{ secrets.DEP_AGENT_APP_PRIVATE_KEY }}
-          permission-contents: write
-          permission-pull-requests: write
-          permission-issues: write
-          permission-actions: read
-
-      - name: Resolve dedicated App identity
-        id: app
-        if: steps.agent_token.outcome == 'success'
-        env:
-          GH_TOKEN: ${{ steps.agent_token.outputs.token }}
-          APP_SLUG: ${{ steps.agent_token.outputs.app-slug }}
-          EXPECTED_SLUG: ${{ vars.DEP_AGENT_APP_SLUG }}
-        run: |
-          set -euo pipefail
-          test "$APP_SLUG" = "$EXPECTED_SLUG"
-          echo "bot_name=${APP_SLUG}[bot]" >> "$GITHUB_OUTPUT"
-          echo "bot_id=$(gh api "users/${APP_SLUG}%5Bbot%5D" --jq .id)" >> "$GITHUB_OUTPUT"
-
-      - uses: anthropics/claude-code-action@v1
-        if: steps.app.outcome == 'success'
-        with:
-          allowed_bots: "renovate[bot]"
-          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          github_token: ${{ steps.agent_token.outputs.token }}
-          bot_id: ${{ steps.app.outputs.bot_id }}
-          bot_name: ${{ steps.app.outputs.bot_name }}
-          claude_args: |
-            --model sonnet
-            --max-turns 50
-            --permission-mode acceptEdits
-            --allowedTools "Edit,MultiEdit,Write,Read,Glob,Grep,LS,WebSearch,WebFetch,Bash(git:*),Bash(grep:*),Bash(head:*),Bash(tail:*),Bash(npm run typecheck),Bash(npm view:*),Bash(npm ls:*),Bash(gh run view:*),Bash(gh pr comment:*),Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh api:*)"
-          prompt: |
-            CI just failed (automated fix attempt ${{ steps.check.outputs.attempt }} of 3) on
-            PR #${{ steps.check.outputs.pr_number }}, a major dependency bump PR that you (or a
-            prior run) already committed to.
-
-            ## Dependency install status: ${{ steps.install.outcome }}
-
-            `npm ci` output (last 120 lines):
-            ```
-            ${{ steps.installlog.outputs.log }}
-            ```
-
-            If the install itself FAILED, do not treat that as an environment problem — it is
-            the most likely explanation for the CI failure, and it usually means the lockfile
-            could not be resolved because of a peer-dependency conflict.
-
-            ## Steps
-
-            1. Run `gh run view ${{ steps.check.outputs.run_id }} --log-failed` to see exactly
-               what failed.
-            2. Diagnose the root cause — treat this as a real regression from the dependency bump,
-               not a flake, unless the log clearly shows otherwise (e.g. a timing/network blip).
-               Use WebFetch / WebSearch to consult the dependency's changelog or migration guide
-               when the failure relates to the bump — do not rely on memory of the new major.
-            3. Before attempting a fix, sanity-check that the bump is adoptable AT ALL: for each
-               direct dependent of the bumped package, run
-               `npm view <dependent>@latest peerDependencies`. If the latest published version of
-               a dependent still excludes the new major, no fix exists — go straight to the
-               BLOCKED verdict below rather than burning attempts.
-            4. POLICY — never force a bump past an unsatisfiable peer range. No `overrides`, no
-               `--legacy-peer-deps`, no `--force`. Going green that way ships a toolchain that
-               cannot actually build or check this repo.
-            5. Otherwise: fix it, following CLAUDE.md / AGENTS.md conventions. Do NOT run the full
-               test suite yourself — CI will re-run automatically once you push. Run ONLY
-               `npm run typecheck` as a sanity check, then commit and push to this PR's branch.
-
-            ## Verdict (mandatory)
-
-            ALWAYS finish by posting a comment, whatever happened. After any commit and
-            push, compare `git rev-parse HEAD` with the PR's remote `headRefOid`. They MUST
-            match; if someone moved the branch, stop rather than reporting on unreviewed
-            code. Start the comment with these two exact marker lines, substituting the
-            final head SHA in the second line:
-
-              <!-- ci-retry-attempt -->
-              <!-- ci-retry-state:${{ steps.check.outputs.run_id }}:<FINAL_HEAD_SHA> -->
-
-            The CI run ID prevents duplicate events from spending another attempt. The
-            final SHA lets the next failed CI run continue this same bounded retry chain.
-            Explain what broke and what you changed after the markers.
-
-            If you concluded the bump is NOT ADOPTABLE (an upstream peer range excludes the new
-            major on the dependent's latest release), say so plainly in that comment — name the
-            dependent, its latest version and peer range. Also post a second comment beginning
-            `<!-- dep-verdict:BLOCKED:<FINAL_HEAD_SHA> -->` with the same explanation. This is
-            the durable verdict the watchdog uses, regardless of which agent discovered the
-            blocker. Then run:
-
-              gh api -X POST "repos/${{ github.repository }}/issues/${{ steps.check.outputs.pr_number }}/labels" -f "labels[]=dep:blocked"
-
-            (Use that REST call, NOT `gh pr edit --add-label` — the latter resolves labels
-            over GraphQL and fails on this token for lack of org-read scope.)
-
-            That stops further retry attempts on a bump that cannot be fixed from this repo.
-
-            If you cannot identify a fix for some other reason (e.g. it needs a design decision
-            only a human can make), say so plainly in the comment (still with the marker) instead
-            of guessing, and do not push a speculative change.
-
-      - uses: actions/create-github-app-token@v3
-        id: report_token
-        if: always() && steps.agent_token.outcome == 'success'
-        with:
-          client-id: ${{ vars.DEP_AGENT_APP_CLIENT_ID }}
-          private-key: ${{ secrets.DEP_AGENT_APP_PRIVATE_KEY }}
-          permission-contents: read
-          permission-pull-requests: write
-          permission-issues: write
-
-      # A crash or turn-exhausted run still consumes its attempt and gets a human ping.
-      - name: Verify an attempt comment was posted
-        id: verify
-        if: always() && steps.head.outcome == 'success' && steps.report_token.outcome == 'success'
-        env:
-          GH_TOKEN: ${{ steps.report_token.outputs.token }}
-          BOT_NAME: ${{ steps.app.outputs.bot_name }}
-          PR: ${{ steps.check.outputs.pr_number }}
-          RUN_ID: ${{ steps.check.outputs.run_id }}
-          EXPECTED_SHA: ${{ steps.check.outputs.head_sha }}
-          ATTEMPT: ${{ steps.check.outputs.attempt }}
-        run: |
-          set -euo pipefail
-          DATA=$(gh pr view "$PR" --repo "${{ github.repository }}" --json headRefOid,labels,comments)
-          REMOTE_SHA=$(jq -r .headRefOid <<<"$DATA")
-          LOCAL_SHA=$(git rev-parse HEAD)
-          MARKER="<!-- ci-retry-state:$RUN_ID:$REMOTE_SHA -->"
-          FOUND=$(jq --arg marker "$MARKER" --arg owner "$BOT_NAME" \
-            '[.comments[] | select(.author.login == $owner and (.body | startswith("<!-- ci-retry-attempt -->\n" + $marker)))] | length' <<<"$DATA")
-          if [ "$LOCAL_SHA" = "$REMOTE_SHA" ] && [ "$FOUND" -gt 0 ]; then
-            echo "Attempt $ATTEMPT reported for $REMOTE_SHA — OK."
-            BLOCKED_MARKER="<!-- dep-verdict:BLOCKED:$REMOTE_SHA -->"
-            BLOCKED_VERDICT=$(jq --arg marker "$BLOCKED_MARKER" --arg attempt "$MARKER" --arg owner "$BOT_NAME" '
-              ([.comments | to_entries[] | select(.value.author.login == $owner and (.value.body | startswith("<!-- ci-retry-attempt -->\n" + $attempt))) | .key] | last) as $attemptIndex
-              | [.comments | to_entries[] | select(.key > $attemptIndex and .value.author.login == $owner and (.value.body | startswith($marker)))] | length' <<<"$DATA")
-            BLOCKED_LABEL=$(jq '[.labels[].name | select(. == "dep:blocked")] | length' <<<"$DATA")
-            if [ "$BLOCKED_VERDICT" -gt 0 ] || [ "$BLOCKED_LABEL" -gt 0 ]; then
-              if [ "$BLOCKED_VERDICT" -eq 0 ]; then
-                gh pr comment "$PR" --repo "${{ github.repository }}" --body "$BLOCKED_MARKER
-          Retry agent marked this major update as blocked. See its attempt comment above for the upstream peer constraint."
-              fi
-              if [ "$BLOCKED_LABEL" -eq 0 ]; then
-                gh api -X POST "repos/${{ github.repository }}/issues/$PR/labels" -f "labels[]=dep:blocked" >/dev/null
-              fi
-              echo "blocked=true" >> "$GITHUB_OUTPUT"
-              echo "head_sha=$REMOTE_SHA" >> "$GITHUB_OUTPUT"
-            fi
-            exit 0
-          fi
-          REPORT_SHA="$EXPECTED_SHA"
-          if [ "$LOCAL_SHA" = "$REMOTE_SHA" ]; then REPORT_SHA="$REMOTE_SHA"; fi
-          gh pr comment "$PR" --repo "${{ github.repository }}" --body "$(printf '<!-- ci-retry-attempt -->\n<!-- ci-retry-state:%s:%s -->\n⚠️ @BohdanMoroz11 — automated CI-fix attempt %s reported no result for commit `%s` (see the [run](%s)). CI is still red; this needs a manual look.' \
-            "$RUN_ID" "$REPORT_SHA" "$ATTEMPT" "$REPORT_SHA" '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}')"
-          exit 1
-
-      - uses: actions/checkout@v7
-        if: steps.verify.outputs.blocked == 'true'
-        with:
-          ref: main
-          path: controller
-          persist-credentials: false
-      - name: Install blocked-state controller
-        if: steps.verify.outputs.blocked == 'true'
-        run: npm ci --prefix controller --ignore-scripts
-      - name: Record blocked dependency state
-        if: steps.verify.outputs.blocked == 'true'
-        env:
-          GH_TOKEN: ${{ steps.report_token.outputs.token }}
-          DEP_AGENT_APP_SLUG: ${{ vars.DEP_AGENT_APP_SLUG }}
-        run: node controller/scripts/major-dep-blocked-controller.mjs capture "${{ steps.check.outputs.pr_number }}" "${{ steps.verify.outputs.head_sha }}"
-
-  report-failure:
-    needs: retry
-    if: always() && needs.retry.result == 'failure'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: write
-      issues: write
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          persist-credentials: false
-      - uses: actions/setup-node@v7
-        with:
-          node-version: 26.13.0
-      - name: Report failed retry on trusted PR
-        if: needs.retry.outputs.pr_number != '' || inputs.pr_number != ''
-        env:
-          GH_TOKEN: ${{ github.token }}
-          DEP_AGENT_APP_SLUG: ${{ vars.DEP_AGENT_APP_SLUG }}
-          PR_NUMBER: ${{ needs.retry.outputs.pr_number || inputs.pr_number }}
-        run: node scripts/major-dep-report-failure.mjs "$PR_NUMBER" "${{ github.run_id }}" retry
+    uses: BohdanMoroz11/upkeep/.github/workflows/retry.yml@7147364e6698cf58716d1975e9aec4cf444e8f1a
+    with:
+      app-client-id: ${{ vars.DEP_AGENT_APP_CLIENT_ID }}
+      app-slug: ${{ vars.DEP_AGENT_APP_SLUG }}
+      base-branch: main
+      ci-workflow: ci.yml
+      review-workflow: major-dep-agent.yml
+      retry-workflow: major-dep-agent-ci-retry.yml
+      notification-target: BohdanMoroz11
+      legacy-comment-author: BohdanMoroz11
+      node-version: 26.13.0
+      sanity-command: npm run typecheck
+    secrets:
+      app-private-key: ${{ secrets.DEP_AGENT_APP_PRIVATE_KEY }}
+      claude-code-oauth-token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}

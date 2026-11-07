@@ -92,7 +92,9 @@ Two layers keep dependencies current:
   `digest`) into one PR and auto-merges it when CI passes. Runs weekly. No agent involvement.
 - **Claude Code** handles majors. Renovate opens one PR per major, holds it (no automerge),
   and adds the `dep:major-review` label. That label fires
-  `.github/workflows/major-dep-agent.yml`, which runs an agent on the PR branch.
+  `.github/workflows/major-dep-agent.yml`, which calls the pinned Upkeep review workflow.
+  The three local dependency workflows are event wrappers; shared controller logic and prompts
+  come from `BohdanMoroz11/upkeep`. This repository retains CI and project instructions.
 
 If you are that agent: you are the PR **author**, not the validator — CI runs the full suite
 (incl. e2e), so don't run build/unit/e2e yourself. Identify the dep and version from the diff,
