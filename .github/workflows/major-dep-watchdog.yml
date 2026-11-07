@@ -19,6 +19,11 @@ on:
   schedule:
     - cron: "0 */6 * * *" # periodic backstop for anything the push check missed
   workflow_dispatch:
+    inputs:
+      credentials_only:
+        description: Verify App credentials without scanning or changing PRs
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -37,7 +42,7 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@v7
         with:
-          node-version: 24.21.0
+          node-version: 26.13.0
           cache: npm
       - run: npm ci --ignore-scripts
       - name: Check dedicated App configuration
@@ -59,7 +64,18 @@ jobs:
           permission-pull-requests: write
           permission-issues: write
           permission-actions: write
+      - name: Verify App identity and repository access
+        env:
+          GH_TOKEN: ${{ steps.watchdog_token.outputs.token }}
+          EXPECTED_SLUG: ${{ vars.DEP_AGENT_APP_SLUG }}
+          ACTUAL_SLUG: ${{ steps.watchdog_token.outputs.app-slug }}
+        run: |
+          set -euo pipefail
+          test "$ACTUAL_SLUG" = "$EXPECTED_SLUG"
+          gh api "users/${ACTUAL_SLUG}%5Bbot%5D" --jq .id
+          gh api installation/repositories --jq '.repositories[].full_name' | grep -Fx "$REPO"
       - name: Scan major-review PRs and flag stuck ones
+        if: inputs.credentials_only != true
         env:
           GH_TOKEN: ${{ steps.watchdog_token.outputs.token }}
           DEP_AGENT_APP_SLUG: ${{ vars.DEP_AGENT_APP_SLUG }}
