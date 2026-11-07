@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["github>BohdanMoroz11/upkeep#7147364e6698cf58716d1975e9aec4cf444e8f1a"],
+  "extends": ["github>BohdanMoroz11/upkeep#v0.1.0"],
   "timezone": "Europe/Sofia",
   "schedule": ["before 6am on monday"]
 }
