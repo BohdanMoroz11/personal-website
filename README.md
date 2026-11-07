@@ -119,7 +119,7 @@ The remote half of the deploy is intentionally tiny and lives inline in the scri
 ## Dependency updates
 
 Dependencies are kept current automatically through [Upkeep](https://github.com/BohdanMoroz11/upkeep),
-pinned to reviewed commit [`7147364`](https://github.com/BohdanMoroz11/upkeep/commit/7147364e6698cf58716d1975e9aec4cf444e8f1a)
+pinned to [v0.1.0](https://github.com/BohdanMoroz11/upkeep/releases/tag/v0.1.0)
 for both the Renovate preset and reusable workflows. This repository supplies the event triggers,
 CI, project instructions, weekly schedule, and credential mappings.
 

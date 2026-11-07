@@ -1,4 +1,4 @@
-# Upkeep PR #1: reviewed shared implementation pinned to 7147364e6698cf58716d1975e9aec4cf444e8f1a.
+# Upkeep workflows and Renovate preset use the same published release.
 name: claude-major-agent
 
 on:
@@ -24,7 +24,7 @@ permissions:
 
 jobs:
   review:
-    uses: BohdanMoroz11/upkeep/.github/workflows/review.yml@7147364e6698cf58716d1975e9aec4cf444e8f1a
+    uses: BohdanMoroz11/upkeep/.github/workflows/review.yml@v0.1.0
     with:
       app-client-id: ${{ vars.DEP_AGENT_APP_CLIENT_ID }}
       app-slug: ${{ vars.DEP_AGENT_APP_SLUG }}
