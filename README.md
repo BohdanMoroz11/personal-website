@@ -176,9 +176,8 @@ There are two layers:
    `major-dep-watchdog.yml` with `credentials_only: true`. The shared job checks the App identity,
    repository access, and requested permissions.
 
-   Local `scripts/major-dep-*` files and their regression tests are retained for the adoption
-   verification period. The workflow callers execute Upkeep's bundled controller; they do not
-   invoke those local copies. Cleanup follows live review/retry and blocked-state verification.
+   Controller logic and its regression tests live in Upkeep. This repository keeps its own
+   site tests, CI merge gates, event wrappers, and project-specific agent instructions.
 
    - **"Not adoptable" is a first-class answer.** The most common way a major gets stuck is a
      peer-dependency conflict that stops Renovate resolving a lockfile at all — which used to
