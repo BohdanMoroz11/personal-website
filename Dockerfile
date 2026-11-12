@@ -1,6 +1,6 @@
-# syntax=docker/dockerfile:1.28
+# syntax=docker/dockerfile:1.29
 
-FROM node:26.13.0-alpine AS build
+FROM node:26.13.1-alpine AS build
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
