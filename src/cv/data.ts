@@ -18,7 +18,7 @@ export interface CvExperienceEntry {
   role: string;
   location: string;
   period: string;
-  /** Short framing line shown above the bullet list. */
+  /** Short framing line shown above the bullet list (omitted when empty). */
   lead: string;
   bullets: string[];
   stack: string[];
@@ -27,6 +27,12 @@ export interface CvExperienceEntry {
 export interface CvLanguageEntry {
   name: string;
   level: string;
+}
+
+export interface CvOpenSourceEntry {
+  name: string;
+  url: string;
+  desc: string;
 }
 
 export interface CvEducationEntry {
@@ -56,7 +62,7 @@ export const cv = {
   ],
 
   summary:
-    "Full-stack TypeScript engineer with four years shipping production web & mobile systems for US logistics, HR and fintech operators. Comfortable owning a feature end-to-end — frontend, backend, infrastructure and deploy — with agentic AI woven into the day-to-day: I build the tooling, run self-hosted inference, and agents handle the typing while I drive architecture, review and integration.",
+    "Full-stack TypeScript engineer with 4+ years shipping production systems for US logistics, HR and fintech operators, owning them end-to-end — frontend, backend, integrations, infra and deploy. Agentic AI is core to how I work: agents track, finish and verify their own work, and my time goes to architecture, review and decisions.",
 
   skills: [
     {
@@ -90,8 +96,8 @@ export const cv = {
     {
       label: "Applied AI",
       items: [
-        "Agentic LLM workflows",
-        "Cursor · OpenClaw",
+        "Agentic workflows",
+        "Claude Code · Codex · Orca",
         "Self-hosted inference",
         "Ollama · vLLM · LiteLLM",
         "Gateways & Routing",
@@ -114,11 +120,11 @@ export const cv = {
       role: "Full-stack Software Engineer",
       location: "Remote — US logistics",
       period: "May 2024 — Present",
-      lead: "Lead / sole developer across a suite of products for US freight carriers and dispatchers.",
+      lead: "",
       bullets: [
-        "ClaraHR — AI-powered driver onboarding system which contacts, onboards and files US truck drivers in the carrier's system with minimal HR involvement. Lead the project end-to-end, including infra and B2B communication. Onboarded 800+ drivers across 8 enterprise clients.",
+        "CargoFinance — multi-tenant accounting back-office for US logistics carriers, live with 18 tenants and eight-figure freight volume: settlements, statements, commissions, payroll and payouts, integrated with NetSuite and Wells Fargo, with automated sync and migration pipelines and an AI copilot. Sole dev.",
+        "ClaraHR — AI driver-onboarding system that interviews US truck drivers and files them in the carrier's system. Lead dev; 1,800+ drivers onboarded via 53K conversations for 9 carriers.",
         "CargoHub — freight marketplace where shippers & brokers browse trucks, post loads and book capacity, with an AI assistant handling routine dispatch. Sole dev. Handles ~2,500 trucks across 9 carriers.",
-        "CargoFinance — accounting & light-fintech tooling for a logistics back-office: invoicing, transfer tracking and bank-rail payouts (AP/AR, reconciliation). Sole dev.",
         "CargoETL — closed TMS; built and maintain both the Next.js dispatcher dashboard and the React Native (Expo) driver app — order flow, live tracking, documents and dispatch comms.",
       ],
       stack: [
@@ -135,7 +141,7 @@ export const cv = {
         "OpenAI",
         "DeepSeek",
         "Docker Swarm",
-        "Plaid",
+        "NetSuite",
         "Twilio",
       ],
     },
@@ -145,14 +151,24 @@ export const cv = {
       role: "Frontend / Mobile Engineer",
       location: "Remote — US logistics",
       period: "2022 — 2024",
-      lead: "First multi-year production project — a TMS for US logistics carriers and dispatchers (since wound down).",
-      bullets: [
-        "Built the dispatcher dashboard and the driver mobile app: order flow, live tracking and dispatch comms.",
-        "Worked across the Vue / Nuxt web stack and a React Native app shared by drivers in the field.",
-      ],
-      stack: ["Vue", "Nuxt", "JavaScript", "React Native"],
+      lead: "First multi-year project — dispatcher dashboard and driver app for a US logistics TMS (wound down).",
+      bullets: [],
+      stack: [],
     },
   ] satisfies CvExperienceEntry[],
+
+  openSource: [
+    {
+      name: "agent-tracking",
+      url: "https://github.com/BohdanMoroz11/agent-tracking",
+      desc: "agents keep context, finish and verify their own work; adopted by teammates.",
+    },
+    {
+      name: "Upkeep",
+      url: "https://github.com/BohdanMoroz11/upkeep",
+      desc: "agent-reviewed major dependency upgrades with evidence-backed verdicts.",
+    },
+  ] satisfies CvOpenSourceEntry[],
 
   education: {
     degree: "BSc Computer Science",

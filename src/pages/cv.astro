@@ -79,19 +79,42 @@ const pageDesc = `Curriculum vitae of ${cv.name}, ${cv.roleGeneral} (${cv.roleDo
           <div class="cv-job-meta">
             {job.role} <span class="loc">· {job.location}</span>
           </div>
-          <p class="cv-job-lead">{job.lead}</p>
-          <ul class="cv-bullets">
-            {job.bullets.map((b) => (
-              <li>{b}</li>
-            ))}
-          </ul>
-          <div class="cv-stack">
-            {job.stack.map((tag) => (
-              <span class="cv-stack-tag">{tag}</span>
-            ))}
-          </div>
+          {job.lead && <p class="cv-job-lead">{job.lead}</p>}
+          {job.bullets.length > 0 && (
+            <ul class="cv-bullets">
+              {job.bullets.map((b) => (
+                <li>{b}</li>
+              ))}
+            </ul>
+          )}
+          {job.stack.length > 0 && (
+            <div class="cv-stack">
+              {job.stack.map((tag) => (
+                <span class="cv-stack-tag">{tag}</span>
+              ))}
+            </div>
+          )}
         </div>
       ))}
+    </section>
+
+    <!-- § 04 — Open source -->
+    <section class="cv-section">
+      <div class="cv-sec-head">
+        <span class="cv-sec-num">§ 04</span>
+        <h2 class="cv-sec-title">Open source</h2>
+        <span class="cv-sec-rule" aria-hidden="true"></span>
+      </div>
+      <ul class="cv-bullets">
+        {cv.openSource.map((project) => (
+          <li>
+            <b>
+              <a href={project.url}>{project.name}</a>
+            </b>{" "}
+            — {project.desc}
+          </li>
+        ))}
+      </ul>
     </section>
 
     <!-- Coda — languages + availability strip -->
@@ -117,7 +140,8 @@ const pageDesc = `Curriculum vitae of ${cv.name}, ${cv.roleGeneral} (${cv.roleDo
       <div class="cv-coda-row">
         <span class="cv-coda-k">Availability</span>
         <span class="cv-coda-v">
-          <span class="dot">●</span> {cv.availability}
+          <span class="dot">●</span>
+          {cv.availability}
         </span>
       </div>
     </div>
@@ -131,7 +155,8 @@ const pageDesc = `Curriculum vitae of ${cv.name}, ${cv.roleGeneral} (${cv.roleDo
   <div class="cv-actions">
     <a class="cv-dl" href="/cv.pdf" download="Bohdan-Moroz-CV.pdf">
       <span class="arr" aria-hidden="true">
-        ▸
+        {" "}
+        ▸{" "}
       </span>{" "}
       Download PDF
     </a>
