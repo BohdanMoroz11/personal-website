@@ -1,13 +1,13 @@
 {
   "meta": {
     "title": "Bohdan Moroz — Software Engineer · Applied AI",
-    "description": "Bohdan Moroz — software engineer working in applied AI. Four years building production web and mobile apps for US logistics, HR, and fintech teams. Open to freelance work."
+    "description": "Bohdan Moroz — software engineer working in applied AI. 4+ years building production web and mobile apps for US logistics, HR, and fintech teams. Open to freelance work."
   },
   "schema": {
     "jobTitle": "Software Engineer, Applied AI",
     "workLocationName": "Sofia, Bulgaria",
     "occupationName": "Software Engineer",
-    "occupationSkills": "TypeScript, React, Next.js, NestJS, React Native, Expo, applied AI, agentic LLM workflows, self-hosted inference (Ollama, vLLM, LiteLLM), Docker, CI/CD",
+    "occupationSkills": "TypeScript, React, Next.js, NestJS, React Native, Expo, applied AI, agentic workflows (Claude Code, Codex, Orca), self-hosted inference (Ollama, vLLM, LiteLLM), Docker, CI/CD",
     "seeksName": "Freelance software engineering engagements",
     "seeksDescription": "Open to freelance full-stack TypeScript engagements with US SMBs in logistics, HR, and fintech. Remote, or in person in Sofia."
   },
@@ -28,11 +28,11 @@
     "nameLine2": "Moroz",
     "roleGeneral": "Software Engineer",
     "roleDomain": "Applied AI",
-    "tagline": "Four years shipping production web & mobile systems for US logistics, HR & fintech operators.",
+    "tagline": "4+ years shipping production web & mobile systems for US logistics, HR & fintech operators.",
     "specs": [
       {
         "key": "Experience",
-        "value": "4 years",
+        "value": "4+ years",
         "valueUrl": "",
         "aside": "agentic AI · end-to-end delivery"
       },
@@ -90,7 +90,7 @@
         "letter": "C",
         "name": "Throughput",
         "lead": "Agentic AI is core to how I work.",
-        "rest": "I've built my own tooling around it, so agents handle the typing while I drive architecture, review and integration. I can also set up and run the infrastructure itself — self-hosted inference, gateways, routing — which I do day-to-day on corporate stacks."
+        "rest": "Agents carry the work end to end — I built the pipeline that has them track, finish and verify it, so my time goes to architecture, review and decisions. Day to day that's Claude Code, Codex and Orca; it's also how I build small tailored tools fast. On the infrastructure side I run self-hosted inference for a corporate stack — gateways, routing, Ollama / vLLM / LiteLLM."
       },
       {
         "letter": "D",
@@ -113,14 +113,51 @@
     "cases": [
       {
         "id": "01",
+        "name": "CargoFinance",
+        "role": "Full-stack · Sole dev · ETL Group",
+        "tease": "Accounting back-office for US logistics carriers",
+        "metricNum": "18",
+        "metricCap": "Tenants",
+        "metricNum2": "8-figure",
+        "metricCap2": "Freight processed",
+        "desc": "Multi-tenant accounting back-office for US logistics carriers, live with paying tenants. Loads stream in from the TMS, and it runs weekly settlements, statements, commissions, payroll and payouts — ",
+        "descBold": "integrated with NetSuite and Wells Fargo",
+        "descAfter": ". Automated pipelines keep the syncs running, move tenants off a legacy system side by side and keep the in-app help current; an AI copilot answers from the tenant's own data.",
+        "stack": [
+          "NestJS",
+          "React",
+          "Vite",
+          "Postgres",
+          "Prisma",
+          "TanStack Router",
+          "TanStack Query",
+          "shadcn/ui",
+          "Tailwind",
+          "Zod",
+          "NetSuite",
+          "Wells Fargo",
+          "OpenAI",
+          "MCP",
+          "Docker Swarm",
+          "Vitest",
+          "Playwright",
+          "MSW"
+        ],
+        "years": "2026 → PRESENT",
+        "url": "https://cargo-finance.com",
+        "live": true,
+        "defaultOpen": true
+      },
+      {
+        "id": "02",
         "name": "ClaraHR",
         "role": "Full-stack · Lead dev · ETL Group",
         "tease": "Driver onboarding system — chatbot interviews & files",
-        "metricNum": "635",
-        "metricCap": "Drivers",
-        "metricNum2": "8",
-        "metricCap2": "Carriers",
-        "desc": "Onboarding system for US truck drivers — a chatbot interviews them on whichever channel they prefer and files them in the carrier's system, replacing manual HR back-and-forth. ",
+        "metricNum": "1,800+",
+        "metricCap": "Drivers onboarded",
+        "metricNum2": "53K",
+        "metricCap2": "Conversations",
+        "desc": "Onboarding system for US truck drivers — a chatbot interviews them on whichever channel they prefer and files them in the carrier's system, replacing manual HR back-and-forth. Nine carriers and agencies to date. ",
         "descBold": "I lead the server side.",
         "descAfter": "",
         "stack": [
@@ -142,10 +179,10 @@
         "years": "2025 → PRESENT",
         "url": "https://clarahr.io",
         "live": false,
-        "defaultOpen": true
+        "defaultOpen": false
       },
       {
-        "id": "02",
+        "id": "03",
         "name": "CargoHub",
         "role": "Full-stack · Sole dev · ETL Group",
         "tease": "Public freight marketplace with in-product AI dispatch",
@@ -174,38 +211,6 @@
         "years": "2026 → PRESENT",
         "url": "https://map.cargoetl.com",
         "live": true,
-        "defaultOpen": false
-      },
-      {
-        "id": "03",
-        "name": "CargoFinance",
-        "role": "Full-stack · Sole dev · ETL Group",
-        "tease": "Accounting & light-fintech tooling for logistics back-office",
-        "metricNum": "",
-        "metricCap": "",
-        "metricNum2": "",
-        "metricCap2": "",
-        "desc": "Accounting and light-fintech tooling for a logistics back-office — invoicing, transfer tracking, payouts via bank rails. Focused on turning an unfamiliar domain (",
-        "descBold": "AP/AR, reconciliation",
-        "descAfter": ") into something operators actually use.",
-        "stack": [
-          "NestJS",
-          "Vite",
-          "Postgres",
-          "Prisma",
-          "TanStack Router",
-          "TanStack Query",
-          "Tailwind",
-          "Radix",
-          "Plaid",
-          "Zod",
-          "Vitest",
-          "Playwright",
-          "MSW"
-        ],
-        "years": "2026 → PRESENT",
-        "url": "",
-        "live": false,
         "defaultOpen": false
       },
       {
@@ -254,6 +259,52 @@
         "stack": ["Vue", "Nuxt", "JavaScript", "React Native"],
         "years": "2022 → 2024",
         "url": "https://altek.digital",
+        "live": false,
+        "defaultOpen": false
+      },
+      {
+        "id": "06",
+        "name": "agent-tracking",
+        "role": "Open source · Author",
+        "tease": "Removes the bottlenecks of working with agents",
+        "metricNum": "",
+        "metricCap": "",
+        "metricNum2": "",
+        "metricCap2": "",
+        "desc": "When agents write most of the code, the human becomes the bottleneck: context is lost between sessions, work stops half-done, nobody re-checks fixes after deploy, and follow-ups live in someone's head. agent-tracking removes each one — work state lives in GitHub issues every agent keeps up, agents finish what they start and come to you only for decisions, shipped fixes are re-measured against production on a set date, and a daily brief shows what needs you across every repo. ",
+        "descBold": "It's how I run three production products solo, and teammates have adopted it for their own repos.",
+        "descAfter": "",
+        "stack": [
+          "GitHub Issues",
+          "GitHub Actions",
+          "AGENTS.md",
+          "Claude Code",
+          "Codex",
+          "Jira",
+          "Telegram",
+          "systemd",
+          "Node.js"
+        ],
+        "years": "2026 → PRESENT",
+        "url": "https://github.com/BohdanMoroz11/agent-tracking",
+        "live": false,
+        "defaultOpen": false
+      },
+      {
+        "id": "07",
+        "name": "Upkeep",
+        "role": "Open source · Author",
+        "tease": "Major dependency upgrades, investigated by an agent",
+        "metricNum": "",
+        "metricCap": "",
+        "metricNum2": "",
+        "metricCap2": "",
+        "desc": "Routine updates merge themselves. Each major version gets an agent review of the upstream changes and an evidence-backed verdict: adoptable, migrated, blocked until the ecosystem catches up, or needs a human. ",
+        "descBold": "The human makes only the merge decision.",
+        "descAfter": "",
+        "stack": ["Renovate", "GitHub Actions", "GitHub App", "Claude Code", "Node.js"],
+        "years": "2026 → PRESENT",
+        "url": "https://github.com/BohdanMoroz11/upkeep",
         "live": false,
         "defaultOpen": false
       }

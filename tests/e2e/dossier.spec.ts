@@ -17,8 +17,11 @@ for (const path of ROUTES) {
       await expect(first.locator(".case-bar")).toHaveAttribute("aria-expanded", "true");
       await expect(section.getByText(STACK_SENTINEL).first()).toHaveCount(1);
 
-      const closed = section.locator(".case:not(.open)");
-      await expect(closed).toHaveCount(4);
+      // Exactly one case starts open; every other case starts closed.
+      await expect(section.locator(".case.open")).toHaveCount(1);
+      const total = await section.locator(".case").count();
+      expect(total).toBeGreaterThan(1);
+      await expect(section.locator(".case:not(.open)")).toHaveCount(total - 1);
     });
 
     test("clicking a closed case opens it and closes the previous one", async ({ page }) => {

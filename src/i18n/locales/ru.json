@@ -1,13 +1,13 @@
 {
   "meta": {
     "title": "Богдан Мороз — Software Engineer · Прикладной ИИ",
-    "description": "Богдан Мороз — software engineer, работаю с прикладным ИИ. Четыре года делаю веб- и мобильные продукты для команд из США в логистике, HR и финтехе. Открыт к проектной работе."
+    "description": "Богдан Мороз — software engineer, работаю с прикладным ИИ. Больше четырёх лет делаю веб- и мобильные продукты для команд из США в логистике, HR и финтехе. Открыт к проектной работе."
   },
   "schema": {
     "jobTitle": "Software Engineer, Прикладной ИИ",
     "workLocationName": "София, Болгария",
     "occupationName": "Software Engineer",
-    "occupationSkills": "TypeScript, React, Next.js, NestJS, React Native, Expo, прикладной ИИ, agentic LLM workflows, self-hosted inference (Ollama, vLLM, LiteLLM), Docker, CI/CD",
+    "occupationSkills": "TypeScript, React, Next.js, NestJS, React Native, Expo, прикладной ИИ, agentic workflows (Claude Code, Codex, Orca), self-hosted inference (Ollama, vLLM, LiteLLM), Docker, CI/CD",
     "seeksName": "Проектная работа в разработке ПО",
     "seeksDescription": "Открыт к проектной full-stack TypeScript-разработке для малого и среднего бизнеса в США в логистике, HR и финтехе. Удалённо или лично в Софии."
   },
@@ -28,11 +28,11 @@
     "nameLine2": "Мороз",
     "roleGeneral": "Software Engineer",
     "roleDomain": "Прикладной ИИ",
-    "tagline": "Четыре года вывожу в прод production web & mobile-системы для операторов из США в логистике, HR и финтехе.",
+    "tagline": "Больше четырёх лет вывожу в прод production web & mobile-системы для операторов из США в логистике, HR и финтехе.",
     "specs": [
       {
         "key": "Опыт",
-        "value": "4 года",
+        "value": "4+ года",
         "valueUrl": "",
         "aside": "agentic AI · полный цикл разработки"
       },
@@ -90,7 +90,7 @@
         "letter": "C",
         "name": "Throughput",
         "lead": "Агентный ИИ — основа моего процесса.",
-        "rest": "Вокруг агентов собран свой набор инструментов: они пишут код, я отвечаю за архитектуру, ревью и интеграцию. Инфру под inference, шлюзы и роутинг поднимаю сам — на основной работе этим занимаюсь каждый день."
+        "rest": "Агенты ведут работу от начала до конца — я собрал пайплайн, в котором они сами её отслеживают, доводят и проверяют, а моё время уходит на архитектуру, ревью и решения. В работе — Claude Code, Codex и Orca; так же быстро собираю небольшие инструменты под конкретные задачи. По инфраструктуре — поддерживаю self-hosted inference для корпоративного стека: шлюзы, роутинг, Ollama / vLLM / LiteLLM."
       },
       {
         "letter": "D",
@@ -113,14 +113,51 @@
     "cases": [
       {
         "id": "01",
+        "name": "CargoFinance",
+        "role": "Full-stack · Sole dev · ETL Group",
+        "tease": "Бухгалтерский бэк-офис для логистических перевозчиков США",
+        "metricNum": "18",
+        "metricCap": "Компаний",
+        "metricNum2": "8-значный",
+        "metricCap2": "Оборот фрахта",
+        "desc": "Мультитенантный бухгалтерский бэк-офис для логистических перевозчиков США, в проде с платящими клиентами. Грузы приходят из TMS, а система ведёт недельные расчёты, стейтменты, комиссии, зарплаты и выплаты — ",
+        "descBold": "с интеграциями NetSuite и Wells Fargo",
+        "descAfter": ". Автоматические пайплайны держат синхронизации, переводят клиентов со старой системы с параллельным запуском и поддерживают встроенную справку актуальной; ИИ-копилот отвечает по данным самого клиента.",
+        "stack": [
+          "NestJS",
+          "React",
+          "Vite",
+          "Postgres",
+          "Prisma",
+          "TanStack Router",
+          "TanStack Query",
+          "shadcn/ui",
+          "Tailwind",
+          "Zod",
+          "NetSuite",
+          "Wells Fargo",
+          "OpenAI",
+          "MCP",
+          "Docker Swarm",
+          "Vitest",
+          "Playwright",
+          "MSW"
+        ],
+        "years": "2026 → Н. В.",
+        "url": "https://cargo-finance.com",
+        "live": true,
+        "defaultOpen": true
+      },
+      {
+        "id": "02",
         "name": "ClaraHR",
         "role": "Full-stack · Lead dev · ETL Group",
         "tease": "Онбординг водителей — чат-бот интервьюирует и заводит в систему",
-        "metricNum": "635",
-        "metricCap": "Водителей",
-        "metricNum2": "8",
-        "metricCap2": "Перевозчиков",
-        "desc": "Онбординг для американских дальнобойщиков — чат-бот опрашивает водителя в удобном канале и регистрирует его в системе перевозчика, заменяя ручную работу HR. ",
+        "metricNum": "1,800+",
+        "metricCap": "Оформлено водителей",
+        "metricNum2": "53K",
+        "metricCap2": "Диалогов",
+        "desc": "Онбординг для американских дальнобойщиков — чат-бот опрашивает водителя в удобном канале и регистрирует его в системе перевозчика, заменяя ручную работу HR. На счету — девять перевозчиков и агентств. ",
         "descBold": "Серверная часть — на мне.",
         "descAfter": "",
         "stack": [
@@ -142,10 +179,10 @@
         "years": "2025 → Н. В.",
         "url": "https://clarahr.io",
         "live": false,
-        "defaultOpen": true
+        "defaultOpen": false
       },
       {
-        "id": "02",
+        "id": "03",
         "name": "CargoHub",
         "role": "Full-stack · Sole dev · ETL Group",
         "tease": "Публичный freight marketplace с in-product AI dispatch",
@@ -174,38 +211,6 @@
         "years": "2026 → Н. В.",
         "url": "https://map.cargoetl.com",
         "live": true,
-        "defaultOpen": false
-      },
-      {
-        "id": "03",
-        "name": "CargoFinance",
-        "role": "Full-stack · Sole dev · ETL Group",
-        "tease": "Бухгалтерия и light-fintech для бэк-офиса логистики",
-        "metricNum": "",
-        "metricCap": "",
-        "metricNum2": "",
-        "metricCap2": "",
-        "desc": "Бухгалтерия и light-fintech для бэк-офиса логистики — invoicing, transfer tracking, payouts через банковские каналы. Задача — превратить незнакомый домен (",
-        "descBold": "AP/AR, reconciliation",
-        "descAfter": ") в инструмент, которым реально пользуются операторы.",
-        "stack": [
-          "NestJS",
-          "Vite",
-          "Postgres",
-          "Prisma",
-          "TanStack Router",
-          "TanStack Query",
-          "Tailwind",
-          "Radix",
-          "Plaid",
-          "Zod",
-          "Vitest",
-          "Playwright",
-          "MSW"
-        ],
-        "years": "2026 → Н. В.",
-        "url": "",
-        "live": false,
         "defaultOpen": false
       },
       {
@@ -254,6 +259,52 @@
         "stack": ["Vue", "Nuxt", "JavaScript", "React Native"],
         "years": "2022 → 2024",
         "url": "https://altek.digital",
+        "live": false,
+        "defaultOpen": false
+      },
+      {
+        "id": "06",
+        "name": "agent-tracking",
+        "role": "Open source · Автор",
+        "tease": "Убирает узкие места работы с агентами",
+        "metricNum": "",
+        "metricCap": "",
+        "metricNum2": "",
+        "metricCap2": "",
+        "desc": "Когда код в основном пишут агенты, узким местом становится человек: контекст теряется между сессиями, работа застревает на полпути, исправления после деплоя никто не перепроверяет, а договорённости держатся в чьей-то голове. agent-tracking закрывает каждую из этих проблем — состояние работы живёт в GitHub issues, которые ведёт каждый агент; агенты доводят начатое до конца и приходят только за решениями; выпущенные исправления в назначенный день перемеряются на проде; ежедневный бриф показывает, что ждёт вас по всем репозиториям. ",
+        "descBold": "Так я в одиночку веду три продакшн-продукта, а коллеги внедрили его в свои репозитории.",
+        "descAfter": "",
+        "stack": [
+          "GitHub Issues",
+          "GitHub Actions",
+          "AGENTS.md",
+          "Claude Code",
+          "Codex",
+          "Jira",
+          "Telegram",
+          "systemd",
+          "Node.js"
+        ],
+        "years": "2026 → Н. В.",
+        "url": "https://github.com/BohdanMoroz11/agent-tracking",
+        "live": false,
+        "defaultOpen": false
+      },
+      {
+        "id": "07",
+        "name": "Upkeep",
+        "role": "Open source · Автор",
+        "tease": "Мажорные обновления зависимостей, которые разбирает агент",
+        "metricNum": "",
+        "metricCap": "",
+        "metricNum2": "",
+        "metricCap2": "",
+        "desc": "Рутинные обновления мержатся сами. Каждую мажорную версию агент разбирает по upstream-изменениям и выносит вердикт с доказательствами: можно брать, мигрировано, заблокировано до готовности экосистемы или нужен человек. ",
+        "descBold": "Человеку остаётся только решение о мерже.",
+        "descAfter": "",
+        "stack": ["Renovate", "GitHub Actions", "GitHub App", "Claude Code", "Node.js"],
+        "years": "2026 → Н. В.",
+        "url": "https://github.com/BohdanMoroz11/upkeep",
         "live": false,
         "defaultOpen": false
       }
